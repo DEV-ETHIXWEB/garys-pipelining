@@ -5,16 +5,16 @@ Read this before doing anything else in this project. Saves re-discovery.
 ## What this is
 
 Full rebuild of garyspipelining.com (sewer/drain trenchless contractor,
-Tukwila WA), Next.js 16 (App Router) + Tailwind v4. Lives at
-`a:/garyspipelining/garys-pipelining-web`.
+Tukwila WA), Next.js 16 (App Router) + Tailwind v4. Lives directly at
+`a:/garyspipelining/` (this IS the project root, single folder,
+`src`/`public`/etc. are direct children, no nested subfolder).
 
-**Do NOT touch** `a:/garyspipelining/nextgen-pipelining-main`, separate
-Lovable-connected project, sibling folder, off-limits (AGENTS.md there
-warns about breaking the Lovable git sync).
-
-**Old site mirror** (HTTrack crawl of the real WordPress site, for real
-business facts/images) lives at
-`a:/garyspipelining/nextgen-pipelining-main/garyspipelining/garyspipelining.com/`.
+The old Lovable-connected project (`nextgen-pipelining-main`) and the
+HTTrack mirror of the original WordPress site that used to live
+alongside this one have been permanently deleted, by user request, once
+all real business facts/photos had already been migrated into
+`public/photos` and `src/lib/site-config.ts`. They no longer exist on
+disk; don't look for them.
 
 ## Real business facts (don't invent new ones, pull from old mirror if more are needed)
 
@@ -89,6 +89,21 @@ business facts/images) lives at
    width/height, override both (matching the real file's aspect ratio),
    or the rendered image can end up wrong-sized. Don't pass just `height`
    without `width` on a static import.
+
+7. **Vercel deployment, three separate real causes, in order found**: (a)
+   repo only had `create-next-app`'s day-1 commit, the real site was
+   never actually committed, always `git add -A && git commit` and
+   confirm `git status` is clean before assuming a push will work; (b)
+   the repo had project files nested inside an extra subfolder (from a
+   manual GitHub upload), Vercel needed `Root Directory` set to match
+   that subfolder name in Settings → General, now resolved since this
+   project is flattened to one folder, so Root Directory should be left
+   blank; (c) Vercel **Deployment Protection** was on, which makes every
+   external visitor (including any agent fetching the URL) see a
+   generic 404 instead of a login wall, by design, to hide that the
+   deployment exists. A clean build + 404 on literally every URL
+   including the deployment's own unique link, with zero errors in the
+   build log, means check Deployment Protection, not the code.
 
 ## Verification habits that actually caught real bugs
 
