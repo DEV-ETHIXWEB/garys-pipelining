@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import Link from "next/link";
 import { Home as HomeIcon, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,13 +30,208 @@ function tierOf(location: Location): "primary" | "coverage" {
   return minutes <= 15 ? "primary" : "coverage";
 }
 
-function LandShape() {
+type Point = { x: number; y: number };
+
+/** Clip a convex polygon to the half-plane nx*x + ny*y <= c (Sutherland-Hodgman). */
+function clipHalfPlane(poly: Point[], nx: number, ny: number, c: number): Point[] {
+  const result: Point[] = [];
+  for (let i = 0; i < poly.length; i++) {
+    const curr = poly[i];
+    const next = poly[(i + 1) % poly.length];
+    const dCurr = nx * curr.x + ny * curr.y - c;
+    const dNext = nx * next.x + ny * next.y - c;
+    if (dCurr <= 0) result.push(curr);
+    if ((dCurr < 0 && dNext > 0) || (dCurr > 0 && dNext < 0)) {
+      const t = dCurr / (dCurr - dNext);
+      result.push({ x: curr.x + t * (next.x - curr.x), y: curr.y + t * (next.y - curr.y) });
+    }
+  }
+  return result;
+}
+
+/** Voronoi cell for `site` against every other site, clipped to a 0–100 bounding box. */
+function voronoiCell(site: Point, others: Point[]): Point[] {
+  let poly: Point[] = [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
+  ];
+  for (const other of others) {
+    const mx = (site.x + other.x) / 2;
+    const my = (site.y + other.y) / 2;
+    const nx = other.x - site.x;
+    const ny = other.y - site.y;
+    poly = clipHalfPlane(poly, nx, ny, nx * mx + ny * my);
+  }
+  return poly;
+}
+
+function toPath(points: Point[]): string {
+  if (points.length === 0) return "";
+  return `M${points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" L")} Z`;
+}
+
+/** A small, irregular (non-circular) island outline, smoothed through varied-radius points. */
+function blobPath(cx: number, cy: number, baseR: number, radii: number[]): string {
+  const n = radii.length;
+  const pts = radii.map((r, i) => {
+    const angle = (i / n) * Math.PI * 2;
+    return { x: cx + Math.cos(angle) * baseR * r, y: cy + Math.sin(angle) * baseR * r * 0.82 };
+  });
+  const mid = (a: Point, b: Point) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  const start = mid(pts[n - 1], pts[0]);
+  let d = `M${start.x.toFixed(2)},${start.y.toFixed(2)} `;
+  for (let i = 0; i < n; i++) {
+    const next = pts[(i + 1) % n];
+    const m = mid(pts[i], next);
+    d += `Q${pts[i].x.toFixed(2)},${pts[i].y.toFixed(2)} ${m.x.toFixed(2)},${m.y.toFixed(2)} `;
+  }
+  return `${d}Z`;
+}
+
+/** Distinct radius "fingerprint" per city so no two islands share the same silhouette. */
+const ISLAND_SHAPES: Record<string, number[]> = {
+  "seattle-wa": [1, 0.78, 1.18, 0.82, 1.12, 0.74, 1.08, 0.9],
+  "bellevue-wa": [0.88, 1.14, 0.8, 1.22, 0.84, 1.06, 0.76, 1.02],
+  "renton-wa": [1.08, 0.84, 1.16, 0.88, 1.0, 0.78, 1.12, 0.92],
+  "tukwila-wa": [1, 0.86, 1.14, 0.8, 1.2, 0.84, 1.06, 0.94],
+  "federal-way-wa": [0.94, 1.14, 0.8, 1.1, 0.76, 1.18, 0.86, 1.02],
+  "tacoma-wa": [1.12, 0.8, 1.06, 0.86, 1.2, 0.78, 0.96, 1.08],
+};
+
+/** Each city's own service territory, divided the way county-line maps divide land. */
+function CityBoundaries({ positioned }: { positioned: Location[] }) {
+  const sites = positioned.map((l) => PIN_POSITIONS[l.slug]);
   return (
-    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full opacity-[0.08]">
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+      {positioned.map((location, i) => {
+        const others = sites.filter((_, j) => j !== i);
+        const cell = voronoiCell(sites[i], others);
+        const tier = tierOf(location);
+        return (
+          <path
+            key={location.slug}
+            d={toPath(cell)}
+            fill={tier === "primary" ? "var(--color-yellow)" : "white"}
+            fillOpacity={tier === "primary" ? 0.05 : 0.025}
+            stroke={tier === "primary" ? "var(--color-yellow)" : "white"}
+            strokeOpacity="0.4"
+            strokeWidth="0.45"
+            strokeDasharray="1.6 1.4"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * Street grid + a few highway corridors, so the land reads as an actual city map
+ * instead of flat color. Local streets stay under the water layer (hidden where it
+ * overlaps); highways render on top, the way real freeways bridge across water.
+ */
+function RoadNetwork({ id, positioned }: { id: string; positioned: Location[] }) {
+  const sparseId = `${id}-streets-sparse`;
+  const denseId = `${id}-streets-dense`;
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+      <defs>
+        <pattern id={sparseId} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+          <path d="M0,0 L0,6 M0,0 L6,0" stroke="white" strokeOpacity="0.16" strokeWidth="0.22" />
+        </pattern>
+        <pattern id={denseId} width="2.6" height="2.6" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+          <path d="M0,0 L0,2.6 M0,0 L2.6,0" stroke="white" strokeOpacity="0.26" strokeWidth="0.22" />
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="100" height="100" fill={`url(#${sparseId})`} />
+      {positioned.map((location) => {
+        const pos = PIN_POSITIONS[location.slug];
+        return <circle key={location.slug} cx={pos.x} cy={pos.y} r={location.isHQ ? 16 : 11} fill={`url(#${denseId})`} />;
+      })}
+    </svg>
+  );
+}
+
+function Highways() {
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+      <g fill="none" stroke="var(--color-yellow)" strokeOpacity="0.4" strokeWidth="0.7" strokeLinecap="round">
+        <path d="M38,0 C42,15 35,28 40,42 C44,55 37,63 40,72 C42,82 33,89 29,99" />
+        <path d="M60,12 C64,23 57,33 60,43 C62,51 55,60 58,70 C60,80 55,89 58,97" />
+        <path d="M40,15 C48,17 55,19 65,17" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Stylized coastline loosely echoing the real Puget Sound / Lake Washington skyline
+ * (Elliott Bay notch near Seattle, Commencement Bay notch near Tacoma, Vashon Island,
+ * Lake Washington tapering to its southern tip at Renton) — simplified, original artwork,
+ * not traced from GIS data.
+ */
+function Waterways() {
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+      <defs>
+        <linearGradient id="water-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="oklch(0.46 0.14 256)" />
+          <stop offset="100%" stopColor="oklch(0.32 0.12 258)" />
+        </linearGradient>
+      </defs>
+      {/* Puget Sound, with bay notches near Seattle (top) and Tacoma (bottom) */}
       <path
-        d="M20,6 C8,16 3,36 11,52 C3,66 13,86 33,93 C50,99 66,94 76,80 C92,76 97,58 87,44 C95,30 83,12 64,9 C49,1 30,-3 20,6 Z"
-        fill="white"
+        d="M21,0 Q27,4 33,9 Q29,14 24,17 Q19,21 23,26 Q29,30 24,35 Q18,39 22,44 Q28,49 23,53 Q17,57 21,62 Q27,66 22,71 Q16,75 20,80 Q26,84 32,90 Q28,95 22,98 Q21,99 20,100 L0,100 L0,0 Z"
+        fill="url(#water-grad)"
+        stroke="white"
+        strokeOpacity="0.14"
+        strokeWidth="0.4"
       />
+      {/* Vashon Island */}
+      <ellipse cx="12" cy="58" rx="2.2" ry="8.5" fill="oklch(0.16 0.07 258)" transform="rotate(-8 12 58)" />
+      {/* Lake Washington, tapering south to Renton */}
+      <path
+        d="M64,7 C71,11 70,18 67,24 C72,29 68,35 64,38 C67,43 61,47 58,46 C55,42 57,36 55,31 C58,27 54,22 56,17 C53,12 59,8 64,7 Z"
+        fill="url(#water-grad)"
+        stroke="white"
+        strokeOpacity="0.14"
+        strokeWidth="0.4"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Every city sits on its own distinct blue-toned island, echoing the same
+ * material as Vashon Island and the bays rather than flat land color.
+ */
+function CityIslands({ id, positioned }: { id: string; positioned: Location[] }) {
+  const gradId = `${id}-island-grad`;
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+      <defs>
+        <radialGradient id={gradId} cx="38%" cy="32%">
+          <stop offset="0%" stopColor="oklch(0.52 0.13 250)" />
+          <stop offset="100%" stopColor="oklch(0.33 0.13 258)" />
+        </radialGradient>
+      </defs>
+      {positioned.map((location) => {
+        const pos = PIN_POSITIONS[location.slug];
+        const isHQ = !!location.isHQ;
+        const baseR = isHQ ? 9.5 : 7.2;
+        const shape = ISLAND_SHAPES[location.slug] ?? [1, 0.9, 1.1, 0.9, 1.1, 0.9, 1.1, 0.9];
+        return (
+          <path
+            key={location.slug}
+            d={blobPath(pos.x, pos.y, baseR, shape)}
+            fill={`url(#${gradId})`}
+            stroke="white"
+            strokeOpacity="0.22"
+            strokeWidth="0.4"
+          />
+        );
+      })}
     </svg>
   );
 }
@@ -64,6 +260,7 @@ export function CoverageMapVisual({
   onActivate: (slug: string) => void;
   className?: string;
 }) {
+  const mapId = useId();
   const positioned = locations.filter((l) => PIN_POSITIONS[l.slug]);
   const primary = positioned.filter((l) => tierOf(l) === "primary");
 
@@ -75,7 +272,6 @@ export function CoverageMapVisual({
     );
     return { x: sum.x / set.length, y: sum.y / set.length };
   };
-  const coverageCenter = centroid(positioned);
   const primaryCenter = centroid(primary);
 
   return (
@@ -83,9 +279,6 @@ export function CoverageMapVisual({
       className={`relative overflow-hidden rounded-[2.5rem] p-7 sm:p-10 ${className}`}
       style={{ background: "var(--gradient-hero)" }}
     >
-      <LandShape />
-      <div aria-hidden className="absolute inset-0 grid-bg opacity-40" />
-      <div aria-hidden className="absolute inset-0 mesh-overlay opacity-60" />
 
       <div className="relative flex flex-wrap items-center justify-between gap-2">
         <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-medium text-white/85">
@@ -102,22 +295,19 @@ export function CoverageMapVisual({
         </span>
       </div>
 
-      <div className="relative mt-7 aspect-[6/5] w-full sm:mt-9">
-        {coverageCenter && (
-          <div
-            aria-hidden
-            className="absolute rounded-full"
-            style={{
-              left: `${coverageCenter.x}%`,
-              top: `${coverageCenter.y}%`,
-              width: "112%",
-              height: "112%",
-              transform: "translate(-50%, -50%)",
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--color-primary) 30%, transparent) 0%, transparent 68%)",
-            }}
-          />
-        )}
+      <div className="relative mt-7 aspect-[6/5] w-full overflow-hidden rounded-[1.75rem] sm:mt-9">
+        <div aria-hidden className="absolute inset-0" style={{ background: "oklch(0.16 0.07 258)" }} />
+        <CityIslands id={mapId} positioned={positioned} />
+        <RoadNetwork id={mapId} positioned={positioned} />
+        <Waterways />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ boxShadow: "inset 0 0 60px 10px oklch(0.1 0.05 260 / 0.55)" }}
+        />
+        <div aria-hidden className="absolute inset-0 mesh-overlay opacity-40" />
+        <CityBoundaries positioned={positioned} />
+        <Highways />
         {primaryCenter && (
           <div
             aria-hidden
@@ -125,12 +315,10 @@ export function CoverageMapVisual({
             style={{
               left: `${primaryCenter.x}%`,
               top: `${primaryCenter.y}%`,
-              width: "56%",
-              height: "56%",
+              width: "41.7%",
+              height: "50%",
               transform: "translate(-50%, -50%)",
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--color-yellow) 30%, transparent) 0%, transparent 72%)",
-              border: "1px dashed color-mix(in oklab, var(--color-yellow) 35%, transparent)",
+              border: "1px dashed color-mix(in oklab, var(--color-yellow) 50%, transparent)",
             }}
           />
         )}
