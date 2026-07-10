@@ -36,7 +36,11 @@ export function CtaBand({
               </h2>
               {subtitle && <p className="mt-5 text-pretty text-white/70">{subtitle}</p>}
               <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                <Link href={contactHref} className="btn-yellow">
+                <Link
+                  href={contactHref}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-[0.95rem] text-[0.95rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-white/10 active:scale-[0.97]"
+                  style={{ border: "1.5px solid white", background: "transparent" }}
+                >
                   Get my free estimate <ArrowUpRight className="h-4 w-4" />
                 </Link>
                 <a href={siteConfig.phoneHref} className="btn-emergency">

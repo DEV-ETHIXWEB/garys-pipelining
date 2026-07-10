@@ -37,7 +37,9 @@ export function Footer() {
       <div className="container-px relative mx-auto max-w-[1400px] pb-32 pt-20 lg:py-20">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>
-            <Logo />
+            <div className="text-center lg:text-left">
+              <Logo />
+            </div>
             <p className="mt-6 max-w-sm text-pretty text-white/65">
               Trenchless sewer and drain solutions for homeowners, property managers, and fellow
               contractors across the greater Seattle area. Licensed, insured, and available 24/7.

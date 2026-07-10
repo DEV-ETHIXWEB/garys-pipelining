@@ -14,6 +14,7 @@ export type Service = {
   heroSubheadline: string;
   problem: string;
   solution: string[];
+  benefitsTagline?: string;
   benefits: BulletItem[];
   process: BulletItem[];
   technology?: string;
@@ -39,6 +40,7 @@ export const services: Service[] = [
       "We start every job with a full HD camera inspection so we know exactly where the damage is and how long the liner needs to be. A flexible, resin-saturated liner is then pulled or inverted into the existing pipe and inflated against the pipe wall, then cured in place, either with hot water, steam, or UV light depending on the line.",
       "Once cured, the result is a smooth, jointless pipe within a pipe, structurally rated to last decades, with no seams for roots to find. Most residential laterals are lined in a single day.",
     ],
+    benefitsTagline: "no trench required.",
     benefits: [
       { title: "One or two access points", body: "No trench along the pipe run, just small excavations at the access pits." },
       { title: "Same-day in most homes", body: "A standard residential lateral is typically inspected, lined, and cured in a single visit." },

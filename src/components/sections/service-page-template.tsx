@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, ChevronRight, CircleCheck, Phone, ShieldCheck } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronRight, Phone, ShieldCheck } from "lucide-react";
 import { ServiceIcon } from "@/components/ui/service-icon";
 import { getServiceBySlug, type Service } from "@/lib/content/services";
 import { siteConfig } from "@/lib/site-config";
@@ -114,15 +114,21 @@ export function ServicePageTemplate({ service }: { service: Service }) {
         <div className="container-px mx-auto max-w-[1400px]">
           <Reveal className="max-w-2xl">
             <span className="chip">Why it&rsquo;s worth it</span>
-            <h2 className="mt-5 text-balance text-4xl leading-[1.05] md:text-5xl">{service.name}, done right.</h2>
+            <h2 className="mt-5 text-balance text-4xl leading-[1.05] md:text-5xl">
+              {service.name}{service.benefitsTagline ? `: ${service.benefitsTagline}` : ", done right."}
+            </h2>
           </Reveal>
           <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" stagger={0.08}>
-            {service.benefits.map((b) => (
+            {service.benefits.map((b, i) => (
               <RevealItem key={b.title}>
-                <div className="surface-card surface-card-hover h-full p-6">
-                  <CircleCheck className="h-5 w-5 text-primary" />
-                  <h3 className="mt-4 text-lg tracking-tight text-ink">{b.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                <div
+                  className="relative h-full overflow-hidden rounded-2xl p-7 shadow-[var(--shadow-elevated)] transition-transform duration-300 hover:-translate-y-1"
+                  style={{ background: "var(--gradient-hero)", border: "1px solid color-mix(in oklab, white 10%, transparent)" }}
+                >
+                  <div className="text-5xl font-bold tracking-tight text-yellow">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="mt-4 h-[3px] w-9 rounded-full bg-yellow" />
+                  <h3 className="mt-6 text-lg tracking-tight text-white">{b.title}</h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-white/70">{b.body}</p>
                 </div>
               </RevealItem>
             ))}

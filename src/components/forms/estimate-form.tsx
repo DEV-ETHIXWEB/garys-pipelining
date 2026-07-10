@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight, CircleCheck } from "lucide-react";
+import { ArrowRight, CircleCheck, MoreHorizontal } from "lucide-react";
 import { services } from "@/lib/content/services";
 import { ServiceIcon } from "@/components/ui/service-icon";
 import { submitEstimateForm } from "@/lib/web3forms";
@@ -25,6 +25,7 @@ type FormValues = z.infer<typeof schema>;
 
 export function EstimateForm({ defaultService }: { defaultService?: string }) {
   const [error, setError] = useState<string | null>(null);
+  const [showOtherInput, setShowOtherInput] = useState(false);
   const {
     register,
     handleSubmit,
@@ -105,16 +106,19 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
 
       <div>
         <FieldLabel>Service needed</FieldLabel>
-        <input type="hidden" {...register("service")} />
+        {!showOtherInput && <input type="hidden" {...register("service")} />}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {services.map((s) => {
-            const active = selectedService === s.name;
+            const active = !showOtherInput && selectedService === s.name;
             return (
               <button
                 key={s.slug}
                 type="button"
                 aria-pressed={active}
-                onClick={() => setValue("service", s.name, { shouldValidate: true, shouldDirty: true })}
+                onClick={() => {
+                  setShowOtherInput(false);
+                  setValue("service", s.name, { shouldValidate: true, shouldDirty: true });
+                }}
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 text-center text-xs font-medium leading-tight transition-colors ${
                   active
                     ? "border-primary bg-primary-soft text-primary"
@@ -126,7 +130,31 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
               </button>
             );
           })}
+          <button
+            type="button"
+            aria-pressed={showOtherInput}
+            onClick={() => {
+              setShowOtherInput(true);
+              setValue("service", "", { shouldValidate: true, shouldDirty: true });
+            }}
+            className={`flex flex-col items-center gap-2 rounded-2xl border p-3 text-center text-xs font-medium leading-tight transition-colors ${
+              showOtherInput
+                ? "border-primary bg-primary-soft text-primary"
+                : "border-border bg-background text-foreground hover:border-border-strong"
+            }`}
+          >
+            <MoreHorizontal className="h-5 w-5" strokeWidth={1.6} />
+            Other
+          </button>
         </div>
+        {showOtherInput && (
+          <input
+            {...register("service")}
+            autoFocus
+            placeholder="Tell us what you need"
+            className="mt-3 w-full rounded-full border border-border bg-background px-5 py-3.5 text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        )}
       </div>
 
       <div>

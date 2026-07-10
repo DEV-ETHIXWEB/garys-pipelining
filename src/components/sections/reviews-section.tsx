@@ -16,32 +16,19 @@ export function ReviewsSection() {
     <section id="reviews" className="overflow-hidden py-24 md:py-32">
       <div className="container-px mx-auto max-w-[1400px]">
         <Reveal>
-          <div className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
-            <div>
-              <span className="chip">
-                <Star className="h-3.5 w-3.5 fill-yellow" stroke="#001B82" strokeWidth={1.5} /> Verified Google reviews
-              </span>
-              <h2 className="mt-5 max-w-3xl text-balance text-4xl leading-[1.05] md:text-6xl">
-                The work speaks. <span className="text-muted-foreground">So do our customers.</span>
-              </h2>
-            </div>
-
-            <div className="flex flex-col items-start gap-3 md:items-end">
-              <div className="flex items-center gap-3">
-                <GoogleMark className="h-8 w-8" />
-                <StarRow rating={reviewSummary.rating} sizeClass="h-[25.6px] w-[25.6px]" />
-              </div>
-              <p className="text-[22.4px] text-muted-foreground">
+          <div>
+            <span className="chip">
+              <Star className="h-3.5 w-3.5 fill-yellow" stroke="#001B82" strokeWidth={1.5} /> Verified Google reviews
+            </span>
+            <h2 className="mt-5 max-w-3xl text-balance text-4xl leading-[1.05] md:text-6xl">
+              The work speaks. <span className="text-muted-foreground">So do our customers.</span>
+            </h2>
+            <div className="mt-4 flex items-center gap-2.5">
+              <GoogleMark className="h-6 w-6" />
+              <StarRow rating={reviewSummary.rating} sizeClass="h-5 w-5" />
+              <p className="text-base text-muted-foreground">
                 Based on <span className="font-semibold text-ink">{reviewSummary.count} reviews</span>
               </p>
-              <a
-                href={siteConfig.googleReviewsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[22.4px] font-medium text-primary link-underline"
-              >
-                Read reviews <ArrowUpRight className="h-[25.6px] w-[25.6px]" />
-              </a>
             </div>
           </div>
         </Reveal>
@@ -85,6 +72,19 @@ export function ReviewsSection() {
               </figure>
             ))}
           </div>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="container-px mx-auto mt-8 flex max-w-[1400px] justify-center">
+          <a
+            href={siteConfig.googleReviewsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[21px] font-medium text-primary link-underline"
+          >
+            Read reviews <ArrowUpRight className="h-5 w-5" />
+          </a>
         </div>
       </Reveal>
     </section>

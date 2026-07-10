@@ -7,10 +7,6 @@ import {
   ArrowUpRight,
   ArrowRight,
   CircleCheck,
-  Search,
-  Camera,
-  Cog,
-  Droplets,
   Mail,
   MapPin,
 } from "lucide-react";
@@ -163,18 +159,6 @@ export default function Home() {
         </Reveal>
       </div>
 
-      {/* UNDERGROUND POSITIONING */}
-      <section className="pt-16 md:pt-24">
-        <div className="container-px mx-auto max-w-[1400px]">
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="text-balance font-display text-2xl leading-snug tracking-tight text-ink md:text-4xl">
-              Most of what we do happens <span className="font-extrabold text-primary">underground, out of sight</span>.
-              You only ever see the result.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       {/* SERVICES */}
       <section id="services" className="relative py-24 md:py-32">
         <div className="container-px mx-auto max-w-[1400px]">
@@ -182,7 +166,7 @@ export default function Home() {
             <div>
               <span className="chip">Services</span>
               <h2 className="mt-5 max-w-2xl text-balance text-4xl leading-[1.05] md:text-6xl">
-                Everything your sewer line needs. <span className="text-muted-foreground">Nothing it doesn&rsquo;t.</span>
+                Everything your sewer line needs. <span className="text-muted-foreground">No more, no less.</span>
               </h2>
             </div>
             <Link href="/services" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary link-underline">
@@ -199,6 +183,22 @@ export default function Home() {
           </RevealGroup>
         </div>
       </section>
+
+      {/* UNDERGROUND POSITIONING */}
+      <Reveal>
+        <section className="relative overflow-hidden py-6" style={{ background: "var(--gradient-hero)" }}>
+          <div className="container-px mx-auto max-w-[1400px]">
+            <div className="flex items-center justify-center gap-4 text-center">
+              <span aria-hidden className="hidden h-px w-16 bg-white/25 sm:block" />
+              <p className="text-balance text-sm font-medium text-white/85 md:text-base">
+                Most of what we do happens <span className="font-semibold text-yellow">underground, out of sight</span>. You
+                only ever see the result.
+              </p>
+              <span aria-hidden className="hidden h-px w-16 bg-white/25 sm:block" />
+            </div>
+          </div>
+        </section>
+      </Reveal>
 
       {/* TECHNOLOGY */}
       <section id="technology" className="relative overflow-hidden py-24 md:py-32">
@@ -328,18 +328,13 @@ export default function Home() {
       <section className="relative overflow-hidden py-24 md:py-32 noise" style={{ background: "var(--gradient-hero)", color: "white" }}>
         <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
         <div className="container-px relative mx-auto max-w-[1400px]">
-          <Reveal className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
-            <div>
-              <span className="chip" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}>
-                Why Gary&rsquo;s
-              </span>
-              <h2 className="mt-5 max-w-3xl text-balance text-4xl leading-[1.05] md:text-6xl" style={{ color: "white" }}>
-                The difference is in how we work, <span className="font-extrabold" style={{ color: "var(--color-yellow)" }}>not just what we do.</span>
-              </h2>
-            </div>
-            <Link href="/contact" className="btn-yellow w-fit">
-              Get my estimate <ArrowUpRight className="h-4 w-4" />
-            </Link>
+          <Reveal>
+            <span className="chip" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}>
+              Why Gary&rsquo;s
+            </span>
+            <h2 className="mt-5 max-w-3xl text-balance text-4xl leading-[1.05] md:text-6xl" style={{ color: "white" }}>
+              The difference is in how we work, <span className="font-extrabold" style={{ color: "var(--color-yellow)" }}>not just what we do.</span>
+            </h2>
           </Reveal>
 
           <RevealGroup className="mt-16 grid gap-px overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 md:grid-cols-2" stagger={0.1}>
@@ -363,6 +358,12 @@ export default function Home() {
               </RevealItem>
             ))}
           </RevealGroup>
+
+          <Reveal className="mt-10 flex justify-center">
+            <Link href="/contact" className="btn-yellow w-fit">
+              Get my estimate <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -382,15 +383,15 @@ export default function Home() {
             <div aria-hidden className="absolute left-0 right-0 top-[33.6px] hidden h-px bg-gradient-to-r from-transparent via-border-strong to-transparent md:block" />
             <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-5 md:gap-10" stagger={0.1}>
               {[
-                { Icon: Search, title: "Inspection", body: "HD camera survey of your line, on video, in full color." },
-                { Icon: Camera, title: "Diagnosis", body: "We walk you through the footage and the options, no jargon." },
-                { Icon: Cog, title: "Repair", body: "Trenchless first. Dig only if absolutely necessary." },
-                { Icon: Droplets, title: "Testing", body: "Flow tested before we pack up." },
-                { Icon: CircleCheck, title: "Completion", body: "Site restored. Written warranty in hand." },
+                { icon: "/New Assets/Group 28.svg", title: "Inspection", body: "HD camera survey of your line, on video, in full color." },
+                { icon: "/New Assets/clarity_camera-line.svg", title: "Diagnosis", body: "We walk you through the footage and the options, no jargon." },
+                { icon: "/New Assets/fa-solid_tools.svg", title: "Repair", body: "Trenchless first. Dig only if absolutely necessary." },
+                { icon: "/New Assets/material-symbols-light_water-drops-rounded.svg", title: "Testing", body: "Flow tested before we pack up." },
+                { icon: "/New Assets/icon-park-solid_check-one.svg", title: "Completion", body: "Site restored. Written warranty in hand." },
               ].map((s, i) => (
                 <RevealItem key={s.title} className={i === 4 ? "col-span-2 md:col-span-1" : ""}>
-                  <div className="relative z-10 mx-auto grid h-[67.2px] w-[67.2px] place-items-center rounded-2xl bg-surface-elevated text-primary shadow-[var(--shadow-soft)]" style={{ border: "1px solid var(--color-border)" }}>
-                    <s.Icon className="h-6 w-6" strokeWidth={1.7} />
+                  <div className="relative z-10 mx-auto grid h-[67.2px] w-[67.2px] place-items-center rounded-2xl bg-surface-elevated shadow-[var(--shadow-soft)]" style={{ border: "1px solid var(--color-border)" }}>
+                    <Image src={s.icon} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
                   </div>
                   <div className="mt-5 text-center">
                     <div className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Step {String(i + 1).padStart(2, "0")}</div>

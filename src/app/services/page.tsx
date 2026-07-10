@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { services } from "@/lib/content/services";
+import { locations } from "@/lib/content/locations";
 import { siteConfig } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
 import { CtaBand } from "@/components/sections/cta-band";
+import { CoverageMapPreview } from "@/components/sections/coverage-map-preview";
 
 export const metadata: Metadata = {
   title: "Sewer & Drain Services",
@@ -44,17 +46,24 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-surface py-24 md:py-32">
-        <div className="container-px mx-auto max-w-[1400px]">
-          <div className="flex items-end justify-between gap-8">
-            <h2 className="text-balance text-4xl leading-[1.05] md:text-5xl">Where we work</h2>
-            <Link href="/service-area" className="hidden items-center gap-1.5 text-sm font-medium text-primary link-underline sm:inline-flex">
-              View all service areas <ArrowUpRight className="h-4 w-4" />
-            </Link>
+      <section className="relative overflow-hidden py-16 md:py-20 noise" style={{ background: "var(--gradient-hero)" }}>
+        <div aria-hidden className="absolute inset-0 mesh-overlay opacity-40" />
+        <div className="container-px relative mx-auto max-w-[1400px]">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+            <div>
+              <h2 className="text-balance text-4xl leading-[1.05] md:text-5xl" style={{ color: "white" }}>
+                Where we work
+              </h2>
+              <p className="mt-4 max-w-md text-pretty text-white/70">
+                Based in Tukwila, serving homeowners and businesses across the greater Seattle area.
+              </p>
+              <Link href="/service-area" className="btn-yellow mt-8 w-fit">
+                View all Service Areas <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <CoverageMapPreview locations={locations} className="-mx-6 rounded-none md:-mx-12 md:rounded-none lg:mx-0 lg:rounded-[2.5rem]" />
           </div>
-          <p className="mt-4 max-w-2xl text-pretty text-muted-foreground">
-            Based in Tukwila, serving homeowners and businesses across the greater Seattle area.
-          </p>
         </div>
       </section>
 

@@ -90,7 +90,7 @@ export function LocationPageTemplate({ location }: { location: Location }) {
               <h2 className="mt-5 text-balance text-3xl leading-[1.1] md:text-4xl">What we see most in {location.city}</h2>
               <ul className="mt-7 grid gap-4">
                 {location.localNotes.map((note) => (
-                  <li key={note} className="flex gap-3 text-[15px] leading-relaxed text-foreground/85">
+                  <li key={note} className="flex gap-3 text-base leading-relaxed text-foreground/85">
                     <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                     {note}
                   </li>
@@ -107,10 +107,7 @@ export function LocationPageTemplate({ location }: { location: Location }) {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-              <div className="pointer-events-none absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-between gap-3">
-                <span className="glass pointer-events-auto inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium text-ink shadow-[var(--shadow-soft)]">
-                  <MapPin className="h-3.5 w-3.5 text-primary" /> {location.city}, {location.county}
-                </span>
+              <div className="pointer-events-none absolute inset-x-4 bottom-4 flex flex-wrap items-center justify-end gap-3">
                 <a
                   href={directionsUrl}
                   target="_blank"

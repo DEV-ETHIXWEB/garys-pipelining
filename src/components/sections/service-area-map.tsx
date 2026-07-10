@@ -40,7 +40,7 @@ export function ServiceAreaMap({ locations }: { locations: Location[] }) {
           </span>
         </div>
 
-        <div className="mt-6 flex flex-col gap-1.5 lg:max-h-[280px] lg:overflow-y-auto">
+        <div className="mt-6 flex flex-col gap-1.5">
           {locations.map((location) => {
             const isActive = location.slug === activeSlug;
             return (

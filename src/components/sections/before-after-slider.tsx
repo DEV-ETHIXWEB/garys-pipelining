@@ -31,10 +31,10 @@ export function BeforeAfterSlider() {
 
           <figure className="relative overflow-hidden rounded-[2rem] border border-border bg-ink shadow-[var(--shadow-premium)]">
             <div className="relative aspect-[16/10] select-none">
-              <Image src="/photos/stock/before-after.jpg" alt="Yard preserved after trenchless service" fill loading="lazy" sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
+              <Image src="/BEFORE VS AFTER/after.JPG" alt="Yard preserved after trenchless service" fill loading="lazy" sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
               <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }} aria-hidden>
                 <Image
-                  src="/photos/stock/before-dig.webp"
+                  src="/BEFORE VS AFTER/before.JPG"
                   alt=""
                   fill
                   loading="lazy"

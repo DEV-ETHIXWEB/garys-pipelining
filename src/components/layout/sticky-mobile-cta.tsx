@@ -13,7 +13,11 @@ export function StickyMobileCta() {
         >
           <Phone className="h-4 w-4" /> Call now
         </a>
-        <Link href="/contact" className="btn-primary justify-center text-sm">
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold transition-transform active:scale-95"
+          style={{ background: "var(--color-yellow)", color: "var(--color-yellow-foreground)" }}
+        >
           Free estimate
         </Link>
       </div>
