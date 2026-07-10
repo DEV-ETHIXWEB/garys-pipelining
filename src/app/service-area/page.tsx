@@ -6,6 +6,8 @@ import { siteConfig } from "@/lib/site-config";
 import { ServiceAreaMap } from "@/components/sections/service-area-map";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Reveal } from "@/components/ui/reveal";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Service Areas",
@@ -16,6 +18,12 @@ export const metadata: Metadata = {
 export default function ServiceAreaPage() {
   return (
     <div className="bg-background">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: siteConfig.url },
+          { name: "Service Areas", url: `${siteConfig.url}/service-area` },
+        ])}
+      />
       <section className="relative overflow-hidden pb-16 pt-32 md:pb-20 md:pt-40">
         <div aria-hidden className="absolute inset-0 -z-10 grid-bg" />
         <div className="container-px mx-auto max-w-[1400px]">

@@ -214,7 +214,7 @@ export function Header() {
             ))}
           </div>
 
-          <div onDoubleClick={() => router.push("/")} className="relative z-10 col-start-1 flex translate-x-[14px] scale-[1.56]">
+          <div onDoubleClick={() => router.push("/")} className="relative z-10 col-start-1 flex translate-x-[24px] scale-[2.077] lg:translate-x-[34px] lg:translate-y-[5px]">
             <Logo size="header" />
           </div>
 
@@ -276,7 +276,7 @@ export function Header() {
           <div className="relative z-10 col-start-3 flex items-center gap-2">
             <Link
               href="/contact"
-              className="hidden items-center gap-2 rounded-xl border border-white/20 px-3.5 py-2 text-sm font-medium text-white/85 transition-colors duration-300 hover:border-white/35 hover:text-white sm:inline-flex"
+              className="hidden items-center gap-2 rounded-lg border border-white/20 px-3.5 py-2 text-sm font-medium text-white/85 transition-colors duration-300 hover:border-white/35 hover:text-white sm:inline-flex"
             >
               Free estimate
               <ArrowUpRight className="h-4 w-4" />
@@ -285,7 +285,7 @@ export function Header() {
               href={siteConfig.phoneHref}
               whileHover={{ scale: 1.02, boxShadow: PHONE_GLOW }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="hidden items-center gap-2 rounded-xl bg-yellow px-3.5 py-2 text-sm font-semibold text-yellow-foreground transition-colors duration-300 sm:inline-flex"
+              className="hidden items-center gap-2 rounded-lg bg-yellow px-3.5 py-2 text-sm font-semibold text-yellow-foreground transition-colors duration-300 sm:inline-flex"
             >
               <Phone className="h-4 w-4" />
               <span>{siteConfig.phone}</span>
@@ -295,20 +295,21 @@ export function Header() {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors duration-300 hover:bg-white/15 lg:hidden"
+              className="-translate-y-1 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors duration-300 hover:bg-white/15 sm:translate-y-0 lg:hidden"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
-        <span
-          className={`pointer-events-none absolute right-[170px] top-full z-10 mt-[-12px] hidden whitespace-nowrap rounded-full border border-border bg-surface px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-soft)] transition-all duration-300 sm:block ${
-            showBadge ? "opacity-100 translate-y-0" : "-translate-y-1 opacity-0"
+        <Link
+          href="/contractor-partnership"
+          className={`absolute right-[170px] top-full z-10 mt-[-12px] hidden whitespace-nowrap rounded-full border border-border bg-surface px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-soft)] transition-all duration-300 hover:border-primary hover:bg-primary-soft sm:block ${
+            showBadge ? "opacity-100 translate-y-0" : "pointer-events-none -translate-y-1 opacity-0"
           }`}
         >
           Contractor partnership welcome
-        </span>
+        </Link>
 
         <AnimatePresence>
           {open && (

@@ -78,13 +78,15 @@ export default function AboutPage() {
                 </a>
               </div>
             </div>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
-              <Image src="/photos/real/job-03.webp" alt="Gary's Pipelining technician at work" fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
-              <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />
-              <div className="absolute left-5 top-5 glass rounded-2xl px-3.5 py-2.5 text-xs font-medium">
-                <span className="flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-primary" /> {siteConfig.license}
-                </span>
+            <div className="relative mx-auto w-4/5">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
+                <Image src="/photos/real/job-03.webp" alt="Gary's Pipelining technician at work" fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+                <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />
+                <div className="absolute left-5 top-5 glass rounded-2xl px-3.5 py-2.5 text-xs font-medium">
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-primary" /> {siteConfig.license}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

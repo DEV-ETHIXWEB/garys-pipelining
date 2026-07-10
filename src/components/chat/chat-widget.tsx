@@ -119,13 +119,15 @@ const quickActions: QuickAction[] = [
   },
 ];
 
+const quickActionByKey: Record<string, QuickAction> = Object.fromEntries(quickActions.map((qa) => [qa.key, qa]));
+
 function matchKeywordReply(text: string): React.ReactNode | null {
   const t = text.toLowerCase();
-  if (/(emergency|urgent|flood|backup|leak|burst|now)/.test(t)) return quickActions.find((q) => q.key === "emergency")!.reply();
-  if (/(price|cost|estimate|quote|how much)/.test(t)) return quickActions.find((q) => q.key === "estimate")!.reply();
-  if (/(service|trenchless|drain|sewer|hydro|jet|camera|pipe|rooter|sump)/.test(t)) return quickActions.find((q) => q.key === "services")!.reply();
-  if (/(area|location|seattle|tacoma|tukwila|renton|bellevue|federal way|city)/.test(t)) return quickActions.find((q) => q.key === "areas")!.reply();
-  if (/(call|phone|email|contact|human|person)/.test(t)) return quickActions.find((q) => q.key === "human")!.reply();
+  if (/(emergency|urgent|flood|backup|leak|burst|now)/.test(t)) return quickActionByKey.emergency.reply();
+  if (/(price|cost|estimate|quote|how much)/.test(t)) return quickActionByKey.estimate.reply();
+  if (/(service|trenchless|drain|sewer|hydro|jet|camera|pipe|rooter|sump)/.test(t)) return quickActionByKey.services.reply();
+  if (/(area|location|seattle|tacoma|tukwila|renton|bellevue|federal way|city)/.test(t)) return quickActionByKey.areas.reply();
+  if (/(call|phone|email|contact|human|person)/.test(t)) return quickActionByKey.human.reply();
   if (/(hour|open|24|time)/.test(t)) return <>We&apos;re answered 24 hours a day, 7 days a week, including the emergency line.</>;
   if (/(warrant|guarantee)/.test(t))
     return <>Trenchless work carries a written workmanship warranty. Ask your technician for the specifics on your job.</>;

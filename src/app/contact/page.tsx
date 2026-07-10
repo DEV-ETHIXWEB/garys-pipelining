@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
-import { EstimateForm } from "@/components/forms/estimate-form";
+import { EstimateForm } from "@/components/forms/estimate-form-lazy";
 import { Reveal } from "@/components/ui/reveal";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
 

@@ -48,7 +48,7 @@ export function Footer() {
               <a href={siteConfig.phoneHref} className="btn-yellow">
                 <Phone className="h-4 w-4" /> {siteConfig.phone}
               </a>
-              <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10">
+              <Link href="/contact" className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10">
                 Free estimate <ArrowUpRight className="h-4 w-4" />
               </Link>
             </div>

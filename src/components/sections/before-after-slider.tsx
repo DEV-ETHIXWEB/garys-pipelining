@@ -7,6 +7,7 @@ import { ArrowRight, Leaf } from "lucide-react";
 
 export function BeforeAfterSlider() {
   const [pos, setPos] = useState(55);
+  const [focused, setFocused] = useState(false);
   return (
     <section className="bg-surface py-24 md:py-32">
       <div className="container-px mx-auto max-w-[1400px]">
@@ -52,7 +53,11 @@ export function BeforeAfterSlider() {
 
               <div className="pointer-events-none absolute top-0 bottom-0" style={{ left: `calc(${pos}% - 1px)` }}>
                 <div className="h-full w-0.5 bg-white/90" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-lg">
+                <div
+                  className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-lg transition-shadow ${
+                    focused ? "ring-4 ring-primary ring-offset-2" : ""
+                  }`}
+                >
                   <ArrowRight className="absolute left-1/2 top-1/2 h-4 w-4" style={{ transform: "translate(calc(-50% - 6px), -50%) rotate(180deg)" }} />
                   <ArrowRight className="absolute left-1/2 top-1/2 h-4 w-4" style={{ transform: "translate(calc(-50% + 6px), -50%)" }} />
                 </div>
@@ -65,6 +70,8 @@ export function BeforeAfterSlider() {
                 max={95}
                 value={pos}
                 onChange={(e) => setPos(Number(e.target.value))}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 className="absolute inset-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
               />
             </div>

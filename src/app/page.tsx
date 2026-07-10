@@ -20,10 +20,10 @@ import { ReviewsSection } from "@/components/sections/reviews-section";
 import { HomeCoverageSection } from "@/components/sections/home-coverage-section";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
-import { EstimateForm } from "@/components/forms/estimate-form";
 import { JsonLd } from "@/components/seo/json-ld";
-import { localBusinessSchema } from "@/lib/schema";
+import { localBusinessSchema, faqSchema } from "@/lib/schema";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
+import { EstimateForm } from "@/components/forms/estimate-form-lazy";
 
 export const metadata: Metadata = {
   title: "Seattle's Trenchless Sewer & Drain Experts",
@@ -62,6 +62,7 @@ export default function Home() {
   return (
     <div className="bg-background">
       <JsonLd data={localBusinessSchema()} />
+      <JsonLd data={faqSchema(homeFaqs)} />
 
       {/* HERO + TRUST STRIP background wrapper */}
       <div className="relative overflow-hidden">
@@ -90,13 +91,19 @@ export default function Home() {
                 Seattle area without tearing up your yard, driveway, or weekend, for homeowners and contractors alike.
               </p>
 
-              <div className="mt-9 flex flex-wrap items-center gap-3">
-                <Link href="/contact" className="btn-primary">
+              <div className="mt-9 grid grid-cols-2 items-center gap-3 sm:flex sm:flex-wrap">
+                <Link
+                  href="/contact"
+                  className="btn-primary !gap-1.5 !whitespace-nowrap !px-4 !py-2.5 !text-sm sm:!gap-2 sm:!px-6 sm:!py-[0.95rem] sm:!text-[0.95rem]"
+                >
                   Get a free estimate
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
                 </Link>
-                <a href={siteConfig.phoneHref} className="btn-emergency">
-                  <Phone className="h-4 w-4" />
+                <a
+                  href={siteConfig.phoneHref}
+                  className="btn-emergency !gap-1.5 !whitespace-nowrap !px-4 !py-2.5 !text-sm sm:!gap-2 sm:!px-6 sm:!py-[0.95rem] sm:!text-[0.95rem]"
+                >
+                  <Phone className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
                   Emergency line
                 </a>
               </div>
@@ -114,7 +121,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="relative animate-fade-in-slow">
+            <div className="relative mx-auto w-4/5 animate-fade-in-slow">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
                 <Image
                   src="/photos/real/job-02.webp"
@@ -122,6 +129,7 @@ export default function Home() {
                   height={1500}
                   alt="Gary's Pipelining crew working a trenchless sewer access pit"
                   className="h-full w-full object-cover"
+                  sizes="(min-width: 1024px) 45vw, 100vw"
                   priority
                 />
                 <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 40%, rgba(13,20,40,0.55) 100%)" }} />
@@ -260,7 +268,7 @@ export default function Home() {
                       ))}
                     </ul>
                     <Link href={t.href} className="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-primary link-underline">
-                      Learn more <ArrowUpRight className="h-4 w-4" />
+                      Learn more<span className="sr-only"> about {t.name}</span> <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </article>

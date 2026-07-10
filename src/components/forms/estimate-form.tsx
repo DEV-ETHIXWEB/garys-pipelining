@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState, cloneElement, type ReactElement } from "react";
 import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -38,6 +38,9 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
   });
 
   const selectedService = useWatch({ control, name: "service" });
+  const serviceGroupId = useId();
+  const otherServiceInputId = useId();
+  const messageFieldId = useId();
 
   async function onSubmit(values: FormValues) {
     setError(null);
@@ -105,9 +108,9 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
       </Field>
 
       <div>
-        <FieldLabel>Service needed</FieldLabel>
+        <FieldLabel id={serviceGroupId}>Service needed</FieldLabel>
         {!showOtherInput && <input type="hidden" {...register("service")} />}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div role="group" aria-labelledby={serviceGroupId} className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {services.map((s) => {
             const active = !showOtherInput && selectedService === s.name;
             return (
@@ -148,19 +151,26 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
           </button>
         </div>
         {showOtherInput && (
-          <input
-            {...register("service")}
-            autoFocus
-            placeholder="Tell us what you need"
-            className="mt-3 w-full rounded-full border border-border bg-background px-5 py-3.5 text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
+          <>
+            <label htmlFor={otherServiceInputId} className="sr-only">
+              Describe the service you need
+            </label>
+            <input
+              {...register("service")}
+              id={otherServiceInputId}
+              autoFocus
+              placeholder="Tell us what you need"
+              className="mt-3 w-full rounded-full border border-border bg-background px-5 py-3.5 text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+          </>
         )}
       </div>
 
       <div>
-        <FieldLabel>Describe the issue</FieldLabel>
+        <FieldLabel htmlFor={messageFieldId}>Describe the issue</FieldLabel>
         <textarea
           {...register("message")}
+          id={messageFieldId}
           rows={4}
           placeholder="Slow drain, backup, recurring clog, recent inspection report…"
           className="w-full resize-none rounded-2xl border border-border bg-background px-4 py-3.5 text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -193,9 +203,19 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
   );
 }
 
-function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
+function FieldLabel({
+  children,
+  required,
+  htmlFor,
+  id,
+}: {
+  children: React.ReactNode;
+  required?: boolean;
+  htmlFor?: string;
+  id?: string;
+}) {
   return (
-    <label className="mb-2 block text-sm font-semibold text-ink">
+    <label id={id} htmlFor={htmlFor} className="mb-2 block text-sm font-semibold text-ink">
       {children}
       {required && <span className="text-destructive"> *</span>}
     </label>
@@ -211,13 +231,25 @@ function Field({
   label: string;
   required?: boolean;
   error?: string;
-  children: React.ReactNode;
+  children: ReactElement<{ id?: string; "aria-describedby"?: string; "aria-invalid"?: boolean }>;
 }) {
+  const inputId = useId();
+  const errorId = `${inputId}-error`;
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
-      {children}
-      {error && <p className="mt-1.5 text-xs text-emergency">{error}</p>}
+      <FieldLabel htmlFor={inputId} required={required}>
+        {label}
+      </FieldLabel>
+      {cloneElement(children, {
+        id: inputId,
+        "aria-invalid": Boolean(error),
+        "aria-describedby": error ? errorId : undefined,
+      })}
+      {error && (
+        <p id={errorId} className="mt-1.5 text-xs text-emergency">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

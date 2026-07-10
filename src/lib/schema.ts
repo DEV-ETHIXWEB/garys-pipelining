@@ -1,5 +1,6 @@
 import { siteConfig } from "./site-config";
 import type { Service } from "./content/services";
+import { reviewSummary } from "./content/reviews";
 
 export function localBusinessSchema() {
   return {
@@ -20,6 +21,11 @@ export function localBusinessSchema() {
     },
     openingHours: "Mo-Su 00:00-23:59",
     priceRange: "$$",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: reviewSummary.rating,
+      reviewCount: reviewSummary.count,
+    },
   };
 }
 
