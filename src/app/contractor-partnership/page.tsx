@@ -322,23 +322,7 @@ export default function ContractorPartnershipPage() {
             </p>
           </Reveal>
 
-          <div className="relative mt-20">
-            <div aria-hidden className="absolute left-0 right-0 top-[33.6px] hidden h-px bg-gradient-to-r from-transparent via-border-strong to-transparent md:block" />
-            <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-5 md:gap-10" stagger={0.1}>
-              {partnershipProcess.map((s, i) => (
-                <RevealItem key={s.title} className={i === 4 ? "col-span-2 md:col-span-1" : ""}>
-                  <div className="relative z-10 mx-auto grid h-[67.2px] w-[67.2px] place-items-center rounded-2xl bg-surface-elevated shadow-[var(--shadow-soft)]" style={{ border: "1px solid var(--color-border)" }}>
-                    <s.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="mt-5 text-center">
-                    <div className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Step {String(i + 1).padStart(2, "0")}</div>
-                    <h3 className="mt-2 text-xl tracking-tight text-ink">{s.title}</h3>
-                    <p className="mx-auto mt-2 max-w-[200px] text-sm text-muted-foreground">{s.body}</p>
-                  </div>
-                </RevealItem>
-              ))}
-            </RevealGroup>
-          </div>
+          <ProcessTimeline steps={partnershipProcess} />
         </div>
       </section>
 

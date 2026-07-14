@@ -57,9 +57,9 @@ export function ServicePageTemplate({ service }: { service: Service }) {
                 </a>
               </div>
             </div>
-            <div className="relative mx-auto w-[70%]">
+            <div className="relative mx-auto w-[80%]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
-              <Image src={service.heroImage} alt={service.name} fill priority sizes="(min-width: 1024px) 28vw, 70vw" className="object-cover" />
+              <Image src={service.heroImage} alt={service.name} fill priority sizes="(min-width: 1024px) 32vw, 80vw" className="object-cover" />
               <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />
               <div className="absolute left-5 top-5 glass rounded-2xl px-3.5 py-2.5 text-xs font-medium">
                 <span className="flex items-center gap-2">

@@ -61,14 +61,14 @@ export function LocationPageTemplate({ location }: { location: Location }) {
                 </p>
               )}
             </div>
-            <div className="relative mx-auto w-[70%]">
+            <div className="relative mx-auto w-[80%]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
               <Image
                 src={location.heroImage}
                 alt={`${location.city}, WA`}
                 fill
                 priority
-                sizes="(min-width: 1024px) 28vw, 70vw"
+                sizes="(min-width: 1024px) 32vw, 80vw"
                 className="object-cover"
               />
               <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />

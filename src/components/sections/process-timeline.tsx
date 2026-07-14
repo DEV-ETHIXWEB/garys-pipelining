@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import type { LucideIcon } from "lucide-react";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 
-export type ProcessStep = { icon: string; title: string; body: string };
+export type ProcessStep = { icon: string | LucideIcon; title: string; body: string };
 
 export function ProcessTimeline({ steps }: { steps: ProcessStep[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -40,13 +41,17 @@ export function ProcessTimeline({ steps }: { steps: ProcessStep[] }) {
                 className="relative z-10 mx-auto grid h-[67.2px] w-[67.2px] place-items-center rounded-2xl bg-surface-elevated shadow-[var(--shadow-soft)] transition-all duration-300 group-hover:border-primary group-hover:shadow-[var(--shadow-elevated)]"
                 style={{ border: "1px solid var(--color-border)" }}
               >
-                <Image
-                  src={s.icon}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110"
-                />
+                {typeof s.icon === "string" ? (
+                  <Image
+                    src={s.icon}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110"
+                  />
+                ) : (
+                  <s.icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" />
+                )}
               </div>
               <div className="mt-5 text-center">
                 <div className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-300 group-hover:text-primary">
