@@ -6,6 +6,7 @@ import { ArrowRight, Phone } from "lucide-react";
 import { CoverageMapVisual } from "./coverage-map-visual";
 import type { Location } from "@/lib/content/locations";
 import { siteConfig } from "@/lib/site-config";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export function HomeCoverageSection({ locations }: { locations: Location[] }) {
   const defaultSlug = locations.find((l) => l.isHQ)?.slug ?? locations[0]?.slug ?? null;
@@ -25,6 +26,7 @@ export function HomeCoverageSection({ locations }: { locations: Location[] }) {
 
           <div className="relative overflow-hidden p-8 sm:p-10 lg:p-12" style={{ background: "var(--gradient-hero)" }}>
             <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+            <SparkleField />
             <div className="relative">
               <span
                 className="chip"

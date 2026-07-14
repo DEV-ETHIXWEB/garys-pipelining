@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Home as HomeIcon, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Location } from "@/lib/content/locations";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -279,6 +280,7 @@ export function CoverageMapVisual({
       className={`relative overflow-hidden rounded-[2.5rem] p-7 sm:p-10 ${className}`}
       style={{ background: "var(--gradient-hero)" }}
     >
+      <SparkleField />
 
       <div className="relative flex flex-wrap items-center justify-between gap-2">
         <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-medium text-white/85">

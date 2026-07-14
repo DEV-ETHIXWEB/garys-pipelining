@@ -43,6 +43,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { faqSchema, breadcrumbSchema } from "@/lib/schema";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { PartnershipForm } from "@/components/forms/partnership-form-lazy";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export const metadata: Metadata = {
   title: "Contractor Partnership Program",
@@ -459,7 +460,8 @@ export default function ContractorPartnershipPage() {
           </Reveal>
 
           <Reveal className="mt-14">
-            <div className="rounded-[2.5rem] p-8 md:p-12" style={{ background: "var(--gradient-hero)" }}>
+            <div className="relative overflow-hidden rounded-[2.5rem] p-8 md:p-12" style={{ background: "var(--gradient-hero)" }}>
+              <SparkleField />
               <TestimonialCarousel orientation="horizontal" />
             </div>
           </Reveal>
@@ -542,6 +544,7 @@ export default function ContractorPartnershipPage() {
           <Reveal>
             <div className="relative overflow-hidden rounded-[2.5rem] p-10 text-center md:p-16 noise" style={{ background: "var(--gradient-hero)" }}>
               <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+              <SparkleField />
               <div className="relative mx-auto max-w-2xl">
                 <span
                   className="chip"
@@ -581,6 +584,7 @@ export default function ContractorPartnershipPage() {
             <div className="grid gap-10 overflow-hidden rounded-[2.5rem] lg:grid-cols-[1fr_1.1fr]" style={{ background: "var(--gradient-hero)" }}>
               <div className="relative flex flex-col p-10 md:p-14">
                 <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+                <SparkleField />
                 <div className="relative text-center lg:text-left">
                   <span className="chip" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}>
                     Partnership request

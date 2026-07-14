@@ -9,6 +9,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { CoverageMapPreview } from "@/components/sections/coverage-map-preview";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export const metadata: Metadata = {
   title: "Sewer & Drain Services",
@@ -56,6 +57,7 @@ export default function ServicesPage() {
 
       <section className="relative overflow-hidden py-16 md:py-20 noise" style={{ background: "var(--gradient-hero)" }}>
         <div aria-hidden className="absolute inset-0 mesh-overlay opacity-40" />
+        <SparkleField />
         <div className="container-px relative mx-auto max-w-[1400px]">
           <div className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
             <div>

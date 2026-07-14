@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Send, Phone, ArrowUpRight, Mail } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import chatbotAvatar from "../../../public/chatbot/chatbot-avatar.jpg";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 type Message = {
   id: string;
@@ -262,6 +263,7 @@ export function ChatWidget() {
             {/* Header */}
             <div className="relative shrink-0 overflow-hidden p-5" style={{ background: "var(--gradient-hero)" }}>
               <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+              <SparkleField variant="compact" />
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white/20 bg-white">

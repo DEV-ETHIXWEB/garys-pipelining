@@ -3,6 +3,7 @@
 import { Accessibility, Phone } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { toggleA11yPanel, useA11yPanelOpen } from "@/components/accessibility/accessibility-store";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export function StickyContactTab() {
   const panelOpen = useA11yPanelOpen();
@@ -17,10 +18,11 @@ export function StickyContactTab() {
         aria-controls="a11y-panel"
         aria-label={panelOpen ? "Close accessibility menu" : "Open accessibility menu (Alt+A)"}
         onClick={() => toggleA11yPanel()}
-        className="group flex flex-col items-center gap-1.5 rounded-l-2xl bg-primary px-3 py-3.5 text-white shadow-[var(--shadow-elevated)] transition-transform duration-300 hover:-translate-x-1"
+        className="group relative flex flex-col items-center gap-1.5 overflow-hidden rounded-l-2xl bg-primary px-3 py-3.5 text-white shadow-[var(--shadow-elevated)] transition-transform duration-300 hover:-translate-x-1"
       >
-        <Accessibility className="h-4 w-4" />
-        <span className="w-10 break-words text-center text-[11px] font-bold uppercase leading-tight tracking-wider">
+        <SparkleField variant="compact" />
+        <Accessibility className="relative h-4 w-4" />
+        <span className="relative w-10 break-words text-center text-[11px] font-bold uppercase leading-tight tracking-wider">
           Accessibility
         </span>
       </button>

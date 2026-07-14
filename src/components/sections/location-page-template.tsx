@@ -61,13 +61,14 @@ export function LocationPageTemplate({ location }: { location: Location }) {
                 </p>
               )}
             </div>
+            <div className="relative mx-auto w-[70%]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
               <Image
                 src={location.heroImage}
                 alt={`${location.city}, WA`}
                 fill
                 priority
-                sizes="(min-width: 1024px) 40vw, 100vw"
+                sizes="(min-width: 1024px) 28vw, 70vw"
                 className="object-cover"
               />
               <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />
@@ -76,6 +77,7 @@ export function LocationPageTemplate({ location }: { location: Location }) {
                   <ShieldCheck className="h-4 w-4 text-primary" /> Licensed &middot; Insured
                 </span>
               </div>
+            </div>
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ import { services } from "@/lib/content/services";
 import { locations } from "@/lib/content/locations";
 import { siteConfig, trustStats } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
+import { ProcessTimeline } from "@/components/sections/process-timeline";
 import { TrustStrip } from "@/components/sections/trust-strip";
 import { BeforeAfterSlider } from "@/components/sections/before-after-slider";
 import { ReviewsSection } from "@/components/sections/reviews-section";
@@ -25,6 +26,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { localBusinessSchema, faqSchema } from "@/lib/schema";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { EstimateForm } from "@/components/forms/estimate-form-lazy";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export const metadata: Metadata = {
   title: "Seattle's Trenchless Sewer & Drain Experts",
@@ -207,6 +209,7 @@ export default function Home() {
       {/* UNDERGROUND POSITIONING */}
       <Reveal>
         <section className="relative overflow-hidden py-6" style={{ background: "var(--gradient-hero)" }}>
+          <SparkleField variant="compact" />
           <div className="container-px mx-auto max-w-[1400px]">
             <div className="flex items-center justify-center gap-4 text-center">
               <span aria-hidden className="hidden h-px w-16 bg-white/25 sm:block" />
@@ -408,29 +411,15 @@ export default function Home() {
             </p>
           </Reveal>
 
-          <div className="relative mt-20">
-            <div aria-hidden className="absolute left-0 right-0 top-[33.6px] hidden h-px bg-gradient-to-r from-transparent via-border-strong to-transparent md:block" />
-            <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-5 md:gap-10" stagger={0.1}>
-              {[
-                { icon: "/New Assets/Group 28.svg", title: "Inspection", body: "HD camera survey of your line, on video, in full color." },
-                { icon: "/New Assets/clarity_camera-line.svg", title: "Diagnosis", body: "We walk you through the footage and the options, no jargon." },
-                { icon: "/New Assets/fa-solid_tools.svg", title: "Repair", body: "Trenchless first. Dig only if absolutely necessary." },
-                { icon: "/New Assets/material-symbols-light_water-drops-rounded.svg", title: "Testing", body: "Flow tested before we pack up." },
-                { icon: "/New Assets/icon-park-solid_check-one.svg", title: "Completion", body: "Site restored. Written warranty in hand." },
-              ].map((s, i) => (
-                <RevealItem key={s.title} className={i === 4 ? "col-span-2 md:col-span-1" : ""}>
-                  <div className="relative z-10 mx-auto grid h-[67.2px] w-[67.2px] place-items-center rounded-2xl bg-surface-elevated shadow-[var(--shadow-soft)]" style={{ border: "1px solid var(--color-border)" }}>
-                    <Image src={s.icon} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
-                  </div>
-                  <div className="mt-5 text-center">
-                    <div className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Step {String(i + 1).padStart(2, "0")}</div>
-                    <h3 className="mt-2 text-xl tracking-tight text-ink">{s.title}</h3>
-                    <p className="mx-auto mt-2 max-w-[200px] text-sm text-muted-foreground">{s.body}</p>
-                  </div>
-                </RevealItem>
-              ))}
-            </RevealGroup>
-          </div>
+          <ProcessTimeline
+            steps={[
+              { icon: "/New Assets/Group 28.svg", title: "Inspection", body: "HD camera survey of your line, on video, in full color." },
+              { icon: "/New Assets/clarity_camera-line.svg", title: "Diagnosis", body: "We walk you through the footage and the options, no jargon." },
+              { icon: "/New Assets/fa-solid_tools.svg", title: "Repair", body: "Trenchless first. Dig only if absolutely necessary." },
+              { icon: "/New Assets/material-symbols-light_water-drops-rounded.svg", title: "Testing", body: "Flow tested before we pack up." },
+              { icon: "/New Assets/icon-park-solid_check-one.svg", title: "Completion", body: "Site restored. Written warranty in hand." },
+            ]}
+          />
         </div>
       </section>
 
@@ -472,6 +461,7 @@ export default function Home() {
           <div className="grid gap-10 overflow-hidden rounded-[2.5rem] lg:grid-cols-[1.05fr_1fr]" style={{ background: "var(--gradient-hero)" }}>
             <div className="relative flex flex-col p-10 md:p-14">
               <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+              <SparkleField />
               <div className="relative text-center lg:text-left">
                 <span className="chip" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}>
                   Free estimate
@@ -523,7 +513,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-10 rounded-[2.5rem] p-8 md:p-10 lg:hidden" style={{ background: "var(--gradient-hero)" }}>
+          <div className="relative mt-10 overflow-hidden rounded-[2.5rem] p-8 md:p-10 lg:hidden" style={{ background: "var(--gradient-hero)" }}>
+            <SparkleField />
             <TestimonialCarousel orientation="horizontal" />
           </div>
           </Reveal>

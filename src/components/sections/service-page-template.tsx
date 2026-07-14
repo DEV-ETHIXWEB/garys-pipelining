@@ -12,6 +12,7 @@ import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export function ServicePageTemplate({ service }: { service: Service }) {
   const related = service.relatedSlugs.map(getServiceBySlug).filter((s): s is Service => Boolean(s));
@@ -56,14 +57,16 @@ export function ServicePageTemplate({ service }: { service: Service }) {
                 </a>
               </div>
             </div>
+            <div className="relative mx-auto w-[70%]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
-              <Image src={service.heroImage} alt={service.name} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+              <Image src={service.heroImage} alt={service.name} fill priority sizes="(min-width: 1024px) 28vw, 70vw" className="object-cover" />
               <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(13,20,40,0.55) 100%)" }} />
               <div className="absolute left-5 top-5 glass rounded-2xl px-3.5 py-2.5 text-xs font-medium">
                 <span className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-primary" /> Licensed &middot; Insured
                 </span>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -125,6 +128,7 @@ export function ServicePageTemplate({ service }: { service: Service }) {
                   className="relative h-full overflow-hidden rounded-2xl p-7 shadow-[var(--shadow-elevated)] transition-transform duration-300 hover:-translate-y-1"
                   style={{ background: "var(--gradient-hero)", border: "1px solid color-mix(in oklab, white 10%, transparent)" }}
                 >
+                  <SparkleField variant="compact" />
                   <div className="text-5xl font-bold tracking-tight text-yellow">{String(i + 1).padStart(2, "0")}</div>
                   <div className="mt-4 h-[3px] w-9 rounded-full bg-yellow" />
                   <h3 className="mt-6 text-lg tracking-tight text-white">{b.title}</h3>

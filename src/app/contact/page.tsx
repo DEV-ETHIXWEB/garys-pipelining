@@ -6,6 +6,7 @@ import { services } from "@/lib/content/services";
 import { EstimateForm } from "@/components/forms/estimate-form-lazy";
 import { Reveal } from "@/components/ui/reveal";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -43,6 +44,7 @@ export default async function ContactPage({
           <div className="grid gap-10 overflow-hidden rounded-[2.5rem] lg:grid-cols-[1fr_1.1fr]" style={{ background: "var(--gradient-hero)" }}>
             <div className="relative flex flex-col p-10 md:p-14">
               <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+              <SparkleField />
               <div className="relative text-center lg:text-left">
                 <h2 className="text-balance text-3xl leading-[1.05] md:text-4xl" style={{ color: "white" }}>
                   Same-day callbacks during business hours.
@@ -98,7 +100,8 @@ export default async function ContactPage({
             </div>
           </div>
 
-          <div className="mt-10 rounded-[2.5rem] p-8 md:p-10 lg:hidden" style={{ background: "var(--gradient-hero)" }}>
+          <div className="relative mt-10 overflow-hidden rounded-[2.5rem] p-8 md:p-10 lg:hidden" style={{ background: "var(--gradient-hero)" }}>
+            <SparkleField />
             <TestimonialCarousel orientation="horizontal" />
           </div>
         </div>

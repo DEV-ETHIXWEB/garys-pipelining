@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { Reveal } from "@/components/ui/reveal";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 export function CtaBand({
   eyebrow = "Free estimate",
@@ -24,6 +25,7 @@ export function CtaBand({
             style={{ background: "var(--gradient-hero)" }}
           >
             <div aria-hidden className="absolute inset-0 mesh-overlay opacity-50" />
+            <SparkleField />
             <div className="relative mx-auto max-w-2xl">
               <span
                 className="chip"
