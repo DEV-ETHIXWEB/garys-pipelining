@@ -555,30 +555,6 @@ export function AccessibilityWidget() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        <motion.button
-          data-a11y-trigger
-          type="button"
-          aria-haspopup="dialog"
-          aria-expanded={open}
-          aria-controls="a11y-panel"
-          aria-label={open ? "Close accessibility menu" : "Open accessibility menu (Alt+A)"}
-          onClick={() => toggleA11yPanel()}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.92 }}
-          className="a11y-focus-ring relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_0_0_2.7px_var(--color-yellow),0_0_0_5.4px_var(--color-primary),var(--shadow-premium)] lg:hidden"
-        >
-          <span
-            aria-hidden
-            className="absolute inset-0 rounded-full"
-            style={{
-              boxShadow: "0 0 0 0 color-mix(in oklab, var(--color-yellow) 55%, transparent)",
-              animation: "pulse-ring 2.6s ease-out infinite",
-              border: "2px solid color-mix(in oklab, var(--color-yellow) 55%, transparent)",
-            }}
-          />
-          <Accessibility className="h-6 w-6" />
-        </motion.button>
       </div>
     </>
   );

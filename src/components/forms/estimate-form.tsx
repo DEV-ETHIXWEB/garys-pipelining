@@ -19,6 +19,7 @@ const schema = z.object({
   message: z.string().optional(),
   commercialProperty: z.boolean().optional(),
   smsConsent: z.boolean().optional(),
+  botcheck: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -34,7 +35,7 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { service: defaultService ?? "", commercialProperty: false, smsConsent: false },
+    defaultValues: { service: defaultService ?? "", commercialProperty: false, smsConsent: false, botcheck: false },
   });
 
   const selectedService = useWatch({ control, name: "service" });
@@ -67,6 +68,14 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
+      <input
+        type="checkbox"
+        {...register("botcheck")}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
       <h3 className="text-center text-2xl tracking-tight text-ink sm:text-left md:text-3xl" style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>
         Request your free estimate
       </h3>

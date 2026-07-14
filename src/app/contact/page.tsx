@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
+import { services } from "@/lib/content/services";
 import { EstimateForm } from "@/components/forms/estimate-form-lazy";
 import { Reveal } from "@/components/ui/reveal";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
@@ -18,6 +19,7 @@ export default async function ContactPage({
   searchParams: Promise<{ service?: string; area?: string }>;
 }) {
   const { service } = await searchParams;
+  const defaultService = services.some((s) => s.name === service) ? service : undefined;
 
   return (
     <div className="bg-background">
@@ -92,7 +94,7 @@ export default async function ContactPage({
             </div>
 
             <div className="bg-surface-elevated p-8 md:p-12">
-              <EstimateForm defaultService={service} />
+              <EstimateForm defaultService={defaultService} />
             </div>
           </div>
 

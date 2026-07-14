@@ -35,6 +35,9 @@ const projectTypeOptions = [
 const annualProjectRanges = ["1–5", "6–20", "21–50", "50+"];
 const contactMethods = ["Phone", "Email", "Text"];
 
+const ALLOWED_FILE_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png", ".dwg"];
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+
 const schema = z.object({
   companyName: z.string().min(2, "Enter your company name"),
   contactPerson: z.string().min(2, "Enter a contact name"),
@@ -46,6 +49,7 @@ const schema = z.object({
   estimatedAnnualProjects: z.string().optional(),
   preferredContactMethod: z.string().min(1, "Select a preferred contact method"),
   message: z.string().optional(),
+  botcheck: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -53,6 +57,7 @@ type FormValues = z.infer<typeof schema>;
 export function PartnershipForm() {
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     register,
@@ -62,7 +67,7 @@ export function PartnershipForm() {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { projectTypes: [], preferredContactMethod: "" },
+    defaultValues: { projectTypes: [], preferredContactMethod: "", botcheck: false },
   });
 
   const selectedProjectTypes = useWatch({ control, name: "projectTypes" }) ?? [];
@@ -71,6 +76,29 @@ export function PartnershipForm() {
   const projectTypesGroupId = useId();
   const contactMethodGroupId = useId();
   const messageFieldId = useId();
+
+  function handleFileChange(selected: File | null) {
+    if (!selected) {
+      setFile(null);
+      setFileError(null);
+      return;
+    }
+    const extension = selected.name.slice(selected.name.lastIndexOf(".")).toLowerCase();
+    if (!ALLOWED_FILE_EXTENSIONS.includes(extension)) {
+      setFileError(`That file type isn't supported. Please upload one of: ${ALLOWED_FILE_EXTENSIONS.join(", ")}.`);
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    if (selected.size > MAX_FILE_SIZE_BYTES) {
+      setFileError("That file is too large. Please upload something under 10 MB.");
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    setFileError(null);
+    setFile(selected);
+  }
 
   function toggleProjectType(type: string) {
     const next = selectedProjectTypes.includes(type)
@@ -105,6 +133,14 @@ export function PartnershipForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5" noValidate>
+      <input
+        type="checkbox"
+        {...register("botcheck")}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ display: "none" }}
+      />
       <h3 id="partnership-form" className="scroll-mt-28 text-center text-2xl tracking-tight text-ink sm:text-left md:text-3xl" style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>
         Submit a partnership request
       </h3>
@@ -269,9 +305,9 @@ export function PartnershipForm() {
           ref={fileInputRef}
           id={`${industryGroupId}-file`}
           type="file"
-          accept=".pdf,.jpg,.jpeg,.png,.dwg"
+          accept={ALLOWED_FILE_EXTENSIONS.join(",")}
           className="sr-only"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
         />
         {file ? (
           <div className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-4 py-3.5">
@@ -280,6 +316,7 @@ export function PartnershipForm() {
               type="button"
               onClick={() => {
                 setFile(null);
+                setFileError(null);
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
               aria-label="Remove uploaded file"
@@ -297,6 +334,8 @@ export function PartnershipForm() {
             <Upload className="h-4 w-4" /> Choose a file
           </button>
         )}
+        {fileError && <p className="mt-1.5 text-xs text-emergency">{fileError}</p>}
+        <p className="mt-1.5 text-xs text-muted-foreground">PDF, JPG, PNG, or DWG, up to 10 MB.</p>
       </div>
 
       {error && <p className="text-sm text-emergency">{error}</p>}

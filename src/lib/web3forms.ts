@@ -9,7 +9,7 @@ export type EstimateFormPayload = {
   smsConsent?: boolean;
 };
 
-export async function submitEstimateForm(payload: EstimateFormPayload) {
+export async function submitEstimateForm(payload: EstimateFormPayload & { botcheck?: boolean }) {
   const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
   const res = await fetch("https://api.web3forms.com/submit", {
@@ -43,7 +43,10 @@ export type PartnershipFormPayload = {
   message?: string;
 };
 
-export async function submitPartnershipForm(payload: PartnershipFormPayload, file?: File | null) {
+export async function submitPartnershipForm(
+  payload: PartnershipFormPayload & { botcheck?: boolean },
+  file?: File | null
+) {
   const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
   const formData = new FormData();
@@ -51,7 +54,7 @@ export async function submitPartnershipForm(payload: PartnershipFormPayload, fil
   formData.append("subject", "New contractor partnership request from the Gary's Pipelining website");
   formData.append("from_name", payload.companyName);
   for (const [key, value] of Object.entries(payload)) {
-    if (value) formData.append(key, value);
+    if (value) formData.append(key, String(value));
   }
   if (file) formData.append("attachment", file);
 
