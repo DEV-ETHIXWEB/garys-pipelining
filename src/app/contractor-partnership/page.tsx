@@ -36,6 +36,7 @@ import {
 import { services } from "@/lib/content/services";
 import { siteConfig } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
+import { ProcessTimeline } from "@/components/sections/process-timeline";
 import { BeforeAfterSlider } from "@/components/sections/before-after-slider";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
@@ -79,12 +80,14 @@ const industries = [
   { icon: ShoppingBag, name: "Retail Centers", body: "Minimal downtime repairs that keep doors open." },
 ];
 
+const processIconClass = "h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110";
+
 const partnershipProcess = [
-  { icon: FileText, title: "Submit partnership request", body: "Tell us about your company and the work you need support on." },
-  { icon: Phone, title: "Discovery call", body: "We learn your typical project types, volume, and timelines." },
-  { icon: ClipboardList, title: "Review your workflow", body: "We map our process to how your team already operates." },
-  { icon: UserCheck, title: "Assign dedicated contact", body: "You get a direct line to the person who knows your account." },
-  { icon: Handshake, title: "Begin working together", body: "Your first job is scheduled, with priority partner turnaround." },
+  { icon: <FileText className={processIconClass} />, title: "Submit partnership request", body: "Tell us about your company and the work you need support on." },
+  { icon: <Phone className={processIconClass} />, title: "Discovery call", body: "We learn your typical project types, volume, and timelines." },
+  { icon: <ClipboardList className={processIconClass} />, title: "Review your workflow", body: "We map our process to how your team already operates." },
+  { icon: <UserCheck className={processIconClass} />, title: "Assign dedicated contact", body: "You get a direct line to the person who knows your account." },
+  { icon: <Handshake className={processIconClass} />, title: "Begin working together", body: "Your first job is scheduled, with priority partner turnaround." },
 ];
 
 const whyChoosePoints = [

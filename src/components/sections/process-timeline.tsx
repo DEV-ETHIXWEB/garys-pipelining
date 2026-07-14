@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
-import type { LucideIcon } from "lucide-react";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 
-export type ProcessStep = { icon: string | LucideIcon; title: string; body: string };
+export type ProcessStep = { icon: string | ReactNode; title: string; body: string };
 
 export function ProcessTimeline({ steps }: { steps: ProcessStep[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -50,7 +49,7 @@ export function ProcessTimeline({ steps }: { steps: ProcessStep[] }) {
                     className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110"
                   />
                 ) : (
-                  <s.icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" />
+                  s.icon
                 )}
               </div>
               <div className="mt-5 text-center">
