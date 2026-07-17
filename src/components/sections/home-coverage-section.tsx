@@ -14,7 +14,7 @@ export function HomeCoverageSection({ locations }: { locations: Location[] }) {
   const countyCount = new Set(locations.map((l) => l.county)).size;
 
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-24 md:py-32" style={{ background: "var(--gradient-hero)" }}>
       <div className="container-px mx-auto max-w-[1400px]">
         <div className="grid gap-px overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/10 lg:grid-cols-[1.3fr_1fr]">
           <CoverageMapVisual
