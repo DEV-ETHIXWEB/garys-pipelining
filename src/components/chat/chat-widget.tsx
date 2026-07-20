@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Send, Phone, ArrowUpRight, Mail } from "lucide-react";
+import { X, Send, Phone, ArrowUpRight, Mail, MessageCircle } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import chatbotAvatar from "../../../public/chatbot/chatbot-avatar.jpg";
 import { SparkleField } from "@/components/ui/sparkle-field";
+
+// Flip to true to restore the original avatar photo (chatbotAvatar) in all three spots below.
+const SHOW_CHAT_AVATAR_IMAGE = false;
 
 type Message = {
   id: string;
@@ -136,9 +139,21 @@ function matchKeywordReply(text: string): React.ReactNode | null {
 }
 
 function BotAvatar() {
+  if (SHOW_CHAT_AVATAR_IMAGE) {
+    return (
+      <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-white">
+        <Image src={chatbotAvatar} alt="" width={28} height={28} className="h-full w-full object-cover" />
+      </span>
+    );
+  }
   return (
-    <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-white">
-      <Image src={chatbotAvatar} alt="" width={28} height={28} className="h-full w-full object-cover" />
+    <span className="relative grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full" style={{ background: "var(--gradient-hero)" }}>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(circle at 32% 26%, rgba(255,255,255,0.28), transparent 55%)" }}
+      />
+      <MessageCircle className="relative h-3.5 w-3.5 text-white" strokeWidth={2.25} />
     </span>
   );
 }
@@ -266,8 +281,12 @@ export function ChatWidget() {
               <SparkleField variant="compact" />
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white/20 bg-white">
-                    <Image src={chatbotAvatar} alt="" width={44} height={44} className="h-full w-full object-cover" />
+                  <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white/20 bg-white shadow-[inset_0_0_0_1px_rgba(0,27,130,0.06)]">
+                    {SHOW_CHAT_AVATAR_IMAGE ? (
+                      <Image src={chatbotAvatar} alt="" width={44} height={44} className="h-full w-full object-cover" />
+                    ) : (
+                      <MessageCircle className="h-5 w-5 text-primary" strokeWidth={2.25} />
+                    )}
                   </span>
                   <div>
                     <div className="text-sm font-semibold text-white">Gary&apos;s Pipelining</div>
@@ -420,30 +439,50 @@ export function ChatWidget() {
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="group relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full text-white shadow-[0_0_0_2.7px_var(--color-yellow),0_0_0_5.4px_var(--color-primary),var(--shadow-premium)] lg:h-[84px] lg:w-[84px]"
+              className="group relative grid h-14 w-14 shrink-0 place-items-center rounded-full text-white shadow-[0_0_0_2.7px_var(--color-yellow),0_0_0_5.4px_var(--color-primary),var(--shadow-premium)] lg:h-[84px] lg:w-[84px]"
             >
-              <span
-                aria-hidden
-                className="absolute inset-0 z-10 rounded-full"
-                style={{
-                  boxShadow: "0 0 0 0 color-mix(in oklab, var(--color-primary) 55%, transparent)",
-                  animation: "pulse-ring 2.6s ease-out infinite",
-                  border: "2px solid color-mix(in oklab, var(--color-primary) 45%, transparent)",
-                }}
-              />
-              <Image
-                src={chatbotAvatar}
-                alt="Chat with Gary's Pipelining"
-                fill
-                sizes="(min-width: 1024px) 84px, 56px"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              <span className="absolute inset-0 overflow-hidden rounded-full">
+                <span
+                  aria-hidden
+                  className="absolute inset-0 z-10 rounded-full"
+                  style={{
+                    boxShadow: "0 0 0 0 color-mix(in oklab, var(--color-primary) 55%, transparent)",
+                    animation: "pulse-ring 2.6s ease-out infinite",
+                    border: "2px solid color-mix(in oklab, var(--color-primary) 45%, transparent)",
+                  }}
+                />
+                {SHOW_CHAT_AVATAR_IMAGE ? (
+                  <Image
+                    src={chatbotAvatar}
+                    alt="Chat with Gary's Pipelining"
+                    fill
+                    sizes="(min-width: 1024px) 84px, 56px"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 grid place-items-center transition-transform duration-300 group-hover:scale-105"
+                    style={{ background: "var(--gradient-hero)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0"
+                      style={{ background: "radial-gradient(circle at 32% 26%, rgba(255,255,255,0.28), transparent 55%)" }}
+                    />
+                    <MessageCircle
+                      className="relative h-6 w-6 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] lg:h-8 lg:w-8"
+                      strokeWidth={2.25}
+                    />
+                  </span>
+                )}
+              </span>
               {unread > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full border-2 border-background bg-emergency text-[9px] font-bold text-white lg:-right-1 lg:-top-1 lg:h-6 lg:w-6 lg:text-[11px]">
+                <span className="absolute -right-1 -top-1 z-20 grid h-4 w-4 place-items-center rounded-full border-2 border-background bg-emergency text-[9px] font-bold text-white lg:-right-1.5 lg:-top-1.5 lg:h-6 lg:w-6 lg:text-[11px]">
                   {unread}
                 </span>
               ) : (
-                <span className="absolute -right-0 -top-0 h-3 w-3 rounded-full border-2 border-background bg-yellow lg:-right-0.5 lg:-top-0.5 lg:h-[18px] lg:w-[18px]" />
+                <span className="absolute -right-0.5 -top-0.5 z-20 h-3 w-3 rounded-full border-2 border-background bg-yellow lg:-right-1 lg:-top-1 lg:h-[18px] lg:w-[18px]" />
               )}
             </motion.button>
           )}
