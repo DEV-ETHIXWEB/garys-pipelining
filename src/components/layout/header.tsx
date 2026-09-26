@@ -102,7 +102,7 @@ function NavDropdown({
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((v) => !v)}
-        className="relative z-10 inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-lg font-semibold text-white/75 transition-colors duration-300 hover:text-white"
+        className="relative z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold text-white/75 transition-colors duration-300 hover:text-white"
       >
         {label}
         <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -224,7 +224,7 @@ export function Header() {
               right-side buttons exactly where they were. */}
           <div
             onDoubleClick={() => router.push("/")}
-            className="absolute left-[-26.7px] top-[calc(50%+5px)] z-10 flex -translate-y-1/2 sm:left-[-43.3px] lg:left-[-50px] lg:top-[calc(50%+10px)]"
+            className="absolute left-[-26.7px] top-[calc(50%+5px)] z-10 flex -translate-y-1/2 sm:left-[-43.3px] 2xl:left-[-50px] 2xl:top-[calc(50%+10px)]"
           >
             <Logo size="header" />
           </div>
@@ -245,7 +245,7 @@ export function Header() {
               )}
               <Link
                 href={homeLink.href}
-                className={`relative z-10 inline-flex rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
+                className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
                   isHrefActive(pathname, homeLink.href) ? "text-white" : "text-white/75 hover:text-white"
                 }`}
               >
@@ -274,7 +274,7 @@ export function Header() {
                 )}
                 <Link
                   href={n.href}
-                  className={`relative z-10 inline-flex rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
+                  className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
                     isHrefActive(pathname, n.href) ? "text-white" : "text-white/75 hover:text-white"
                   }`}
                 >
@@ -287,7 +287,7 @@ export function Header() {
           <div className="relative z-10 col-start-3 flex items-center gap-2">
             <Link
               href="/contact"
-              className="hidden items-center gap-2 rounded-lg border border-white/20 px-3.5 py-2 text-sm font-medium text-white/85 transition-colors duration-300 hover:border-white/35 hover:text-white sm:inline-flex"
+              className="hidden items-center gap-2 whitespace-nowrap rounded-lg border border-white/20 px-3.5 py-2 text-sm font-medium text-white/85 transition-colors duration-300 hover:border-white/35 hover:text-white sm:inline-flex lg:hidden xl:inline-flex"
             >
               Free estimate
               <ArrowUpRight className="h-4 w-4" />
@@ -296,7 +296,7 @@ export function Header() {
               href={siteConfig.phoneHref}
               whileHover={{ scale: 1.02, boxShadow: PHONE_GLOW }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="hidden items-center gap-2 rounded-lg bg-yellow px-3.5 py-2 text-sm font-semibold text-yellow-foreground transition-colors duration-300 sm:inline-flex"
+              className="hidden items-center gap-2 whitespace-nowrap rounded-lg bg-yellow px-3.5 py-2 text-sm font-semibold text-yellow-foreground transition-colors duration-300 sm:inline-flex"
             >
               <Phone className="h-4 w-4" />
               <span>{siteConfig.phone}</span>

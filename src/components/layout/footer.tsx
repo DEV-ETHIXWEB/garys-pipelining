@@ -98,6 +98,7 @@ export function Footer() {
                   { label: "Contact", href: "/contact" },
                   { label: "All services", href: "/services" },
                   { label: "All service areas", href: "/service-area" },
+                  { label: "Privacy Policy", href: "/privacy" },
                 ].map((l) => (
                   <li key={l.href}>
                     <Link href={l.href} className="text-sm text-white/80 transition-colors hover:text-yellow link-underline">

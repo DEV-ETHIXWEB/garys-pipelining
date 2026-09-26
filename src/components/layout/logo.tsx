@@ -9,7 +9,9 @@ const SIZES = {
   // element enlarged via `transform: scale()` because it upscales an already-rasterized
   // layer instead of re-rendering the vector source. The header positions this
   // absolutely (see header.tsx) so its real size doesn't grow the header bar's height.
-  header: "h-[153px] w-auto sm:h-[191px] lg:h-[229px]",
+  // The largest size waits for 2xl: between 1024px and 1536px there isn't room
+  // for it beside the nav, and it used to print over the "Home" link.
+  header: "h-[153px] w-auto sm:h-[191px] 2xl:h-[229px]",
 } as const;
 
 export function Logo({ className = "", size = "default" }: { className?: string; size?: keyof typeof SIZES }) {

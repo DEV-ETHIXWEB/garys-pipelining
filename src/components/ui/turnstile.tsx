@@ -22,12 +22,18 @@ declare global {
 }
 
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-// If the widget neither verifies nor reports an error within this window, treat
-// it as failed. Turnstile stays silent in some failure modes (a hostname that
-// isn't on the widget's allow-list, a blocked/one-off network error), and
-// without this the submit button would stay disabled forever and the visitor
-// would have no way to send their request.
-const VERIFY_TIMEOUT_MS = 15_000;
+// Turnstile normally reports failures through its own error-callback. These two
+// timers only cover the cases where it goes silent, so the submit button can
+// never stay disabled forever with no way for the visitor to send their request.
+//
+// RENDER_TIMEOUT only fires when no widget iframe appeared at all (script
+// blocked by an extension/firewall, render never happened). If the iframe is
+// there, the widget is alive and may be waiting on an interactive challenge, so
+// we leave it alone rather than telling the visitor it failed while they're
+// still solving it.
+const RENDER_TIMEOUT_MS = 15_000;
+// Absolute backstop for a widget that rendered but never resolves or errors.
+const RESOLVE_TIMEOUT_MS = 60_000;
 let scriptPromise: Promise<void> | null = null;
 
 function loadTurnstileScript(): Promise<void> {
@@ -89,7 +95,17 @@ export function Turnstile({
       settled = true;
       onErrorRef.current?.();
     };
-    const timer = window.setTimeout(fail, VERIFY_TIMEOUT_MS);
+    // Only a widget that never rendered is treated as failed at this point; one
+    // that rendered may still be waiting on the visitor.
+    const renderTimer = window.setTimeout(() => {
+      const rendered = Boolean(document.getElementById(containerId)?.querySelector("iframe"));
+      if (!rendered) fail();
+    }, RENDER_TIMEOUT_MS);
+    const resolveTimer = window.setTimeout(fail, RESOLVE_TIMEOUT_MS);
+    const clearTimers = () => {
+      window.clearTimeout(renderTimer);
+      window.clearTimeout(resolveTimer);
+    };
 
     loadTurnstileScript()
       .then(() => {
@@ -101,7 +117,7 @@ export function Turnstile({
           theme,
           callback: (token) => {
             settled = true;
-            window.clearTimeout(timer);
+            clearTimers();
             onVerifyRef.current(token);
           },
           "expired-callback": () => onExpireRef.current?.(),
@@ -112,7 +128,7 @@ export function Turnstile({
 
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
+      clearTimers();
       if (widgetId.current && window.turnstile) {
         window.turnstile.remove(widgetId.current);
         widgetId.current = undefined;

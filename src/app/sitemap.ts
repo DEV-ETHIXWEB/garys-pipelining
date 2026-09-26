@@ -10,11 +10,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/service-area": 0.9,
   };
 
-  const staticRoutes = ["", "/about", "/contact", "/services", "/service-area", "/contractor-partnership", "/coupons"].map((path) => ({
+  const staticRoutes = ["", "/about", "/contact", "/services", "/service-area", "/contractor-partnership", "/coupons", "/privacy"].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
     changeFrequency: path === "/coupons" ? ("weekly" as const) : ("monthly" as const),
-    priority: priorities[path] ?? 0.7,
+    priority: path === "/privacy" ? 0.3 : (priorities[path] ?? 0.7),
   }));
 
   const serviceRoutes = services.map((s) => ({
