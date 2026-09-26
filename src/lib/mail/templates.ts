@@ -121,9 +121,18 @@ function transcriptBlock(transcript: NormalizedLead["transcript"]): string {
 }
 
 export function renderAdminLeadEmail(lead: NormalizedLead): RenderedEmail {
-  const subject = `${lead.urgent ? "URGENT: " : ""}New ${lead.sourceLabel.toLowerCase()} from ${lead.name}`;
+  const flagged = lead.spamFlags && lead.spamFlags.length > 0;
+  // Stable prefix so a single mail filter (subject:"[Review]") can label or archive these.
+  const subject = `${flagged ? "[Review] " : ""}${lead.urgent ? "URGENT: " : ""}New ${lead.sourceLabel.toLowerCase()} from ${lead.name}`;
+
+  const spamBanner = flagged
+    ? `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fef3c7; color:#92400e; font-size:13px; line-height:1.5;"><strong>Possible spam, please review before calling.</strong> ${escapeHtml(
+        (lead.spamFlags ?? []).join("; "),
+      )}. No confirmation email was sent to the customer.</div>`
+    : "";
 
   const bodyHtml = `
+    ${spamBanner}
     <div style="margin-bottom:20px;">
       ${pill(lead.sourceLabel, mailBrand.primaryColor)}
       ${lead.urgent ? ` ${pill("Urgent", "#dc2626")}` : ""}
@@ -141,6 +150,7 @@ export function renderAdminLeadEmail(lead: NormalizedLead): RenderedEmail {
   `;
 
   const textLines = [
+    flagged ? `POSSIBLE SPAM, please review: ${(lead.spamFlags ?? []).join("; ")}` : "",
     `New ${lead.sourceLabel}${lead.urgent ? " (URGENT)" : ""}`,
     `Name: ${lead.name}`,
     lead.phone ? `Phone: ${lead.phone}` : "",

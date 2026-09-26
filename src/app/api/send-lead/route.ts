@@ -3,9 +3,9 @@ import { validateAttachment } from "@/lib/mail/attachment";
 import { leadPayloadSchema, SOURCE_LABELS } from "@/lib/mail/lead-schema";
 import { sanitizeHeaderValue } from "@/lib/mail/sanitize";
 import { MailNotConfiguredError, sendLeadEmails } from "@/lib/mail/send";
-import { looksLikeSpam } from "@/lib/mail/spam";
+import { assessLead } from "@/lib/mail/spam";
 import type { LeadAttachment, NormalizedLead } from "@/lib/mail/types";
-import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp, refundRateLimit } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 
 // Every lead source on the site (Estimate, Contact, Contractor Partnership,
@@ -25,7 +25,10 @@ function jsonError(message: string, status: number, extraHeaders?: HeadersInit) 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type") || "";
   let rawBody: unknown;
-  let attachment: LeadAttachment | undefined;
+  // Validated by name/size up front, but only read into memory once the
+  // submission has passed every check below, so junk posts can't make us
+  // buffer files.
+  let pendingFile: File | undefined;
 
   try {
     if (contentType.includes("multipart/form-data")) {
@@ -40,11 +43,7 @@ export async function POST(request: NextRequest) {
       if (file instanceof File && file.size > 0) {
         const check = validateAttachment(file.name, file.size);
         if (!check.ok) return jsonError(check.message, 400);
-        attachment = {
-          filename: file.name,
-          content: Buffer.from(await file.arrayBuffer()),
-          contentType: file.type || "application/octet-stream",
-        };
+        pendingFile = file;
       }
     } else {
       rawBody = await request.json();
@@ -61,21 +60,39 @@ export async function POST(request: NextRequest) {
   const data = parsed.data;
 
   const ip = getClientIp(request);
-  const rate = checkRateLimit(`lead:${ip}`, { windowMs: 10 * 60_000, max: 6 });
-  if (!rate.allowed) {
-    return jsonError("Too many requests. Please try again in a few minutes.", 429, {
-      "Retry-After": String(rate.retryAfterSeconds),
-    });
+
+  // Honeypots: real visitors never see or fill these fields. Report success
+  // without sending anything so bots get no signal they were caught.
+  if (data.botcheck || (data.hp && data.hp.trim())) {
+    return NextResponse.json({ success: true });
   }
 
-  // Honeypot: real visitors never see or fill this field. Report success
-  // without sending anything so bots get no signal they were caught.
-  if (data.botcheck) {
+  // Scored content/behaviour check (see src/lib/mail/spam.ts). Obvious junk is
+  // dropped silently; borderline leads are delivered but flagged "[Review]".
+  // Logs carry the reasons and IP, never the submitted content.
+  const verdict = assessLead(data);
+  if (verdict.action === "drop") {
+    console.warn(
+      `[send-lead] Dropped spam ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
+    );
     return NextResponse.json({ success: true });
   }
-  if (looksLikeSpam(data)) {
-    console.warn(`[send-lead] Dropped a submission from ${ip} that matched spam heuristics.`);
-    return NextResponse.json({ success: true });
+  if (verdict.action === "review") {
+    console.info(
+      `[send-lead] Flagged for review ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
+    );
+  }
+
+  // Rate limiting only counts submissions that got past the honeypot and spam
+  // checks, so bot traffic can't use up the quota of real customers who share
+  // its IP (offices, apartment wifi).
+  const rate = checkRateLimit(`lead:${ip}`, { windowMs: 10 * 60_000, max: 6 });
+  const dailyRate = checkRateLimit(`lead-day:${ip}`, { windowMs: 24 * 60 * 60_000, max: 15 });
+  const blocked = !rate.allowed ? rate : !dailyRate.allowed ? dailyRate : null;
+  if (blocked) {
+    return jsonError("Too many requests. Please try again in a few minutes.", 429, {
+      "Retry-After": String(blocked.retryAfterSeconds),
+    });
   }
 
   // Turnstile is an additional layer on top of the honeypot/rate-limit/spam
@@ -102,6 +119,28 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // The same person (or bot) resubmitting the same contact details shouldn't
+  // produce a fresh email each time. Report success so a real customer who
+  // double-clicked isn't confused, but don't send again.
+  const contactKey = (data.email || "").toLowerCase() || (data.phone || "").replace(/\D/g, "");
+  const contactBucket = contactKey ? `lead-contact:${contactKey}` : null;
+  if (contactBucket) {
+    const repeat = checkRateLimit(contactBucket, { windowMs: 60 * 60_000, max: 3 });
+    if (!repeat.allowed) {
+      console.info(`[send-lead] Ignored repeat submission for the same contact ip=${ip} source=${data.source}`);
+      return NextResponse.json({ success: true });
+    }
+  }
+
+  let attachment: LeadAttachment | undefined;
+  if (pendingFile) {
+    attachment = {
+      filename: pendingFile.name,
+      content: Buffer.from(await pendingFile.arrayBuffer()),
+      contentType: pendingFile.type || "application/octet-stream",
+    };
+  }
+
   const normalized: NormalizedLead = {
     source: data.source,
     sourceLabel: SOURCE_LABELS[data.source],
@@ -116,12 +155,16 @@ export async function POST(request: NextRequest) {
     pageUrl: data.pageUrl || undefined,
     submittedAt: new Date(),
     attachment,
+    spamFlags: verdict.action === "review" ? verdict.reasons : undefined,
   };
 
   try {
     const result = await sendLeadEmails(normalized);
     return NextResponse.json({ success: true, customerEmailSent: result.customer });
   } catch (err) {
+    // The lead never went out, so don't let this attempt count against the
+    // customer's retry.
+    if (contactBucket) refundRateLimit(contactBucket);
     if (err instanceof MailNotConfiguredError) {
       console.error(`[send-lead] ${err.message}`);
       return jsonError("Email delivery isn't configured yet. Please call us instead.", 503);

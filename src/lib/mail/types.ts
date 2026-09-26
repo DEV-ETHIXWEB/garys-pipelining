@@ -29,4 +29,6 @@ export type NormalizedLead = {
   pageUrl?: string;
   submittedAt: Date;
   attachment?: LeadAttachment;
+  /** Set when the spam filter found weak signals but not enough to drop the lead. */
+  spamFlags?: string[];
 };

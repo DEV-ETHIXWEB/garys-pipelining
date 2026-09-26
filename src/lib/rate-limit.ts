@@ -3,15 +3,18 @@
 // concurrent instances, so it's a speed bump against casual abuse, not a
 // durable defense. If this endpoint ever needs to withstand a real attack,
 // swap this for Upstash Redis or Vercel KV without changing the call site.
-type Bucket = { count: number; windowStart: number };
+//
+// Each bucket remembers its own window, so callers can mix short (10 minute)
+// and long (24 hour) limits without the cleanup sweep for one evicting the other.
+type Bucket = { count: number; windowStart: number; windowMs: number };
 
 const buckets = new Map<string, Bucket>();
 const MAX_TRACKED_KEYS = 5000;
 
-function sweep(now: number, windowMs: number) {
+function sweep(now: number) {
   if (buckets.size < MAX_TRACKED_KEYS) return;
   for (const [key, bucket] of buckets) {
-    if (now - bucket.windowStart > windowMs) buckets.delete(key);
+    if (now - bucket.windowStart > bucket.windowMs) buckets.delete(key);
   }
 }
 
@@ -22,20 +25,26 @@ export function checkRateLimit(key: string, opts?: { windowMs?: number; max?: nu
   const max = opts?.max ?? 5;
   const now = Date.now();
 
-  sweep(now, windowMs);
+  sweep(now);
 
   const bucket = buckets.get(key);
-  if (!bucket || now - bucket.windowStart > windowMs) {
-    buckets.set(key, { count: 1, windowStart: now });
+  if (!bucket || now - bucket.windowStart > bucket.windowMs) {
+    buckets.set(key, { count: 1, windowStart: now, windowMs });
     return { allowed: true };
   }
 
   if (bucket.count >= max) {
-    return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil((bucket.windowStart + windowMs - now) / 1000)) };
+    return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil((bucket.windowStart + bucket.windowMs - now) / 1000)) };
   }
 
   bucket.count += 1;
   return { allowed: true };
+}
+
+/** Give back one use of a bucket, e.g. when the guarded action failed and shouldn't count. */
+export function refundRateLimit(key: string): void {
+  const bucket = buckets.get(key);
+  if (bucket && bucket.count > 0) bucket.count -= 1;
 }
 
 // Shared client-IP extraction so every caller (rate limiting, Turnstile

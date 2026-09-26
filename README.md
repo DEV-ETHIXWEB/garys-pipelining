@@ -69,6 +69,34 @@ See `.env.local.example` for the full list with SMTP2Go-specific notes.
 
 Never commit `.env*` files, they are already excluded via `.gitignore`.
 
+## Spam protection on lead forms
+
+Every lead (estimate form, partnership form, chatbot) goes through
+`src/app/api/send-lead/route.ts`, which layers several defenses. Turnstile
+alone isn't enough: bots that pass it fill the forms with random characters.
+
+1. **Honeypots** (hidden checkbox + off-screen text input): filled means bot, dropped silently.
+2. **Scored content/behaviour filter** (`src/lib/mail/spam.ts`): random-looking names and
+   messages, nonsense addresses, link stuffing, spam phrases, instant or missing
+   form timing. Score 4+ with clearly junk *content* is dropped silently (the bot
+   sees "success"); 2-3 is delivered but flagged.
+3. **Flagged leads** arrive with the subject prefix `[Review]` and a yellow banner,
+   and the customer gets no confirmation email (bots submit real strangers' addresses).
+4. **Rate limits** (only counting leads that passed the filter) and **de-duplication**
+   (max 3 sends per contact per hour; a failed send doesn't count).
+5. **Chatbot** leads must contain a real visitor conversation, since the chatbot skips Turnstile.
+
+Dropped and flagged leads are logged on the server (`[send-lead] Dropped spam ...`,
+reasons only, never the submitted text), so a wrongly dropped lead can be diagnosed
+in the Vercel logs.
+
+Tune or test the filter with `npm run test:spam` (real spam samples, plus a set of
+awkward-but-legitimate leads that must never be dropped). Add any new spam pattern
+to `scripts/test-spam-filter.mjs` first.
+
+**Gmail filter for flagged leads:** Settings > Filters > Create filter, subject
+`"[Review]"`, then *Apply the label* "Possible spam" and *Skip the Inbox*.
+
 ## Deployment notes
 
 - Deploys to Vercel. `npm run build` then `npm start` locally reproduces the

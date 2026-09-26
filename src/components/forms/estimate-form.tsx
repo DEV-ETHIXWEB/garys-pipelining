@@ -8,6 +8,8 @@ import { ArrowRight, CircleCheck, MoreHorizontal } from "lucide-react";
 import { services } from "@/lib/content/services";
 import { ServiceIcon } from "@/components/ui/service-icon";
 import { Turnstile } from "@/components/ui/turnstile";
+import { HoneypotField } from "@/components/forms/honeypot-field";
+import { useFormTiming } from "@/lib/use-form-timing";
 import { submitLead } from "@/lib/send-lead";
 import { siteConfig } from "@/lib/site-config";
 
@@ -25,6 +27,7 @@ const schema = z.object({
   commercialProperty: z.boolean().optional(),
   smsConsent: z.boolean().optional(),
   botcheck: z.boolean().optional(),
+  hp: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -33,6 +36,7 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const getFillMs = useFormTiming();
   const {
     register,
     handleSubmit,
@@ -41,7 +45,7 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { service: defaultService ?? "", commercialProperty: false, smsConsent: false, botcheck: false },
+    defaultValues: { service: defaultService ?? "", commercialProperty: false, smsConsent: false, botcheck: false, hp: "" },
   });
 
   const selectedService = useWatch({ control, name: "service" });
@@ -58,6 +62,8 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
         phone: values.phone,
         email: values.email || undefined,
         botcheck: values.botcheck,
+        hp: values.hp,
+        fillMs: getFillMs(),
         turnstileToken,
         fields: [
           { label: "Address", value: values.address ?? "" },
@@ -98,6 +104,7 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
         aria-hidden="true"
         style={{ display: "none" }}
       />
+      <HoneypotField {...register("hp")} />
       <h3 className="text-center text-2xl tracking-tight text-ink sm:text-left md:text-3xl" style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>
         Request your free estimate
       </h3>

@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowRight, CircleCheck, Upload, X } from "lucide-react";
 import { Turnstile } from "@/components/ui/turnstile";
+import { HoneypotField } from "@/components/forms/honeypot-field";
+import { useFormTiming } from "@/lib/use-form-timing";
 import { submitLead } from "@/lib/send-lead";
 import { ALLOWED_ATTACHMENT_EXTENSIONS, MAX_ATTACHMENT_SIZE_BYTES, validateAttachment } from "@/lib/mail/attachment";
 
@@ -53,6 +55,7 @@ const schema = z.object({
   preferredContactMethod: z.string().min(1, "Select a preferred contact method"),
   message: z.string().optional(),
   botcheck: z.boolean().optional(),
+  hp: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -63,6 +66,7 @@ export function PartnershipForm() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const getFillMs = useFormTiming();
   const {
     register,
     handleSubmit,
@@ -71,7 +75,7 @@ export function PartnershipForm() {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { projectTypes: [], preferredContactMethod: "", botcheck: false },
+    defaultValues: { projectTypes: [], preferredContactMethod: "", botcheck: false, hp: "" },
   });
 
   const selectedProjectTypes = useWatch({ control, name: "projectTypes" }) ?? [];
@@ -115,6 +119,8 @@ export function PartnershipForm() {
           email: values.email,
           phone: values.phone,
           botcheck: values.botcheck,
+          hp: values.hp,
+          fillMs: getFillMs(),
           turnstileToken,
           fields: [
             { label: "Company name", value: values.companyName },
@@ -160,6 +166,7 @@ export function PartnershipForm() {
         aria-hidden="true"
         style={{ display: "none" }}
       />
+      <HoneypotField {...register("hp")} />
       <h3 id="partnership-form" className="scroll-mt-28 text-center text-2xl tracking-tight text-ink sm:text-left md:text-3xl" style={{ fontFamily: "var(--font-sans)", fontWeight: 600 }}>
         Submit a partnership request
       </h3>

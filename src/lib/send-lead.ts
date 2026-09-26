@@ -17,6 +17,10 @@ export type LeadSubmission = {
   pageUrl?: string;
   /** Hidden honeypot checkbox; leave unset/false on real submissions. */
   botcheck?: boolean;
+  /** Hidden honeypot text input; must be empty on real submissions. */
+  hp?: string;
+  /** Milliseconds the form was open before submit (bots submit instantly). */
+  fillMs?: number;
   /** Cloudflare Turnstile response token, when the widget is configured. */
   turnstileToken?: string | null;
 };

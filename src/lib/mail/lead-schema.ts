@@ -44,6 +44,11 @@ export const leadPayloadSchema = z
     pageUrl: z.union([z.string().trim().max(500), z.literal("")]).optional(),
     // Hidden checkbox every form ships already; real visitors never touch it.
     botcheck: z.boolean().optional(),
+    // Hidden text input, moved off-screen. Bots that fill every input they
+    // find populate it; people can't see it, so they never do.
+    hp: z.string().max(500).optional(),
+    // Milliseconds the form was open before submitting. Bots submit instantly.
+    fillMs: z.number().int().min(0).max(86_400_000).optional(),
   })
   .refine((data) => Boolean(data.email) || Boolean(data.phone), {
     message: "Provide an email or phone number so we can respond.",

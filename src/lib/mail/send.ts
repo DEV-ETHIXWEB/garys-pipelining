@@ -70,7 +70,11 @@ export async function sendLeadEmails(lead: NormalizedLead): Promise<SendLeadEmai
   });
 
   let customerSent = false;
-  if (lead.email) {
+  // Never send a confirmation to an address on a lead the spam filter doubts:
+  // spam bots submit real people's addresses, and mailing strangers from the
+  // company domain damages its sender reputation for the real emails.
+  const suspicious = Boolean(lead.spamFlags && lead.spamFlags.length > 0);
+  if (lead.email && !suspicious) {
     try {
       const customer = renderCustomerConfirmationEmail(lead);
       await transporter.sendMail({
