@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!location) return {};
   return {
     title: `Sewer & Drain Service in ${location.city}, WA`,
-    description: location.intro,
+    description: location.metaDescription ?? location.intro,
     alternates: { canonical: `/service-area/${location.slug}` },
   };
 }

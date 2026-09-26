@@ -5,6 +5,8 @@ export type ServiceCategory = "Pipelining" | "Drain Services" | "Inspection" | "
 
 export type Service = {
   slug: string;
+  /** Search-result description, <=155 chars. Falls back to `heroSubheadline`, which is on-page copy and can run long. */
+  metaDescription?: string;
   name: string;
   shortDescription: string;
   category: ServiceCategory;
@@ -74,6 +76,8 @@ export const services: Service[] = [
   },
   {
     slug: "pipe-bursting",
+    metaDescription:
+      "Full sewer line replacement without the trench: pipe bursting pulls a new pipe through the old one's path across the greater Seattle area.",
     name: "Pipe Bursting",
     shortDescription: "Full pipe replacement pulled through two small access points, for lines too damaged to line.",
     category: "Pipelining",
@@ -118,6 +122,8 @@ export const services: Service[] = [
   },
   {
     slug: "sewer-replacement",
+    metaDescription:
+      "Full sewer lateral replacement for collapsed or badly bellied lines, done with the least disruption your site allows. Greater Seattle area.",
     name: "Sewer Replacement",
     shortDescription: "Trenchless or open-cut sewer line replacement, scoped honestly after a camera inspection.",
     category: "Pipelining",
@@ -158,6 +164,8 @@ export const services: Service[] = [
   },
   {
     slug: "water-main-repair",
+    metaDescription:
+      "Fast diagnosis and repair of corroded water mains, joint leaks, and pressure loss across the greater Seattle area. Licensed and insured.",
     name: "Water Main Repair",
     shortDescription: "Leak detection and repair or replacement for failing water service lines.",
     category: "Water Lines",

@@ -49,7 +49,7 @@ import { SparkleField } from "@/components/ui/sparkle-field";
 export const metadata: Metadata = {
   title: "Contractor Partnership Program",
   description:
-    "Partner with Gary's Pipelining, Seattle's trusted underground utility and trenchless contractor. Dedicated support, priority scheduling, and commercial-grade trenchless sewer, drain, and excavation work for general contractors, property managers, developers, and municipalities.",
+    "Trade pricing, priority scheduling, and commercial trenchless sewer, drain, and excavation work for contractors, property managers, and developers.",
   alternates: { canonical: "/contractor-partnership" },
 };
 

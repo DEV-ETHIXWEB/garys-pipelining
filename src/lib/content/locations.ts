@@ -1,5 +1,7 @@
 export type Location = {
   slug: string;
+  /** Search-result description, <=155 chars. Falls back to `intro`, which is on-page copy and usually too long. */
+  metaDescription?: string;
   city: string;
   state: "WA";
   county: string;
@@ -13,6 +15,8 @@ export type Location = {
 export const locations: Location[] = [
   {
     slug: "seattle-wa",
+    metaDescription:
+      "Trenchless sewer repair, pipe lining, and drain cleaning across Seattle. Licensed, insured, and available 24/7 for emergencies.",
     city: "Seattle",
     state: "WA",
     county: "King County",
@@ -28,6 +32,8 @@ export const locations: Location[] = [
   },
   {
     slug: "tacoma-wa",
+    metaDescription:
+      "Trenchless sewer repair, pipe bursting, and drain cleaning in Tacoma. Licensed, insured, and available 24/7 for emergencies.",
     city: "Tacoma",
     state: "WA",
     county: "Pierce County",
@@ -42,6 +48,8 @@ export const locations: Location[] = [
   },
   {
     slug: "bellevue-wa",
+    metaDescription:
+      "Trenchless sewer repair and drain cleaning in Bellevue, protecting mature landscaping and driveways. Licensed, insured, available 24/7.",
     city: "Bellevue",
     state: "WA",
     county: "King County",
@@ -56,6 +64,8 @@ export const locations: Location[] = [
   },
   {
     slug: "renton-wa",
+    metaDescription:
+      "Trenchless sewer repair and drain cleaning in Renton, minutes from our Tukwila shop. Licensed, insured, and available 24/7.",
     city: "Renton",
     state: "WA",
     county: "King County",
@@ -70,6 +80,8 @@ export const locations: Location[] = [
   },
   {
     slug: "tukwila-wa",
+    metaDescription:
+      "Trenchless sewer repair and drain cleaning in Tukwila, our home base and fastest response area. Licensed, insured, available 24/7.",
     city: "Tukwila",
     state: "WA",
     county: "King County",
@@ -85,6 +97,8 @@ export const locations: Location[] = [
   },
   {
     slug: "federal-way-wa",
+    metaDescription:
+      "Trenchless sewer repair, pipe lining, and drain cleaning in Federal Way. Licensed, insured, and available 24/7 for emergencies.",
     city: "Federal Way",
     state: "WA",
     county: "King County",

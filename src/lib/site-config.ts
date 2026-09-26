@@ -3,8 +3,10 @@ export const siteConfig = {
   legalName: "Gary's Pipelining and Drain Cleaning, LLC",
   shortName: "Gary's Pipelining",
   tagline: "Seattle's trusted sewer & drain specialists",
+  // Also the meta/OG description, so kept at or under 155 characters to avoid
+  // being truncated in search results.
   description:
-    "Trenchless sewer repair, pipe lining, hydro jetting, and 24/7 emergency drain service across the greater Seattle area. Licensed, insured, and trusted by homeowners and contractors.",
+    "Trenchless sewer repair, pipe lining, hydro jetting, and 24/7 emergency drain service across the greater Seattle area. Licensed and insured.",
   url: "https://www.garyspipelining.com",
   phone: "(206) 535-8460",
   phoneHref: "tel:+12065358460",

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!service) return {};
   return {
     title: service.name,
-    description: service.heroSubheadline,
+    description: service.metaDescription ?? service.heroSubheadline,
     alternates: { canonical: `/services/${service.slug}` },
   };
 }

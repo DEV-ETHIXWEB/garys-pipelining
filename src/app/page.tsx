@@ -138,13 +138,19 @@ export default function Home() {
 
             <div className="relative mx-auto w-4/5 animate-fade-in-slow">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-[var(--shadow-premium)]">
+                {/* Re-encoded for the web: the original phone export was 17MB at
+                    11.7Mbps, which every visitor downloaded, mobile included. This is
+                    the same footage at the size it actually renders. The poster shows
+                    instantly so the hero is never an empty box, and stands in if the
+                    video can't play. */}
                 <video
-                  src="/Hero%20Vid/VN20260715_191030.mp4"
+                  src="/hero/hero-loop.mp4"
+                  poster="/hero/hero-poster.webp"
                   autoPlay
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   aria-label="Gary's Pipelining crew at work"
                   className="h-full w-full object-cover"
                 />
