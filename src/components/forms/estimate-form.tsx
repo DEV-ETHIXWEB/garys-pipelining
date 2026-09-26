@@ -36,6 +36,9 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // Set when the widget can't load or verify. The form stays usable: a broken
+  // security check must never be the reason a real customer can't reach us.
+  const [turnstileFailed, setTurnstileFailed] = useState(false);
   const getFillMs = useFormTiming();
   const {
     register,
@@ -231,14 +234,23 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
       {error && <p className="text-sm text-emergency">{error}</p>}
 
       <Turnstile
-        onVerify={setTurnstileToken}
+        onVerify={(token) => {
+          setTurnstileToken(token);
+          setTurnstileFailed(false);
+        }}
         onExpire={() => setTurnstileToken(null)}
-        onError={() => setError("Verification couldn't load. Please refresh the page or call us instead.")}
+        onError={() => setTurnstileFailed(true)}
       />
+      {turnstileFailed && (
+        <p className="text-xs text-muted-foreground">
+          The security check couldn&rsquo;t load. You can still send your request, and we&rsquo;ll follow up as
+          normal. If it doesn&rsquo;t go through, call us at {siteConfig.phone}.
+        </p>
+      )}
 
       <button
         type="submit"
-        disabled={isSubmitting || (turnstileRequired && !turnstileToken)}
+        disabled={isSubmitting || (turnstileRequired && !turnstileToken && !turnstileFailed)}
         className="btn-primary mt-2 w-full justify-center text-base disabled:opacity-60 sm:w-fit"
       >
         {isSubmitting ? "Sending…" : "Send my request"}

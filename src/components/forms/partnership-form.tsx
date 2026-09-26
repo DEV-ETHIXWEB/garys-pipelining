@@ -9,6 +9,7 @@ import { Turnstile } from "@/components/ui/turnstile";
 import { HoneypotField } from "@/components/forms/honeypot-field";
 import { useFormTiming } from "@/lib/use-form-timing";
 import { submitLead } from "@/lib/send-lead";
+import { siteConfig } from "@/lib/site-config";
 import { ALLOWED_ATTACHMENT_EXTENSIONS, MAX_ATTACHMENT_SIZE_BYTES, validateAttachment } from "@/lib/mail/attachment";
 
 // Only require a Turnstile token when a site key is actually configured, so
@@ -65,6 +66,9 @@ export function PartnershipForm() {
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // Set when the widget can't load or verify. The form stays usable: a broken
+  // security check must never be the reason a real partner can't reach us.
+  const [turnstileFailed, setTurnstileFailed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const getFillMs = useFormTiming();
   const {
@@ -369,14 +373,23 @@ export function PartnershipForm() {
       {error && <p className="text-sm text-emergency">{error}</p>}
 
       <Turnstile
-        onVerify={setTurnstileToken}
+        onVerify={(token) => {
+          setTurnstileToken(token);
+          setTurnstileFailed(false);
+        }}
         onExpire={() => setTurnstileToken(null)}
-        onError={() => setError("Verification couldn't load. Please refresh the page or call us instead.")}
+        onError={() => setTurnstileFailed(true)}
       />
+      {turnstileFailed && (
+        <p className="text-xs text-muted-foreground">
+          The security check couldn&rsquo;t load. You can still send your request, and we&rsquo;ll follow up as
+          normal. If it doesn&rsquo;t go through, call us at {siteConfig.phone}.
+        </p>
+      )}
 
       <button
         type="submit"
-        disabled={isSubmitting || (turnstileRequired && !turnstileToken)}
+        disabled={isSubmitting || (turnstileRequired && !turnstileToken && !turnstileFailed)}
         className="btn-primary mt-2 w-full justify-center text-base disabled:opacity-60 sm:w-fit"
       >
         {isSubmitting ? "Sending…" : "Submit partnership request"}

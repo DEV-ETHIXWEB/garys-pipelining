@@ -22,6 +22,12 @@ declare global {
 }
 
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+// If the widget neither verifies nor reports an error within this window, treat
+// it as failed. Turnstile stays silent in some failure modes (a hostname that
+// isn't on the widget's allow-list, a blocked/one-off network error), and
+// without this the submit button would stay disabled forever and the visitor
+// would have no way to send their request.
+const VERIFY_TIMEOUT_MS = 15_000;
 let scriptPromise: Promise<void> | null = null;
 
 function loadTurnstileScript(): Promise<void> {
@@ -77,6 +83,13 @@ export function Turnstile({
   useEffect(() => {
     if (!siteKey) return;
     let cancelled = false;
+    let settled = false;
+    const fail = () => {
+      if (cancelled || settled) return;
+      settled = true;
+      onErrorRef.current?.();
+    };
+    const timer = window.setTimeout(fail, VERIFY_TIMEOUT_MS);
 
     loadTurnstileScript()
       .then(() => {
@@ -86,17 +99,20 @@ export function Turnstile({
         widgetId.current = window.turnstile.render(el, {
           sitekey: siteKey,
           theme,
-          callback: (token) => onVerifyRef.current(token),
+          callback: (token) => {
+            settled = true;
+            window.clearTimeout(timer);
+            onVerifyRef.current(token);
+          },
           "expired-callback": () => onExpireRef.current?.(),
-          "error-callback": () => onErrorRef.current?.(),
+          "error-callback": fail,
         });
       })
-      .catch(() => {
-        if (!cancelled) onErrorRef.current?.();
-      });
+      .catch(fail);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
       if (widgetId.current && window.turnstile) {
         window.turnstile.remove(widgetId.current);
         widgetId.current = undefined;

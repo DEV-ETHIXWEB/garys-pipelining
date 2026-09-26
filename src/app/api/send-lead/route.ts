@@ -70,13 +70,59 @@ export async function POST(request: NextRequest) {
   // Scored content/behaviour check (see src/lib/mail/spam.ts). Obvious junk is
   // dropped silently; borderline leads are delivered but flagged "[Review]".
   // Logs carry the reasons and IP, never the submitted content.
-  const verdict = assessLead(data);
+  //
+  // Run first on content alone: junk gets dropped without spending a network
+  // round-trip on Cloudflare, and Turnstile only gets asked about submissions
+  // that might be real.
+  let verdict = assessLead(data);
   if (verdict.action === "drop") {
     console.warn(
       `[send-lead] Dropped spam ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
     );
     return NextResponse.json({ success: true });
   }
+  // Turnstile is an additional layer on top of the honeypot/rate-limit/spam
+  // checks above, not a replacement for any of them. `turnstileToken` isn't
+  // part of leadPayloadSchema (that schema is shared by every lead source),
+  // so it's read directly off the raw, not-yet-validated body.
+  //
+  // The chatbot is exempt: it's a multi-turn conversational flow with no
+  // natural place for a checkbox widget, and it's already covered by the
+  // honeypot/rate-limit/spam checks above.
+  //
+  // A form submission that doesn't verify is NOT rejected. Turnstile breaks for
+  // real visitors for reasons they can't do anything about (a hostname missing
+  // from the widget's allow-list, a Cloudflare incident, an extension or
+  // network blocking the script), and a plumbing emergency that can't reach the
+  // company is worse than one more junk email. Such leads are instead scored as
+  // unverified, which flags them "[Review]", and held to a tighter rate limit.
+  if (data.source !== "chatbot") {
+    const turnstileToken =
+      typeof rawBody === "object" && rawBody !== null && "turnstileToken" in rawBody
+        ? (rawBody as { turnstileToken?: unknown }).turnstileToken
+        : undefined;
+    const turnstile = await verifyTurnstile(turnstileToken, request);
+    if (!turnstile.ok) {
+      console.warn(`[send-lead] Turnstile did not verify ip=${ip} source=${data.source} reason=${turnstile.reason}`);
+      // Re-score with the missing verification counted in: clearly junk content
+      // paired with no token is dropped, a clean-looking lead is flagged.
+      verdict = assessLead({ ...data, unverified: true });
+      if (verdict.action === "drop") {
+        console.warn(
+          `[send-lead] Dropped spam ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
+        );
+        return NextResponse.json({ success: true });
+      }
+      // Tight per-IP cap so an unverified endpoint can't be used as a firehose.
+      const unverifiedRate = checkRateLimit(`lead-unverified:${ip}`, { windowMs: 60 * 60_000, max: 3 });
+      if (!unverifiedRate.allowed) {
+        return jsonError("Too many requests. Please try again in a few minutes.", 429, {
+          "Retry-After": String(unverifiedRate.retryAfterSeconds),
+        });
+      }
+    }
+  }
+
   if (verdict.action === "review") {
     console.info(
       `[send-lead] Flagged for review ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
@@ -93,30 +139,6 @@ export async function POST(request: NextRequest) {
     return jsonError("Too many requests. Please try again in a few minutes.", 429, {
       "Retry-After": String(blocked.retryAfterSeconds),
     });
-  }
-
-  // Turnstile is an additional layer on top of the honeypot/rate-limit/spam
-  // checks above, not a replacement for any of them. `turnstileToken` isn't
-  // part of leadPayloadSchema (that schema is shared by every lead source),
-  // so it's read directly off the raw, not-yet-validated body.
-  //
-  // The chatbot is exempt: it's a multi-turn conversational flow with no
-  // natural place for a checkbox widget, and it's already covered by the
-  // honeypot/rate-limit/spam checks above. Every form-based source (estimate,
-  // partnership, and any future contact/careers form) still requires a
-  // verified token.
-  if (data.source !== "chatbot") {
-    const turnstileToken =
-      typeof rawBody === "object" && rawBody !== null && "turnstileToken" in rawBody
-        ? (rawBody as { turnstileToken?: unknown }).turnstileToken
-        : undefined;
-    const turnstile = await verifyTurnstile(turnstileToken, request);
-    if (!turnstile.ok) {
-      if (turnstile.reason === "not_configured") {
-        return jsonError("Submissions are temporarily unavailable. Please try again later.", 503);
-      }
-      return jsonError("Verification failed. Please try again.", 403);
-    }
   }
 
   // The same person (or bot) resubmitting the same contact details shouldn't

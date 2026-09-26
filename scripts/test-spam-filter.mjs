@@ -145,6 +145,31 @@ for (const [label, lead] of REVIEW) {
   check(`${label} (score ${v.score})`, () => assert.equal(v.action, "review", v.reasons.join("; ")));
 }
 
+console.log("Turnstile failure must not lose real leads (form falls back to unverified)");
+check("clean lead with no Turnstile verification is delivered, flagged", () => {
+  const v = assessLead(form({ unverified: true }));
+  assert.equal(v.action, "review", v.reasons.join("; "));
+});
+check("chatbot is unaffected by the unverified flag", () => {
+  const v = assessLead({
+    source: "chatbot",
+    name: "Mike",
+    fields: [{ label: "Topics discussed", value: "Pricing" }],
+    transcript: [{ from: "bot", text: "Greeted the visitor" }, { from: "user", text: "basement is flooding" }],
+  });
+  assert.equal(v.action, "allow", v.reasons.join("; "));
+});
+check("junk content with no verification is still dropped", () => {
+  const v = assessLead(form({ unverified: true, name: "MGtfDzDtBYkmbMAzHJhwRXBh", fillMs: 9000, fields: issueFields("Flaewa", "gMMDGildInbyVnnxJnSU") }));
+  assert.equal(v.action, "drop", v.reasons.join("; "));
+});
+check("unverified alone can never drop a lead", () => {
+  for (const lead of LEGIT) {
+    const v = assessLead({ ...lead, unverified: true });
+    assert.notEqual(v.action, "drop", `${lead.name}: ${v.reasons.join("; ")}`);
+  }
+});
+
 console.log("Other hard drops");
 check("pitch linking to 6+ different sites is dropped", () =>
   assert.equal(

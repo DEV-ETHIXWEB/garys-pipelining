@@ -85,6 +85,12 @@ alone isn't enough: bots that pass it fill the forms with random characters.
 4. **Rate limits** (only counting leads that passed the filter) and **de-duplication**
    (max 3 sends per contact per hour; a failed send doesn't count).
 5. **Chatbot** leads must contain a real visitor conversation, since the chatbot skips Turnstile.
+6. **Turnstile never blocks a lead.** If the widget can't verify (hostname missing
+   from the widget's allow-list, Cloudflare incident, extension or network
+   blocking the script), the form stays usable and the lead is delivered flagged
+   rather than rejected, with a tighter per-IP cap (3/hour). Losing a real
+   emergency call is worse than one more junk email. Obvious junk with no token
+   is still dropped on content alone.
 
 Dropped and flagged leads are logged on the server (`[send-lead] Dropped spam ...`,
 reasons only, never the submitted text), so a wrongly dropped lead can be diagnosed
@@ -95,7 +101,17 @@ awkward-but-legitimate leads that must never be dropped). Add any new spam patte
 to `scripts/test-spam-filter.mjs` first.
 
 **Gmail filter for flagged leads:** Settings > Filters > Create filter, subject
-`"[Review]"`, then *Apply the label* "Possible spam" and *Skip the Inbox*.
+`"[Review]"`, then *Apply the label* "Possible spam". Do **not** tick *Skip the
+Inbox*: during a Turnstile outage every genuine lead is flagged too, and skipping
+the inbox would hide real customers.
+
+### Turnstile hostnames
+
+The widget only works on hostnames listed on it in the Cloudflare dashboard
+(Turnstile > the widget > Settings > Hostnames). A hostname that isn't listed
+fails with **error 110200** and the form falls back to the unverified path above.
+Keep `garyspipelining.com` and `www.garyspipelining.com` listed, and add
+`garys-pipelining.vercel.app` if the Vercel URL is used for client demos.
 
 ## Deployment notes
 

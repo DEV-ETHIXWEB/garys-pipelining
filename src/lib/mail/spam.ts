@@ -19,7 +19,15 @@ export type SpamVerdict = { action: SpamAction; score: number; reasons: string[]
 export const REVIEW_AT = 2;
 export const DROP_AT = 4;
 
-export type SpamInput = Pick<LeadPayloadInput, "source" | "name" | "email" | "fields" | "transcript" | "fillMs">;
+export type SpamInput = Pick<LeadPayloadInput, "source" | "name" | "email" | "fields" | "transcript" | "fillMs"> & {
+  /**
+   * Set by the API route when Turnstile didn't verify this submission (the
+   * widget failed to load for the visitor, or no/invalid token was sent).
+   * Treated as behaviour, so on its own it flags a lead for review rather
+   * than dropping it: a Cloudflare outage must not swallow real customers.
+   */
+  unverified?: boolean;
+};
 
 // A person can't read, fill, and submit a form in under this.
 const MIN_HUMAN_FILL_MS = 2500;
@@ -231,6 +239,14 @@ export function assessLead(data: SpamInput): SpamVerdict {
     reasons.push("no form timing (direct API post or a stale page)");
   }
   behaviour = Math.min(behaviour, 3);
+
+  // Turnstile didn't vouch for this one. Enough on its own to flag it for
+  // review, never enough to drop it, because the usual cause is the widget
+  // failing for a real visitor rather than a bot skipping it.
+  if (data.unverified) {
+    behaviour += 2;
+    reasons.push("security check did not verify this submission");
+  }
 
   // The chatbot skips Turnstile (there's no widget in a conversation), so a
   // "chatbot" lead has to actually contain a conversation.
