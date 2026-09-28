@@ -36,7 +36,7 @@ function resolveFromAddress(): string {
   return /<.+>/.test(configured) ? configured : `"${mailBrand.companyName}" <${configured}>`;
 }
 
-export type SendLeadEmailsResult = { admin: true; customer: boolean };
+export type SendLeadEmailsResult = { admin: boolean; customer: boolean };
 
 export async function sendLeadEmails(lead: NormalizedLead): Promise<SendLeadEmailsResult> {
   if (!isMailConfigured()) {
@@ -51,6 +51,30 @@ export async function sendLeadEmails(lead: NormalizedLead): Promise<SendLeadEmai
   const transporter = getTransporter();
   const from = resolveFromAddress();
   const logoAttachment = getLogoAttachment();
+
+  // Quarantined leads go to their own mailbox instead of the client's inbox.
+  // Without MAIL_QUARANTINE configured there is nowhere to put them, so they
+  // are logged and dropped, which is the old behaviour; set it to make them
+  // recoverable.
+  if (lead.quarantined) {
+    const quarantineTo = process.env.MAIL_QUARANTINE;
+    if (!quarantineTo) {
+      console.warn(
+        "[send-lead] MAIL_QUARANTINE is not set, so this quarantined lead was discarded instead of stored. Set it to keep a recoverable copy.",
+      );
+      return { admin: false, customer: false };
+    }
+    const quarantined = renderAdminLeadEmail(lead);
+    await transporter.sendMail({
+      from,
+      to: quarantineTo,
+      subject: quarantined.subject,
+      html: quarantined.html,
+      text: quarantined.text,
+      attachments: logoAttachment ? [logoAttachment] : undefined,
+    });
+    return { admin: false, customer: false };
+  }
 
   const admin = renderAdminLeadEmail(lead);
   await transporter.sendMail({

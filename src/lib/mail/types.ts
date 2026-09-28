@@ -29,6 +29,12 @@ export type NormalizedLead = {
   pageUrl?: string;
   submittedAt: Date;
   attachment?: LeadAttachment;
-  /** Set when the spam filter found weak signals but not enough to drop the lead. */
+  /** Set when the spam filter found weak signals but not enough to quarantine the lead. */
   spamFlags?: string[];
+  /**
+   * Quarantined: delivered to MAIL_QUARANTINE only, never to the client and
+   * never confirmed to the customer. Nothing is deleted, so a wrongly flagged
+   * real enquiry can still be recovered from that mailbox.
+   */
+  quarantined?: boolean;
 };

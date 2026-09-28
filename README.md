@@ -75,17 +75,28 @@ Every lead (estimate form, partnership form, chatbot) goes through
 `src/app/api/send-lead/route.ts`, which layers several defenses. Turnstile
 alone isn't enough: bots that pass it fill the forms with random characters.
 
+0. **Nothing is ever deleted.** Leads the filter rejects are *quarantined*: delivered to
+   `MAIL_QUARANTINE` instead of the client's inbox, with no customer confirmation. That
+   safety net is what lets the rules below be strict, so set that variable. Without it
+   quarantined leads are only logged, and a wrongly flagged customer really is lost.
 1. **Honeypots** (hidden checkbox + off-screen text input): filled means bot, dropped silently.
-2. **Scored content/behaviour filter** (`src/lib/mail/spam.ts`): random-looking names and
-   messages, nonsense addresses, link stuffing, spam phrases, instant or missing
-   form timing. Score 4+ with clearly junk *content* is dropped silently (the bot
-   sees "success"); 2-3 is delivered but flagged.
-3. **Flagged leads** arrive with the subject prefix `[Review]` and a yellow banner,
+2. **A hard 3-second floor.** Nobody reads a form, types their details and submits
+   inside three seconds. This is content-independent, so it catches junk that is
+   different every time, which pattern rules cannot. Known tradeoff: a real customer
+   on full browser autofill can trip it, which is survivable only because they land
+   in the quarantine mailbox rather than being deleted.
+3. **Scored content/behaviour filter** (`src/lib/mail/spam.ts`): random-looking names and
+   messages, free text with no spaces and almost no vowels, link stuffing, spam
+   phrases, a repeat of a contact seen in the last 30 minutes (Gmail dots and
+   +tags are normalised, so dot-variants are recognised as one inbox). Score 4+ on
+   *content* is quarantined; 2-3 is delivered flagged.
+4. **A manual block list** (`LEAD_BLOCKLIST`) for a specific repeat offender.
+5. **Flagged leads** arrive with the subject prefix `[Review]` and a yellow banner,
    and the customer gets no confirmation email (bots submit real strangers' addresses).
-4. **Rate limits** (only counting leads that passed the filter) and **de-duplication**
+6. **Rate limits** (3/hour per IP, only counting leads that passed the filter) and **de-duplication**
    (max 3 sends per contact per hour; a failed send doesn't count).
-5. **Chatbot** leads must contain a real visitor conversation, since the chatbot skips Turnstile.
-6. **Turnstile never blocks a lead.** If the widget can't verify (hostname missing
+7. **Chatbot** leads must contain a real visitor conversation, since the chatbot skips Turnstile.
+8. **Turnstile never blocks a lead.** If the widget can't verify (hostname missing
    from the widget's allow-list, Cloudflare incident, extension or network
    blocking the script), the form stays usable and the lead is delivered flagged
    rather than rejected, with a tighter per-IP cap (3/hour). Losing a real
@@ -99,6 +110,10 @@ in the Vercel logs.
 Tune or test the filter with `npm run test:spam` (real spam samples, plus a set of
 awkward-but-legitimate leads that must never be dropped). Add any new spam pattern
 to `scripts/test-spam-filter.mjs` first.
+
+**Two mail filters worth setting up:** one on subject `"[Spam]"` in the quarantine
+mailbox (so it stays out of the way but is searchable), and this one for the
+client's inbox.
 
 **Gmail filter for flagged leads:** Settings > Filters > Create filter, subject
 `"[Review]"`, then *Apply the label* "Possible spam". Do **not** tick *Skip the

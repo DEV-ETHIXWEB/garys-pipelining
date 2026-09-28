@@ -5,19 +5,22 @@ import type { LeadPayloadInput } from "./lead-schema";
 // that pass Turnstile and fill every field with random characters
 // ("MGtfDzDtBYkmbMAzHJhwRXBh", "Tpbtfzqt") plus real-looking emails and phones.
 //
-// Signals fall into two kinds:
+// Signals fall into three kinds:
 //  - CONTENT: what was typed looks machine-made (random text, junk links).
 //  - BEHAVIOUR: how it was submitted looks machine-made (instant, no timing).
-// Behaviour alone can never drop a lead (fillMs is client-reported and a fast
-// autofill is normal), it can only tip a lead that already looks odd. A lead
-// is dropped silently only when the content itself is clearly junk; the middle
-// band is still delivered, flagged "[Review]", so a false positive costs the
-// team a glance instead of a customer.
-export type SpamAction = "allow" | "review" | "drop";
+//  - HARD: content-independent rules a real visitor cannot trip (a filled
+//    honeypot, a submit faster than a human can type). These work on random
+//    junk precisely because they ignore what was typed.
+//
+// Nothing is ever deleted. "quarantine" means the lead is delivered to a
+// separate mailbox instead of the client's inbox, with no customer
+// confirmation, so a wrongly flagged real person can still be recovered.
+// That safety net is what lets the hard rules below be strict.
+export type SpamAction = "allow" | "review" | "quarantine";
 export type SpamVerdict = { action: SpamAction; score: number; reasons: string[] };
 
 export const REVIEW_AT = 2;
-export const DROP_AT = 4;
+export const QUARANTINE_AT = 4;
 
 export type SpamInput = Pick<LeadPayloadInput, "source" | "name" | "email" | "fields" | "transcript" | "fillMs"> & {
   /**
@@ -27,18 +30,25 @@ export type SpamInput = Pick<LeadPayloadInput, "source" | "name" | "email" | "fi
    * than dropping it: a Cloudflare outage must not swallow real customers.
    */
   unverified?: boolean;
+  /**
+   * Set by the API route when this exact contact (email normalised for Gmail
+   * dots/plus-tags, or phone digits) already submitted recently. Bots vary the
+   * dots to look like new people; the same inbox behind them gives it away.
+   */
+  seenRecently?: boolean;
 };
 
-// A person can't read, fill, and submit a form in under this.
-const MIN_HUMAN_FILL_MS = 2500;
-// Nobody produces a submit this soon after the form appeared.
-const IMPOSSIBLE_FILL_MS = 300;
+// Nobody reads a form, types a name, phone and message, and submits inside
+// three seconds. This is a hard rule: the submission is quarantined rather
+// than delivered, whatever it contains. It is content-independent, so it works
+// on junk that is different every time.
+export const MIN_FILL_MS = 3000;
 
 // Distinct link targets, not raw link count: a customer pasting five photo
 // links from one drive is normal, a pitch pointing at many sites is not.
 const HOST_PATTERN = /(?:https?:\/\/|(?:^|\s)www\.)([^\s/:?#]+)/gi;
 const REVIEW_HOSTS = 3;
-const DROP_HOSTS = 6;
+const QUARANTINE_HOSTS = 6;
 
 // High-precision phrases only, matched after undoing common obfuscation
 // ("b@cklinks", "Bit-coin"). This is not a general keyword filter.
@@ -129,6 +139,33 @@ function isRepeatedChar(value: string): boolean {
   return t.length >= 5 && !/\s/.test(t) && /(.)\1{4,}/.test(t);
 }
 
+/**
+ * A long stretch of typed text with no spaces AND almost no vowels
+ * ("DKErScwlGYOQHNQumrtbi"). People describing a problem write sentences, and
+ * even a shouted one-word "EMERGENCYSEWERBACKUPINBASEMENT" keeps a normal
+ * share of vowels, so the vowel test is what separates real words jammed
+ * together from machine output.
+ *
+ * A vowel ratio is unsafe on names (Nguyen, Wojciechowski) but safe here: this
+ * only ever looks at free-text fields, and only at runs of 15+ characters, far
+ * longer than any real name. URLs are exempt, because a customer pasting a
+ * photo link is normal and links are already counted separately.
+ */
+export function isUnbrokenText(value: string): boolean {
+  const t = value.trim();
+  if (t.length < 15 || /\s/.test(t)) return false;
+  if (/:\/\/|^www\.|\.[a-z]{2,}\//i.test(t)) return false;
+  const letters = t.replace(/[^A-Za-z]/g, "");
+  if (letters.length < 12) return false;
+  const vowels = (letters.match(/[aeiou]/gi) ?? []).length;
+  return vowels / letters.length < 0.25;
+}
+
+// Deliberately NOT scored: "address contains no digits". Plenty of real
+// customers type only a city ("Seattle"), and in testing it stacked with the
+// name rules to quarantine a legitimate "DeShawnMarcusJr" in Tukwila. The junk
+// addresses it aimed at are already caught by the random-text rules.
+
 function hasNoLetters(value: string): boolean {
   const t = value.trim();
   return t.length >= 6 && !/\p{L}/u.test(t);
@@ -178,6 +215,9 @@ export function assessLead(data: SpamInput): SpamVerdict {
     } else if (MESSAGE_LABEL.test(f.label) && (hasNoLetters(v) || isRepeatedChar(v))) {
       fieldPoints += 2;
       reasons.push(`no real words in "${f.label}"`);
+    } else if (MESSAGE_LABEL.test(f.label) && isUnbrokenText(v)) {
+      fieldPoints += 2;
+      reasons.push(`"${f.label}" is one long run of characters with no spaces`);
     } else if (/address|company|city/i.test(f.label) && isKeyboardMash(v)) {
       fieldPoints += 1;
       reasons.push(`nonsense word in "${f.label}"`);
@@ -205,7 +245,7 @@ export function assessLead(data: SpamInput): SpamVerdict {
   // Links: distinct targets in the typed fields (not the chat transcript).
   const typed = [data.name, ...data.fields.map((f) => f.value)].join("\n");
   const hosts = distinctHosts(typed);
-  if (hosts >= DROP_HOSTS) {
+  if (hosts >= QUARANTINE_HOSTS) {
     hard += 4;
     reasons.push("links to many different sites");
   } else if (hosts > REVIEW_HOSTS) {
@@ -225,24 +265,33 @@ export function assessLead(data: SpamInput): SpamVerdict {
     reasons.push("contains a common spam phrase");
   }
 
-  // Behaviour: how long the form was open. Capped, and never enough to drop.
+  // Behaviour: how long the form was open. Under the floor is a hard rule,
+  // because no person can do it and it doesn't depend on what was typed.
   if (typeof data.fillMs === "number") {
-    if (data.fillMs < IMPOSSIBLE_FILL_MS) {
-      behaviour += 3;
-      reasons.push("submitted instantly");
-    } else if (data.fillMs < MIN_HUMAN_FILL_MS) {
-      behaviour += 2;
-      reasons.push("submitted faster than a person could fill the form");
+    if (data.fillMs < MIN_FILL_MS) {
+      hard += 4;
+      reasons.push(`submitted in ${(data.fillMs / 1000).toFixed(1)}s, faster than a person can fill the form`);
     }
   } else if (data.source !== "chatbot") {
+    // A missing timer means a direct POST to the endpoint or a page cached from
+    // before the timer shipped. Scored, not hard-blocked, so a stale page can't
+    // cost a real customer their enquiry.
     behaviour += 2;
     reasons.push("no form timing (direct API post or a stale page)");
   }
+
+  // Same inbox or phone as a submission we just took. Gmail ignores dots, so
+  // bots spray c.t.f@gmail.com, ct.f@gmail.com and so on from one account.
+  if (data.seenRecently) {
+    content += 2;
+    reasons.push("same contact details as a recent submission");
+  }
+
   behaviour = Math.min(behaviour, 3);
 
   // Turnstile didn't vouch for this one. Enough on its own to flag it for
-  // review, never enough to drop it, because the usual cause is the widget
-  // failing for a real visitor rather than a bot skipping it.
+  // review, never enough to quarantine it, because the usual cause is the
+  // widget failing for a real visitor rather than a bot skipping it.
   if (data.unverified) {
     behaviour += 2;
     reasons.push("security check did not verify this submission");
@@ -256,7 +305,7 @@ export function assessLead(data: SpamInput): SpamVerdict {
   }
 
   const score = content + behaviour + hard;
-  const drop = hard >= DROP_AT || content >= DROP_AT || (content >= 3 && score >= 5);
-  const action: SpamAction = drop ? "drop" : score >= REVIEW_AT ? "review" : "allow";
+  const quarantine = hard >= QUARANTINE_AT || content >= QUARANTINE_AT || (content >= 3 && score >= 5);
+  const action: SpamAction = quarantine ? "quarantine" : score >= REVIEW_AT ? "review" : "allow";
   return { action, score, reasons };
 }

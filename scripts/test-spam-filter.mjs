@@ -5,7 +5,7 @@
 //  1. The junk that actually reached the inbox must be dropped.
 //  2. Real customers, including awkward-but-legitimate ones, must never be dropped.
 import assert from "node:assert/strict";
-import { assessLead, isConsonantSoup, isKeyboardMash, isRandomCased } from "../src/lib/mail/spam.ts";
+import { assessLead, isConsonantSoup, isKeyboardMash, isRandomCased, isUnbrokenText } from "../src/lib/mail/spam.ts";
 
 const form = (over) => ({
   source: "estimate",
@@ -47,11 +47,11 @@ const check = (label, fn) => {
   console.log(`  ok  ${label}`);
 };
 
-console.log("Real spam is dropped");
+console.log("Real spam is quarantined (never deleted)");
 for (const [name, email, address, issue] of REAL_SPAM) {
   // Worst case for us: a bot that waits a human-plausible time before submitting.
   const v = assessLead(form({ name, email, fields: issueFields(address, issue), fillMs: 9000 }));
-  check(`${name.slice(0, 12)}… (score ${v.score})`, () => assert.equal(v.action, "drop", v.reasons.join("; ")));
+  check(`${name.slice(0, 12)}… (score ${v.score})`, () => assert.equal(v.action, "quarantine", v.reasons.join("; ")));
 }
 
 console.log("Legitimate leads are never dropped or flagged");
@@ -74,7 +74,6 @@ const LEGIT = [
   form({ fields: issueFields("Renton", "Photos here https://drive.google.com/file/abc123") }),
   form({ email: "john.a.smith.jr.1990@gmail.com" }),
   form({ fillMs: 3000 }),
-  form({ fillMs: 2600 }),
   form({ fields: issueFields("Strengths Rd", "Wright Street property, bought a Kohler K-3999") }),
   form({ fields: [{ label: "Service needed", value: "Hydro Jetting" }], fillMs: 45_000 }),
   form({ source: "contact", fields: [{ label: "Message", value: "Do you service Federal Way? Need a quote for a sump pump." }] }),
@@ -102,17 +101,17 @@ const NEVER_DROP = [
   ["chat: customer pastes 4 photo links from one drive", { source: "chatbot", name: "Ann Lee", email: "a@example.com", fields: [], transcript: [{ from: "bot", text: "Greeted the visitor" }, { from: "user", text: "https://drive.google.com/1 https://drive.google.com/2 https://drive.google.com/3 https://drive.google.com/4" }] }],
   ["chat: customer mentions 4 listing sites", { source: "chatbot", name: "Ann Lee", email: "a@example.com", fields: [], transcript: [{ from: "bot", text: "Greeted the visitor" }, { from: "user", text: "I saw https://a.com https://b.com https://c.com https://d.com listings" }] }],
   ["estimate: 4 different links", form({ fields: issueFields("x", "https://a.com https://b.com https://c.com https://d.com pics") })],
-  ["casino customer, fast autofill", form({ fillMs: 2000, fields: issueFields("Reno", "Casino kitchen grease trap backed up") })],
-  ["crypto office, fast autofill", form({ fillMs: 1800, fields: issueFields("Seattle", "Crypto startup office, toilets clogged") })],
-  ["mid-length no-space name + odd address + fast", form({ name: "KwabenaOwusuAnsah", fillMs: 1800, fields: issueFields("Strngths", "slow drain") })],
+  ["casino customer, normal pace", form({ fillMs: 20_000, fields: issueFields("Reno", "Casino kitchen grease trap backed up") })],
+  ["crypto office, normal pace", form({ fillMs: 20_000, fields: issueFields("Seattle", "Crypto startup office, toilets clogged") })],
+  ["mid-length no-space name + odd address", form({ name: "KwabenaOwusuAnsah", fillMs: 20_000, fields: issueFields("Strngths", "slow drain") })],
   ["no-space camel name + odd address", form({ name: "DeShawnMarcusJr", fillMs: 3000, fields: issueFields("Tsktsk", "slow drain") })],
   ["no-space camel name, stale page", form({ name: "LaQuitaJoAnnDeShawn", fillMs: undefined })],
-  ["dotted email + fast autofill", form({ name: "D'Shawn", email: "a.b.c.d.e@gmail.com", fillMs: 2000 })],
+  ["dotted email, normal pace", form({ name: "D'Shawn", email: "a.b.c.d.e@gmail.com", fillMs: 20_000 })],
   ["message typed with no spaces", form({ fields: issueFields("Seattle", "SlowDrainInKitchenSinkAndShower") })],
 ];
 for (const [label, lead] of NEVER_DROP) {
   const v = assessLead(lead);
-  check(`${label} (score ${v.score})`, () => assert.notEqual(v.action, "drop", v.reasons.join("; ")));
+  check(`${label} (score ${v.score})`, () => assert.notEqual(v.action, "quarantine", v.reasons.join("; ")));
 }
 
 console.log("Bot variants seen in review that used to score 0-1 now get flagged");
@@ -128,7 +127,7 @@ for (const [label, lead] of EVASIONS) {
   check(`${label} (score ${v.score})`, () => assert.notEqual(v.action, "allow", v.reasons.join("; ")));
 }
 check("obfuscated spam pitch (b@cklinks + C a s i n o) is caught", () =>
-  assert.equal(assessLead(form({ fillMs: 200, fields: issueFields("x", "Cheap b@cklinks and C a s i n o bonus") })).action, "drop"),
+  assert.equal(assessLead(form({ fillMs: 200, fields: issueFields("x", "Cheap b@cklinks and C a s i n o bonus") })).action, "quarantine"),
 );
 
 console.log("Weak or partial signals are flagged for review, not dropped");
@@ -136,7 +135,6 @@ const REVIEW = [
   // Junk in one field only.
   ["random message only", form({ fields: issueFields("123 Main St", "gMMDGildInbyVnnxJnSU") })],
   // Instant submit but otherwise normal looking.
-  ["fast submit only", form({ fillMs: 1200 })],
   // Direct API post with realistic text (no timing) + spam-dotted email + nonsense address.
   ["realistic text, no timing, dotted email", form({ fillMs: undefined, email: "a.b.c.d.e@gmail.com" })],
 ];
@@ -161,23 +159,23 @@ check("chatbot is unaffected by the unverified flag", () => {
 });
 check("junk content with no verification is still dropped", () => {
   const v = assessLead(form({ unverified: true, name: "MGtfDzDtBYkmbMAzHJhwRXBh", fillMs: 9000, fields: issueFields("Flaewa", "gMMDGildInbyVnnxJnSU") }));
-  assert.equal(v.action, "drop", v.reasons.join("; "));
+  assert.equal(v.action, "quarantine", v.reasons.join("; "));
 });
 check("unverified alone can never drop a lead", () => {
   for (const lead of LEGIT) {
     const v = assessLead({ ...lead, unverified: true });
-    assert.notEqual(v.action, "drop", `${lead.name}: ${v.reasons.join("; ")}`);
+    assert.notEqual(v.action, "quarantine", `${lead.name}: ${v.reasons.join("; ")}`);
   }
 });
 
 console.log("Other hard drops");
-check("pitch linking to 6+ different sites is dropped", () =>
+check("pitch linking to 6+ different sites is quarantined", () =>
   assert.equal(
     assessLead(form({ fields: issueFields("x", "http://a.com http://b.com http://c.com http://d.com http://e.com http://f.com") })).action,
-    "drop",
+    "quarantine",
   ),
 );
-check("chat leads with no conversation AND random text are dropped", () =>
+check("chat leads with no conversation AND random text are quarantined", () =>
   assert.equal(
     assessLead({
       source: "chatbot",
@@ -186,20 +184,70 @@ check("chat leads with no conversation AND random text are dropped", () =>
       fields: [],
       transcript: [{ from: "bot", text: "Greeted the visitor" }, { from: "user", text: "gMMDGildInbyVnnxJnSU" }],
     }).action,
-    "drop",
+    "quarantine",
   ),
 );
 check("chatbot post with no conversation (Turnstile bypass attempt)", () =>
   assert.equal(
     assessLead({ source: "chatbot", name: "Bob Jones", email: "bob@example.com", fields: [], transcript: [{ from: "bot", text: "Greeted the visitor" }] }).action,
-    "drop",
+    "quarantine",
   ),
 );
 check("chatbot post with no transcript at all", () =>
-  assert.equal(assessLead({ source: "chatbot", name: "Bob Jones", email: "bob@example.com", fields: [] }).action, "drop"),
+  assert.equal(assessLead({ source: "chatbot", name: "Bob Jones", email: "bob@example.com", fields: [] }).action, "quarantine"),
 );
 check("SEO spam pitch, instant submit", () =>
-  assert.equal(assessLead(form({ fillMs: 300, fields: issueFields("x", "Cheap backlinks and seo services for your site") })).action, "drop"),
+  assert.equal(assessLead(form({ fillMs: 300, fields: issueFields("x", "Cheap backlinks and seo services for your site") })).action, "quarantine"),
+);
+
+console.log("Hard 3-second rule (content-independent, catches junk that is different every time)");
+// Known, accepted tradeoff: a real customer using full browser autofill can
+// submit inside 3s and will be quarantined. That is survivable only because
+// quarantine delivers to a mailbox instead of deleting, so the enquiry is
+// still recoverable. If that mailbox is ever not configured, this rule turns
+// into data loss, which is why MAIL_QUARANTINE is documented as required.
+check("a real customer on fast autofill is quarantined, NOT deleted (recoverable)", () => {
+  const v = assessLead(form({ fillMs: 2600 }));
+  assert.equal(v.action, "quarantine");
+  assert.ok(v.reasons.some((r) => /faster than a person/.test(r)), v.reasons.join("; "));
+});
+check("submitted in 1.2s is quarantined even though the content looks perfect", () =>
+  assert.equal(assessLead(form({ fillMs: 1200 })).action, "quarantine"),
+);
+check("submitted in 0s is quarantined", () => assert.equal(assessLead(form({ fillMs: 0 })).action, "quarantine"));
+check("submitted at 2.9s is quarantined", () => assert.equal(assessLead(form({ fillMs: 2900 })).action, "quarantine"));
+check("submitted at 3.1s with clean content is delivered", () =>
+  assert.equal(assessLead(form({ fillMs: 3100 })).action, "allow"),
+);
+check("a slow, careful real customer is unaffected", () =>
+  assert.equal(assessLead(form({ fillMs: 240_000 })).action, "allow"),
+);
+
+console.log("Repeat contact (Gmail dot-variants are one inbox)");
+check("same inbox submitting again is flagged", () => {
+  const v = assessLead(form({ seenRecently: true }));
+  assert.notEqual(v.action, "allow", v.reasons.join("; "));
+});
+check("repeat contact plus one junk field is quarantined", () =>
+  assert.equal(
+    assessLead(form({ seenRecently: true, fields: issueFields("123 Main St", "gMMDGildInbyVnnxJnSU") })).action,
+    "quarantine",
+  ),
+);
+
+console.log("New content signals from the review of real spam");
+check("issue text that is one long run with no spaces is flagged", () => {
+  const v = assessLead(form({ fields: issueFields("123 Main St, Seattle", "DKErScwlGYOQHNQumrtbi") }));
+  assert.notEqual(v.action, "allow", v.reasons.join("; "));
+});
+check("a customer who types only a city is never quarantined for it", () =>
+  assert.equal(assessLead(form({ fields: issueFields("Seattle", "Slow drain in the kitchen") })).action, "allow"),
+);
+check("the SibwXBoLKIdFkVlu / Byreikounh style lead is quarantined", () =>
+  assert.equal(
+    assessLead(form({ name: "SibwXBoLKIdFkVlu", fillMs: 9000, fields: issueFields("Byreikounh", "DKErScwlGYOQHNQumrtbi") })).action,
+    "quarantine",
+  ),
 );
 
 console.log("Detector primitives");
@@ -215,12 +263,19 @@ check("isConsonantSoup", () => {
   for (const w of ["Schwartzkopf", "Przybylski", "Krzyzanowski", "Strengthening", "Szczepanski", "Christchurch", "Knightsbridge", "Wojciechowski"])
     assert.equal(isConsonantSoup(w), false, w);
 });
-check("all-lowercase random bot (name+message) is dropped", () =>
+check("all-lowercase random bot (name+message) is quarantined", () =>
   assert.equal(
     assessLead(form({ name: "mgtfdzdtbykmbmazhj", fillMs: 8000, fields: issueFields("tpbtfzqt", "gmmdgildinbyvnnxjnsu") })).action,
-    "drop",
+    "quarantine",
   ),
 );
+check("isUnbrokenText", () => {
+  assert.equal(isUnbrokenText("DKErScwlGYOQHNQumrtbi"), true);
+  assert.equal(isUnbrokenText("Slow drain in the kitchen sink"), false);
+  assert.equal(isUnbrokenText("EMERGENCY"), false);
+  assert.equal(isUnbrokenText("https://drive.google.com/file/d/abc123def456"), false); // pasted links are normal
+  assert.equal(isUnbrokenText("EMERGENCYSEWERBACKUPINBASEMENT"), false); // real words, shouted
+});
 check("isKeyboardMash", () => {
   assert.equal(isKeyboardMash("Tpbtfzqt"), true);
   assert.equal(isKeyboardMash("Seattle"), false);

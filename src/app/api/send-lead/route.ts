@@ -3,7 +3,8 @@ import { validateAttachment } from "@/lib/mail/attachment";
 import { leadPayloadSchema, SOURCE_LABELS } from "@/lib/mail/lead-schema";
 import { sanitizeHeaderValue } from "@/lib/mail/sanitize";
 import { MailNotConfiguredError, sendLeadEmails } from "@/lib/mail/send";
-import { assessLead } from "@/lib/mail/spam";
+import { contactIdentity, isBlocked } from "@/lib/mail/identity";
+import { assessLead, type SpamVerdict } from "@/lib/mail/spam";
 import type { LeadAttachment, NormalizedLead } from "@/lib/mail/types";
 import { checkRateLimit, getClientIp, refundRateLimit } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -20,6 +21,15 @@ export const maxDuration = 30;
 
 function jsonError(message: string, status: number, extraHeaders?: HeadersInit) {
   return NextResponse.json({ success: false, message }, { status, headers: extraHeaders });
+}
+
+/**
+ * Every rejection path answers the visitor identically, so a bot learns nothing
+ * about which rule caught it and a wrongly flagged customer still sees the
+ * normal thank-you screen.
+ */
+function silentSuccess() {
+  return NextResponse.json({ success: true });
 }
 
 export async function POST(request: NextRequest) {
@@ -64,7 +74,16 @@ export async function POST(request: NextRequest) {
   // Honeypots: real visitors never see or fill these fields. Report success
   // without sending anything so bots get no signal they were caught.
   if (data.botcheck || (data.hp && data.hp.trim())) {
-    return NextResponse.json({ success: true });
+    console.warn(`[send-lead] Honeypot filled ip=${ip} source=${data.source}`);
+    return silentSuccess();
+  }
+
+  // Manual block list (LEAD_BLOCKLIST): a specific repeat offender, by email,
+  // phone or IP. Gmail dots and plus-tags are normalised, so one spelling
+  // blocks every variant of the same inbox.
+  if (isBlocked([data.email, data.phone, ip])) {
+    console.warn(`[send-lead] Blocked sender ip=${ip} source=${data.source}`);
+    return silentSuccess();
   }
 
   // Scored content/behaviour check (see src/lib/mail/spam.ts). Obvious junk is
@@ -74,13 +93,16 @@ export async function POST(request: NextRequest) {
   // Run first on content alone: junk gets dropped without spending a network
   // round-trip on Cloudflare, and Turnstile only gets asked about submissions
   // that might be real.
-  let verdict = assessLead(data);
-  if (verdict.action === "drop") {
-    console.warn(
-      `[send-lead] Dropped spam ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
-    );
-    return NextResponse.json({ success: true });
-  }
+  // Has this exact inbox or phone just submitted? Checked before scoring so it
+  // can feed in, and recorded whatever the outcome, so a bot spraying Gmail dot
+  // variants is recognised on its second attempt.
+  const identity = contactIdentity(data);
+  const seenRecently = identity
+    ? !checkRateLimit(`lead-identity:${identity}`, { windowMs: 30 * 60_000, max: 1 }).allowed
+    : false;
+
+  let verdict: SpamVerdict = assessLead({ ...data, seenRecently });
+  let quarantined = verdict.action === "quarantine";
   // Turnstile is an additional layer on top of the honeypot/rate-limit/spam
   // checks above, not a replacement for any of them. `turnstileToken` isn't
   // part of leadPayloadSchema (that schema is shared by every lead source),
@@ -106,13 +128,8 @@ export async function POST(request: NextRequest) {
       console.warn(`[send-lead] Turnstile did not verify ip=${ip} source=${data.source} reason=${turnstile.reason}`);
       // Re-score with the missing verification counted in: clearly junk content
       // paired with no token is dropped, a clean-looking lead is flagged.
-      verdict = assessLead({ ...data, unverified: true });
-      if (verdict.action === "drop") {
-        console.warn(
-          `[send-lead] Dropped spam ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
-        );
-        return NextResponse.json({ success: true });
-      }
+      verdict = assessLead({ ...data, seenRecently, unverified: true });
+      quarantined = verdict.action === "quarantine";
       // Tight per-IP cap so an unverified endpoint can't be used as a firehose.
       const unverifiedRate = checkRateLimit(`lead-unverified:${ip}`, { windowMs: 60 * 60_000, max: 3 });
       if (!unverifiedRate.allowed) {
@@ -123,7 +140,11 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  if (verdict.action === "review") {
+  if (quarantined) {
+    console.warn(
+      `[send-lead] Quarantined ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
+    );
+  } else if (verdict.action === "review") {
     console.info(
       `[send-lead] Flagged for review ip=${ip} source=${data.source} score=${verdict.score} reasons=${JSON.stringify(verdict.reasons)}`,
     );
@@ -131,9 +152,11 @@ export async function POST(request: NextRequest) {
 
   // Rate limiting only counts submissions that got past the honeypot and spam
   // checks, so bot traffic can't use up the quota of real customers who share
-  // its IP (offices, apartment wifi).
-  const rate = checkRateLimit(`lead:${ip}`, { windowMs: 10 * 60_000, max: 6 });
-  const dailyRate = checkRateLimit(`lead-day:${ip}`, { windowMs: 24 * 60 * 60_000, max: 15 });
+  // its IP (offices, apartment wifi). Quarantined leads skip the limiter
+  // entirely: they never reach the client, and they must not eat the quota of
+  // a real customer on the same network.
+  const rate = quarantined ? { allowed: true as const } : checkRateLimit(`lead:${ip}`, { windowMs: 60 * 60_000, max: 3 });
+  const dailyRate = quarantined ? { allowed: true as const } : checkRateLimit(`lead-day:${ip}`, { windowMs: 24 * 60 * 60_000, max: 15 });
   const blocked = !rate.allowed ? rate : !dailyRate.allowed ? dailyRate : null;
   if (blocked) {
     return jsonError("Too many requests. Please try again in a few minutes.", 429, {
@@ -144,8 +167,7 @@ export async function POST(request: NextRequest) {
   // The same person (or bot) resubmitting the same contact details shouldn't
   // produce a fresh email each time. Report success so a real customer who
   // double-clicked isn't confused, but don't send again.
-  const contactKey = (data.email || "").toLowerCase() || (data.phone || "").replace(/\D/g, "");
-  const contactBucket = contactKey ? `lead-contact:${contactKey}` : null;
+  const contactBucket = identity && !quarantined ? `lead-contact:${identity}` : null;
   if (contactBucket) {
     const repeat = checkRateLimit(contactBucket, { windowMs: 60 * 60_000, max: 3 });
     if (!repeat.allowed) {
@@ -177,11 +199,13 @@ export async function POST(request: NextRequest) {
     pageUrl: data.pageUrl || undefined,
     submittedAt: new Date(),
     attachment,
-    spamFlags: verdict.action === "review" ? verdict.reasons : undefined,
+    spamFlags: verdict.action === "allow" ? undefined : verdict.reasons,
+    quarantined,
   };
 
   try {
     const result = await sendLeadEmails(normalized);
+    // Quarantined leads answer exactly like accepted ones.
     return NextResponse.json({ success: true, customerEmailSent: result.customer });
   } catch (err) {
     // The lead never went out, so don't let this attempt count against the

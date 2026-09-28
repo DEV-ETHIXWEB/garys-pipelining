@@ -121,15 +121,20 @@ function transcriptBlock(transcript: NormalizedLead["transcript"]): string {
 }
 
 export function renderAdminLeadEmail(lead: NormalizedLead): RenderedEmail {
-  const flagged = lead.spamFlags && lead.spamFlags.length > 0;
-  // Stable prefix so a single mail filter (subject:"[Review]") can label or archive these.
-  const subject = `${flagged ? "[Review] " : ""}${lead.urgent ? "URGENT: " : ""}New ${lead.sourceLabel.toLowerCase()} from ${lead.name}`;
+  const flagged = Boolean(lead.spamFlags && lead.spamFlags.length > 0) || Boolean(lead.quarantined);
+  // Stable prefixes so one mail filter each can label or archive these.
+  const prefix = lead.quarantined ? "[Spam] " : flagged ? "[Review] " : "";
+  const subject = `${prefix}${lead.urgent ? "URGENT: " : ""}New ${lead.sourceLabel.toLowerCase()} from ${lead.name}`;
 
-  const spamBanner = flagged
-    ? `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fef3c7; color:#92400e; font-size:13px; line-height:1.5;"><strong>Possible spam, please review before calling.</strong> ${escapeHtml(
-        (lead.spamFlags ?? []).join("; "),
-      )}. No confirmation email was sent to the customer.</div>`
-    : "";
+  const spamBanner = !flagged
+    ? ""
+    : lead.quarantined
+      ? `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fee2e2; color:#991b1b; font-size:13px; line-height:1.5;"><strong>Quarantined as spam, not sent to the team.</strong> ${escapeHtml(
+          (lead.spamFlags ?? []).join("; "),
+        )}. Nothing was deleted: if this is a real customer, reply or call them from here.</div>`
+      : `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fef3c7; color:#92400e; font-size:13px; line-height:1.5;"><strong>Possible spam, please review before calling.</strong> ${escapeHtml(
+          (lead.spamFlags ?? []).join("; "),
+        )}. No confirmation email was sent to the customer.</div>`;
 
   const bodyHtml = `
     ${spamBanner}
@@ -150,7 +155,7 @@ export function renderAdminLeadEmail(lead: NormalizedLead): RenderedEmail {
   `;
 
   const textLines = [
-    flagged ? `POSSIBLE SPAM, please review: ${(lead.spamFlags ?? []).join("; ")}` : "",
+    flagged ? `${lead.quarantined ? "QUARANTINED AS SPAM" : "POSSIBLE SPAM, please review"}: ${(lead.spamFlags ?? []).join("; ")}` : "",
     `New ${lead.sourceLabel}${lead.urgent ? " (URGENT)" : ""}`,
     `Name: ${lead.name}`,
     lead.phone ? `Phone: ${lead.phone}` : "",
