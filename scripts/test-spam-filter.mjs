@@ -129,6 +129,24 @@ for (const [label, lead] of EVASIONS) {
 check("obfuscated spam pitch (b@cklinks + C a s i n o) is caught", () =>
   assert.equal(assessLead(form({ fillMs: 200, fields: issueFields("x", "Cheap b@cklinks and C a s i n o bonus") })).action, "quarantine"),
 );
+check("AI/virtual-assistant pitch disguised as an estimate is quarantined", () => {
+  const v = assessLead(form({
+    fields: [
+      { label: "Contact purpose", value: "Plumbing or drain service" },
+      ...issueFields("N/A", "Hi, want the power of AI without having to learn it? I give you a trained virtual assistant who operates our custom AI system. Your first 30 days are free! Reply YES and I'll send over the details."),
+    ],
+    fillMs: 20_000,
+  }));
+  assert.equal(v.action, "quarantine", v.reasons.join("; "));
+});
+check("a genuine service enquiry that mentions a free estimate is not quarantined", () => {
+  const v = assessLead(form({ fields: issueFields("Seattle", "The previous contractor offered a free estimate, but the kitchen drain is still backing up. Can you help?"), fillMs: 20_000 }));
+  assert.notEqual(v.action, "quarantine", v.reasons.join("; "));
+});
+check("a visitor who identifies a business offer is quarantined", () => {
+  const v = assessLead(form({ fields: [{ label: "Contact purpose", value: "Business or marketing offer" }], fillMs: 20_000 }));
+  assert.equal(v.action, "quarantine", v.reasons.join("; "));
+});
 
 console.log("Weak or partial signals are flagged for review, not dropped");
 const REVIEW = [
@@ -205,7 +223,7 @@ console.log("Hard 3-second rule (content-independent, catches junk that is diffe
 // submit inside 3s and will be quarantined. That is survivable only because
 // quarantine delivers to a mailbox instead of deleting, so the enquiry is
 // still recoverable. If that mailbox is ever not configured, this rule turns
-// into data loss, which is why MAIL_QUARANTINE is documented as required.
+// into the main inbox, which is why MAIL_QUARANTINE is strongly recommended.
 check("a real customer on fast autofill is quarantined, NOT deleted (recoverable)", () => {
   const v = assessLead(form({ fillMs: 2600 }));
   assert.equal(v.action, "quarantine");

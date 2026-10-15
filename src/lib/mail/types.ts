@@ -32,9 +32,9 @@ export type NormalizedLead = {
   /** Set when the spam filter found weak signals but not enough to quarantine the lead. */
   spamFlags?: string[];
   /**
-   * Quarantined: delivered to MAIL_QUARANTINE only, never to the client and
-   * never confirmed to the customer. Nothing is deleted, so a wrongly flagged
-   * real enquiry can still be recovered from that mailbox.
+   * Quarantined: delivered to MAIL_QUARANTINE when configured, or to MAIL_TO
+   * with a [Spam] subject as a recoverable fallback. Never confirmed to the
+   * customer, since spam bots can submit real people's addresses.
    */
   quarantined?: boolean;
 };

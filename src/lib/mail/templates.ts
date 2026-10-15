@@ -129,7 +129,7 @@ export function renderAdminLeadEmail(lead: NormalizedLead): RenderedEmail {
   const spamBanner = !flagged
     ? ""
     : lead.quarantined
-      ? `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fee2e2; color:#991b1b; font-size:13px; line-height:1.5;"><strong>Quarantined as spam, not sent to the team.</strong> ${escapeHtml(
+      ? `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fee2e2; color:#991b1b; font-size:13px; line-height:1.5;"><strong>Flagged as likely spam. Review before contacting the sender.</strong> ${escapeHtml(
           (lead.spamFlags ?? []).join("; "),
         )}. Nothing was deleted: if this is a real customer, reply or call them from here.</div>`
       : `<div style="margin-bottom:16px; padding:10px 12px; border-radius:8px; background-color:#fef3c7; color:#92400e; font-size:13px; line-height:1.5;"><strong>Possible spam, please review before calling.</strong> ${escapeHtml(

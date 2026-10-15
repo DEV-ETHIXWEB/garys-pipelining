@@ -179,6 +179,14 @@ function distinctHosts(text: string): number {
 
 const MESSAGE_LABEL = /issue|message|describe|details|notes|comments/i;
 
+// High-confidence outbound sales signals. A single mention of AI, a free
+// estimate, or a call is not enough: quarantine only when a service pitch is
+// paired with a trial/discount or a sales CTA.
+const SALES_SERVICE_PITCH =
+  /\b(?:virtual assistant|trained va|custom ai system|marketing (?:agency|services?)|seo services?|lead generation|crm automation|social media management)\b/i;
+const SALES_OFFER_OR_CTA =
+  /\b(?:first\s+\d{1,2}\s+days?\s+(?:are\s+)?free|\d{1,2}[ -]?day free trial|free trial|reply\s+yes|book\s+(?:a\s+)?(?:call|demo)|schedule\s+(?:a\s+)?(?:call|demo))\b/i;
+
 export function assessLead(data: SpamInput): SpamVerdict {
   let content = 0;
   let behaviour = 0;
@@ -263,6 +271,20 @@ export function assessLead(data: SpamInput): SpamVerdict {
   } else if (phraseHits === 1) {
     content += 1;
     reasons.push("contains a common spam phrase");
+  }
+
+  // The estimate form has an explicit purpose choice. Also catch disguised
+  // pitches when the sender leaves the default service-request choice intact.
+  const declaredOffer = data.fields.some(
+    (field) => field.label === "Contact purpose" && /business or marketing offer/i.test(field.value),
+  );
+  const disguisedOffer =
+    (data.source === "estimate" || data.source === "contact") &&
+    SALES_SERVICE_PITCH.test(typed) &&
+    SALES_OFFER_OR_CTA.test(typed);
+  if (declaredOffer || disguisedOffer) {
+    content += 4;
+    reasons.push("business or marketing sales pitch");
   }
 
   // Behaviour: how long the form was open. Under the floor is a hard rule,

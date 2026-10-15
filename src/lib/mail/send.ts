@@ -52,22 +52,19 @@ export async function sendLeadEmails(lead: NormalizedLead): Promise<SendLeadEmai
   const from = resolveFromAddress();
   const logoAttachment = getLogoAttachment();
 
-  // Quarantined leads go to their own mailbox instead of the client's inbox.
-  // Without MAIL_QUARANTINE configured there is nowhere to put them, so they
-  // are logged and dropped, which is the old behaviour; set it to make them
-  // recoverable.
+  // Quarantined leads go to their own mailbox when configured. The main inbox
+  // is a recoverable fallback, clearly labeled [Spam], if it is not.
   if (lead.quarantined) {
     const quarantineTo = process.env.MAIL_QUARANTINE;
     if (!quarantineTo) {
       console.warn(
-        "[send-lead] MAIL_QUARANTINE is not set, so this quarantined lead was discarded instead of stored. Set it to keep a recoverable copy.",
+        "[send-lead] MAIL_QUARANTINE is not set; sending this quarantined lead to MAIL_TO with a [Spam] subject so it remains recoverable.",
       );
-      return { admin: false, customer: false };
     }
     const quarantined = renderAdminLeadEmail(lead);
     await transporter.sendMail({
       from,
-      to: quarantineTo,
+      to: quarantineTo || mailTo,
       subject: quarantined.subject,
       html: quarantined.html,
       text: quarantined.text,

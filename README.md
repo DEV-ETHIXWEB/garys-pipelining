@@ -76,9 +76,9 @@ Every lead (estimate form, partnership form, chatbot) goes through
 alone isn't enough: bots that pass it fill the forms with random characters.
 
 0. **Nothing is ever deleted.** Leads the filter rejects are *quarantined*: delivered to
-   `MAIL_QUARANTINE` instead of the client's inbox, with no customer confirmation. That
-   safety net is what lets the rules below be strict, so set that variable. Without it
-   quarantined leads are only logged, and a wrongly flagged customer really is lost.
+   `MAIL_QUARANTINE` instead of the client's inbox, with no customer confirmation. Set
+   that variable to keep spam out of the main inbox; if it is unset, quarantined leads
+   are sent to `MAIL_TO` with a `[Spam]` subject so a genuine customer is still recoverable.
 1. **Honeypots** (hidden checkbox + off-screen text input): filled means bot, dropped silently.
 2. **A hard 3-second floor.** Nobody reads a form, types their details and submits
    inside three seconds. This is content-independent, so it catches junk that is
@@ -88,8 +88,11 @@ alone isn't enough: bots that pass it fill the forms with random characters.
 3. **Scored content/behaviour filter** (`src/lib/mail/spam.ts`): random-looking names and
    messages, free text with no spaces and almost no vowels, link stuffing, spam
    phrases, a repeat of a contact seen in the last 30 minutes (Gmail dots and
-   +tags are normalised, so dot-variants are recognised as one inbox). Score 4+ on
-   *content* is quarantined; 2-3 is delivered flagged.
+   +tags are normalised, so dot-variants are recognised as one inbox). The estimate
+   form asks the visitor's purpose; declared business offers and high-confidence
+   sales pitches disguised as service requests are quarantined. A single mention of
+   AI, a free estimate, or a call is not enough. Score 4+ on *content* is quarantined;
+   2-3 is delivered flagged.
 4. **A manual block list** (`LEAD_BLOCKLIST`) for a specific repeat offender.
 5. **Flagged leads** arrive with the subject prefix `[Review]` and a yellow banner,
    and the customer gets no confirmation email (bots submit real strangers' addresses).

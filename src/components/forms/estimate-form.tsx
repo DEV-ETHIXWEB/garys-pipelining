@@ -18,6 +18,7 @@ import { siteConfig } from "@/lib/site-config";
 const turnstileRequired = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
 const schema = z.object({
+  contactPurpose: z.enum(["service", "other", "business-offer"]),
   name: z.string().min(2, "Enter your full name"),
   phone: z.string().min(7, "Enter a valid phone number"),
   email: z.string().email("Enter a valid email").optional().or(z.literal("")),
@@ -48,7 +49,7 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { service: defaultService ?? "", commercialProperty: false, smsConsent: false, botcheck: false, hp: "" },
+    defaultValues: { contactPurpose: "service", service: defaultService ?? "", commercialProperty: false, smsConsent: false, botcheck: false, hp: "" },
   });
 
   const selectedService = useWatch({ control, name: "service" });
@@ -69,6 +70,15 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
         fillMs: getFillMs(),
         turnstileToken,
         fields: [
+          {
+            label: "Contact purpose",
+            value:
+              values.contactPurpose === "business-offer"
+                ? "Business or marketing offer"
+                : values.contactPurpose === "other"
+                  ? "Other question"
+                  : "Plumbing or drain service",
+          },
           { label: "Address", value: values.address ?? "" },
           { label: "Service needed", value: values.service ?? "" },
           { label: "Describe the issue", value: values.message ?? "" },
@@ -112,6 +122,17 @@ export function EstimateForm({ defaultService }: { defaultService?: string }) {
         Request your free estimate
       </h3>
       <p className="-mt-2 text-center text-sm text-muted-foreground sm:text-left">Typical response within 1 business hour.</p>
+
+      <Field label="What are you contacting us about?" required>
+        <select
+          {...register("contactPurpose")}
+          className="w-full rounded-full border border-border bg-background px-5 py-3.5 text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="service">Plumbing or drain service</option>
+          <option value="other">Another question</option>
+          <option value="business-offer">A business, marketing, or vendor offer</option>
+        </select>
+      </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name" required error={errors.name?.message}>
