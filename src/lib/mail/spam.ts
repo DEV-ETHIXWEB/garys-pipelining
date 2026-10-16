@@ -187,6 +187,14 @@ const SALES_SERVICE_PITCH =
 const SALES_OFFER_OR_CTA =
   /\b(?:first\s+\d{1,2}\s+days?\s+(?:are\s+)?free|\d{1,2}[ -]?day free trial|free trial|reply\s+yes|book\s+(?:a\s+)?(?:call|demo)|schedule\s+(?:a\s+)?(?:call|demo))\b/i;
 
+// What someone with an actual plumbing problem talks about. A real customer
+// describes the job even when their own company happens to sound commercial
+// ("we're a marketing agency and our office toilet is overflowing"), while a
+// cold pitch never does. Deliberately the symptoms and services, not the trade
+// name: "plumber" appears constantly in pitches aimed AT plumbers.
+const PLUMBING_CONTEXT =
+  /\b(?:drain|sewer|clog(?:ged|ging)?|leak(?:ing|s)?|toilet|faucet|sink|shower|bathtub|burst pipe|pipe burst|repipe|water heater|back(?:ed|ing) up|backup|septic|sump pump|garbage disposal|hydro ?jet(?:ting)?|camera inspection|trenchless|pipe lining|rooter|water main|flooding|flooded)\b/i;
+
 export function assessLead(data: SpamInput): SpamVerdict {
   let content = 0;
   let behaviour = 0;
@@ -273,15 +281,36 @@ export function assessLead(data: SpamInput): SpamVerdict {
     reasons.push("contains a common spam phrase");
   }
 
-  // The estimate form has an explicit purpose choice. Also catch disguised
-  // pitches when the sender leaves the default service-request choice intact.
+  // The estimate form has an explicit purpose choice. Matched loosely so
+  // renaming the field's label can't silently switch this rule off.
   const declaredOffer = data.fields.some(
-    (field) => field.label === "Contact purpose" && /business or marketing offer/i.test(field.value),
+    (field) => /contact purpose/i.test(field.label) && /business or marketing offer/i.test(field.value),
+  );
+
+  // Also catch pitches that leave the default service-request choice intact.
+  // The chat transcript is included, so the same pitch sent through the chatbot
+  // is caught too. The partnership form is exempt: B2B offers are its purpose.
+  //
+  // Suppressed when the submission describes actual plumbing work. Measured on
+  // realistic enquiries, that guard is what stops a commercial customer
+  // ("we're a marketing agency and our office toilet is overflowing, can you
+  // book a call?") being diverted out of the inbox. It does leave an evasion
+  // path for a pitch that name-drops a symptom, which is the right way round:
+  // those still face every other signal, and a missed real customer costs more
+  // than one more junk email.
+  const pitchText = [typed, ...userTranscript].join("\n");
+  // The purpose dropdown's own default reads "Plumbing or drain service", so it
+  // must be excluded here: counting it would match every estimate and switch
+  // this rule off entirely. Only what the visitor actually typed or chose counts.
+  const describesRealWork = PLUMBING_CONTEXT.test(
+    [data.name, ...data.fields.filter((f) => !/contact purpose/i.test(f.label)).map((f) => f.value), ...userTranscript].join("\n"),
   );
   const disguisedOffer =
-    (data.source === "estimate" || data.source === "contact") &&
-    SALES_SERVICE_PITCH.test(typed) &&
-    SALES_OFFER_OR_CTA.test(typed);
+    !describesRealWork &&
+    data.source !== "partnership" &&
+    SALES_SERVICE_PITCH.test(pitchText) &&
+    SALES_OFFER_OR_CTA.test(pitchText);
+
   if (declaredOffer || disguisedOffer) {
     content += 4;
     reasons.push("business or marketing sales pitch");

@@ -143,6 +143,60 @@ check("a genuine service enquiry that mentions a free estimate is not quarantine
   const v = assessLead(form({ fields: issueFields("Seattle", "The previous contractor offered a free estimate, but the kitchen drain is still backing up. Can you help?"), fillMs: 20_000 }));
   assert.notEqual(v.action, "quarantine", v.reasons.join("; "));
 });
+// The purpose dropdown ships the default value "Plumbing or drain service".
+// If the sales-pitch guard ever counts that as evidence of real plumbing work,
+// the whole rule silently switches off for every estimate. This test exists to
+// catch exactly that regression.
+check("the purpose dropdown's own default cannot disable the sales-pitch rule", () => {
+  const v = assessLead(form({
+    fields: [
+      { label: "Contact purpose", value: "Plumbing or drain service" },
+      { label: "Describe the issue", value: "We offer SEO services for plumbers. Book a call to learn more." },
+    ],
+    fillMs: 20_000,
+  }));
+  assert.equal(v.action, "quarantine", v.reasons.join("; "));
+});
+
+// Commercial customers measured as false positives before the guard existed.
+// Each is a real enquiry from a business whose own trade sounds like a pitch.
+console.log("Commercial customers whose own business sounds like a sales pitch");
+const COMMERCIAL_CUSTOMERS = [
+  "We are a marketing agency downtown and our office toilet is overflowing. Can you book a call today?",
+  "My virtual assistant will coordinate scheduling, please reply yes to confirm. Toilet keeps clogging.",
+  "Our CRM automation startup's bathroom sink is leaking, can someone book a call with me?",
+  "Our SEO services company has a burst pipe in the server room, urgent.",
+];
+for (const text of COMMERCIAL_CUSTOMERS) {
+  const v = assessLead(form({ fields: issueFields("123 Main St, Seattle", text), fillMs: 20_000 }));
+  check(`not quarantined: "${text.slice(0, 48)}..."`, () => assert.notEqual(v.action, "quarantine", v.reasons.join("; ")));
+}
+
+check("the same pitch sent through the chatbot is caught too", () =>
+  assert.equal(
+    assessLead({ source: "chatbot", name: "Bo", fields: [], transcript: [{ from: "user", text: "We offer SEO services for plumbers. Book a call to learn more." }] }).action,
+    "quarantine",
+  ),
+);
+check("a normal chatbot customer is unaffected", () =>
+  assert.equal(
+    assessLead({ source: "chatbot", name: "Mike", fields: [], transcript: [{ from: "user", text: "my basement is flooding from the main drain" }] }).action,
+    "allow",
+  ),
+);
+check("the partnership form still accepts business offers (that is its purpose)", () =>
+  assert.equal(
+    assessLead({ source: "partnership", name: "Bo", email: "b@x.com", fillMs: 20_000, fields: [{ label: "Message", value: "We offer SEO services for plumbers. Book a call." }] }).action,
+    "allow",
+  ),
+);
+check("renaming or re-casing the purpose label does not switch the rule off", () =>
+  assert.equal(
+    assessLead(form({ fields: [{ label: "Contact Purpose ", value: "Business or marketing offer" }], fillMs: 20_000 })).action,
+    "quarantine",
+  ),
+);
+
 check("a visitor who identifies a business offer is quarantined", () => {
   const v = assessLead(form({ fields: [{ label: "Contact purpose", value: "Business or marketing offer" }], fillMs: 20_000 }));
   assert.equal(v.action, "quarantine", v.reasons.join("; "));
