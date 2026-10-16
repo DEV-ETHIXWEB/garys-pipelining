@@ -52,13 +52,21 @@ export async function sendLeadEmails(lead: NormalizedLead): Promise<SendLeadEmai
   const from = resolveFromAddress();
   const logoAttachment = getLogoAttachment();
 
-  // Quarantined leads go to their own mailbox when configured. The main inbox
-  // is a recoverable fallback, clearly labeled [Spam], if it is not.
-  if (lead.quarantined) {
+  // Anything the filter doubts is kept out of the client's inbox: confident
+  // spam ("[Spam]") and borderline leads ("[Review]") both go to the quarantine
+  // mailbox, keeping their own subject prefix so the two stay distinguishable
+  // there. Only leads that pass cleanly reach MAIL_TO.
+  //
+  // This means the quarantine mailbox has to be watched: a borderline lead can
+  // be a real customer (a stale page with no timing, someone resubmitting, or
+  // every lead at once if Turnstile is having an outage). The main inbox is
+  // still the fallback when MAIL_QUARANTINE isn't set, so nothing is lost.
+  const divertFromInbox = Boolean(lead.quarantined) || Boolean(lead.spamFlags && lead.spamFlags.length > 0);
+  if (divertFromInbox) {
     const quarantineTo = process.env.MAIL_QUARANTINE;
     if (!quarantineTo) {
       console.warn(
-        "[send-lead] MAIL_QUARANTINE is not set; sending this quarantined lead to MAIL_TO with a [Spam] subject so it remains recoverable.",
+        "[send-lead] MAIL_QUARANTINE is not set; sending this flagged lead to MAIL_TO so it remains recoverable.",
       );
     }
     const quarantined = renderAdminLeadEmail(lead);

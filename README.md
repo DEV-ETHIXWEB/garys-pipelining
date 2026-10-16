@@ -75,10 +75,17 @@ Every lead (estimate form, partnership form, chatbot) goes through
 `src/app/api/send-lead/route.ts`, which layers several defenses. Turnstile
 alone isn't enough: bots that pass it fill the forms with random characters.
 
-0. **Nothing is ever deleted.** Leads the filter rejects are *quarantined*: delivered to
-   `MAIL_QUARANTINE` instead of the client's inbox, with no customer confirmation. Set
-   that variable to keep spam out of the main inbox; if it is unset, quarantined leads
-   are sent to `MAIL_TO` with a `[Spam]` subject so a genuine customer is still recoverable.
+0. **Only clean leads reach the client's inbox.** Anything the filter doubts goes to
+   `MAIL_QUARANTINE` instead, keeping its subject prefix so the two kinds stay apart
+   there: `[Spam]` for confident spam, `[Review]` for borderline. Nothing is ever
+   deleted, and no customer confirmation is sent for either. If `MAIL_QUARANTINE` is
+   unset, they fall back to `MAIL_TO` so nothing is lost, which also means the junk
+   lands back in the client's inbox, so set it.
+
+   **That mailbox has to be watched.** A `[Review]` lead can be a real customer: a page
+   cached from before the timer shipped, someone resubmitting within 30 minutes, a fast
+   autofill, or every lead at once during a Turnstile outage. If the team only ever
+   reads the main inbox, those enquiries are missed.
 1. **Honeypots** (hidden checkbox + off-screen text input): filled means bot, dropped silently.
 2. **A hard 3-second floor.** Nobody reads a form, types their details and submits
    inside three seconds. This is content-independent, so it catches junk that is
