@@ -468,41 +468,44 @@ export default function ContractorPartnershipPage() {
             </h2>
           </Reveal>
 
-          <Reveal className="mt-14 overflow-x-auto">
-            <table className="w-full min-w-[640px] overflow-hidden rounded-[2rem] border border-border bg-surface-elevated text-left">
-              <thead>
-                <tr className="border-b border-border">
-                  <th scope="col" className="p-5 text-sm font-semibold text-ink md:p-6">
-                    &nbsp;
-                  </th>
-                  <th scope="col" className="p-5 text-sm font-semibold text-primary md:p-6">
-                    Gary&rsquo;s Partnership
-                  </th>
-                  <th scope="col" className="p-5 text-sm font-semibold text-muted-foreground md:p-6">
-                    Typical contractor
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonRows.map((row, i) => (
-                  <tr key={row.label} className={i !== comparisonRows.length - 1 ? "border-b border-border" : ""}>
-                    <th scope="row" className="p-5 text-sm font-medium text-foreground md:p-6">
-                      {row.label}
+          <Reveal className="mt-14">
+            {/* Focusable so keyboard users can scroll the table sideways on narrow screens. */}
+            <div tabIndex={0} role="region" aria-label="Comparison table, scrolls sideways" className="overflow-x-auto rounded-[2rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+              <table className="w-full min-w-[640px] overflow-hidden rounded-[2rem] border border-border bg-surface-elevated text-left">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th scope="col" className="p-5 text-sm font-semibold text-ink md:p-6">
+                      &nbsp;
                     </th>
-                    <td className="p-5 md:p-6">
-                      <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-4 w-4" />
-                      </span>
-                    </td>
-                    <td className="p-5 md:p-6">
-                      <span className="grid h-7 w-7 place-items-center rounded-full border border-border-strong text-muted-foreground">
-                        <X className="h-4 w-4" />
-                      </span>
-                    </td>
+                    <th scope="col" className="p-5 text-sm font-semibold text-primary md:p-6">
+                      Gary&rsquo;s Partnership
+                    </th>
+                    <th scope="col" className="p-5 text-sm font-semibold text-muted-foreground md:p-6">
+                      Typical contractor
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row, i) => (
+                    <tr key={row.label} className={i !== comparisonRows.length - 1 ? "border-b border-border" : ""}>
+                      <th scope="row" className="p-5 text-sm font-medium text-foreground md:p-6">
+                        {row.label}
+                      </th>
+                      <td className="p-5 md:p-6">
+                        <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground">
+                          <Check className="h-4 w-4" />
+                        </span>
+                      </td>
+                      <td className="p-5 md:p-6">
+                        <span className="grid h-7 w-7 place-items-center rounded-full border border-border-strong text-muted-foreground">
+                          <X className="h-4 w-4" />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </Reveal>
         </div>
       </section>

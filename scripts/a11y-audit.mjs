@@ -26,6 +26,11 @@ const ROUTES = [
   "/contact",
   "/services",
   "/service-area",
+  "/coupons",
+  "/contractor-partnership",
+  "/privacy",
+  "/blog",
+  "/blog/side-sewer-seattle-who-owns-it",
   ...SERVICE_SLUGS.map((s) => `/services/${s}`),
   ...LOCATION_SLUGS.map((l) => `/service-area/${l}`),
 ];

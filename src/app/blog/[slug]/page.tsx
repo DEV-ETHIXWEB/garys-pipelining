@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     type: "article",
     publishedTime: post.publishedAt,
     keywords: post.keywords,
-    image: { url: post.cover.src, width: 1600, height: 900, alt: post.cover.alt },
+    image: { url: post.shareImage, width: 1200, height: 675, alt: post.cover.alt },
   });
 }
 

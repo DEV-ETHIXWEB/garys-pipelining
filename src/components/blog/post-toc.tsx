@@ -49,7 +49,7 @@ export function PostToc({ headings }: { headings: { id: string; text: string }[]
                   active ? "font-semibold text-ink" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <span className={`tabular-nums text-xs leading-[1.35rem] ${active ? "text-primary" : "text-muted-foreground/70"}`}>
+                <span className={`tabular-nums text-xs leading-[1.35rem] ${active ? "text-primary" : "text-muted-foreground"}`}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span>{h.text}</span>

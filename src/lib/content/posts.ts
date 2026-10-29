@@ -17,6 +17,8 @@ export type Post = {
   category: string;
   publishedAt: string;
   cover: { src: string; alt: string };
+  /** 1200x675 JPG for link previews; LinkedIn and some messengers skip WebP. */
+  shareImage: string;
   updatedAt?: string;
   keywords: string[];
   takeaways: string[];
@@ -41,6 +43,7 @@ export const posts: Post[] = [
       src: "/blog/side-sewer-seattle/who-owns-the-pipe.webp",
       alt: "Illustration of a Seattle house with its side sewer running from the foundation to the city sewer main under the street, labelled all of this is yours",
     },
+    shareImage: "/blog/side-sewer-seattle/who-owns-the-pipe-share.jpg",
     takeaways: [
       "In Seattle you own your side sewer all the way to the public main, usually under the street.",
       "On many older blocks the line is shared with neighbors past the point where the pipes meet.",
