@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description: `How ${siteConfig.shortName} handles the information you share through this website, including estimate requests, the chatbot, and contact details.`,
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
 // Kept deliberately short and specific to what this site actually does. If a
 // form field, third-party embed, or tracking script is ever added, update this

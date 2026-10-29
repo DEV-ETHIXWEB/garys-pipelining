@@ -28,6 +28,8 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "trenchless-sewer-repair",
+    metaDescription:
+      "Trenchless sewer repair in Seattle using cured-in-place pipe lining. Fixes cracked, root-filled sewer lines through one small access point, no trench.",
     name: "Trenchless Sewer Repair",
     shortDescription: "Restore a damaged sewer line from the inside out, no excavation required.",
     category: "Pipelining",
@@ -77,7 +79,7 @@ export const services: Service[] = [
   {
     slug: "pipe-bursting",
     metaDescription:
-      "Full sewer line replacement without the trench: pipe bursting pulls a new pipe through the old one's path across the greater Seattle area.",
+      "Pipe bursting in Seattle: full sewer line replacement without the trench. A new pipe is pulled through the old one's path from two small access pits.",
     name: "Pipe Bursting",
     shortDescription: "Full pipe replacement pulled through two small access points, for lines too damaged to line.",
     category: "Pipelining",
@@ -123,7 +125,7 @@ export const services: Service[] = [
   {
     slug: "sewer-replacement",
     metaDescription:
-      "Full sewer lateral replacement for collapsed or badly bellied lines, done with the least disruption your site allows. Greater Seattle area.",
+      "Sewer line replacement in Seattle for collapsed or badly bellied side sewers, trenchless or open-cut, scoped after an HD camera inspection.",
     name: "Sewer Replacement",
     shortDescription: "Trenchless or open-cut sewer line replacement, scoped honestly after a camera inspection.",
     category: "Pipelining",
@@ -165,7 +167,7 @@ export const services: Service[] = [
   {
     slug: "water-main-repair",
     metaDescription:
-      "Fast diagnosis and repair of corroded water mains, joint leaks, and pressure loss across the greater Seattle area. Licensed and insured.",
+      "Water main and water service line repair in Seattle. Fast diagnosis of corroded pipe, joint leaks and pressure loss. Licensed, insured, 24/7.",
     name: "Water Main Repair",
     shortDescription: "Leak detection and repair or replacement for failing water service lines.",
     category: "Water Lines",
@@ -206,6 +208,8 @@ export const services: Service[] = [
   },
   {
     slug: "sewer-inspection",
+    metaDescription:
+      "Sewer camera inspection in Seattle. A self-leveling HD camera finds cracks, roots, bellies and blockages in your side sewer, and you see the footage.",
     name: "Sewer Inspection",
     shortDescription: "HD camera diagnosis of your full sewer line, see exactly what we see.",
     category: "Inspection",
@@ -253,6 +257,8 @@ export const services: Service[] = [
   },
   {
     slug: "drain-cleaning",
+    metaDescription:
+      "Drain cleaning in Seattle for slow sinks, backed-up toilets and main line clogs. Fast, lasting clearing from a licensed crew, available 24/7.",
     name: "Drain Cleaning",
     shortDescription: "Fast, lasting clearing for kitchen, bath, and main line clogs.",
     category: "Drain Services",
@@ -293,6 +299,8 @@ export const services: Service[] = [
   },
   {
     slug: "hydro-jetting",
+    metaDescription:
+      "Hydro jetting in Seattle. High-pressure water scours grease, scale and roots off the pipe wall to restore full diameter, chemical-free.",
     name: "Hydro Jetting",
     shortDescription: "High-pressure water jetting that restores full pipe diameter.",
     category: "Drain Services",
@@ -333,6 +341,8 @@ export const services: Service[] = [
   },
   {
     slug: "rooter-service",
+    metaDescription:
+      "Rooter service in Seattle. Mechanical cabling cuts through tree roots and stubborn blockages to get a backed-up sewer line flowing again, 24/7.",
     name: "Rooter Service",
     shortDescription: "Mechanical cabling to cut through roots and clear blocked lines fast.",
     category: "Drain Services",
@@ -371,6 +381,8 @@ export const services: Service[] = [
   },
   {
     slug: "sump-pump-installation",
+    metaDescription:
+      "Sump pump installation in Seattle and King County. Properly sized pumps keep basements and crawl spaces dry through Puget Sound's wet winters.",
     name: "Sump Pump Installation",
     shortDescription: "New sump pump installation and replacement to keep basements and crawl spaces dry.",
     category: "Water Lines",

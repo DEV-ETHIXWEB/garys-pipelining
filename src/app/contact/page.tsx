@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Phone, Mail, MapPin, Clock, ArrowUpRight } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { siteConfig } from "@/lib/site-config";
 import { services } from "@/lib/content/services";
 import { EstimateForm } from "@/components/forms/estimate-form-lazy";
@@ -8,11 +11,11 @@ import { Reveal } from "@/components/ui/reveal";
 import { TestimonialCarousel } from "@/components/sections/testimonial-carousel";
 import { SparkleField } from "@/components/ui/sparkle-field";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: `Request a free estimate or reach ${siteConfig.shortName} directly by phone, email, or our 24/7 emergency line.`,
-  alternates: { canonical: "/contact" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Free Sewer & Drain Estimate",
+  description: `Request a free sewer or drain estimate from ${siteConfig.shortName}, or call our 24/7 emergency line. Serving Seattle, Tukwila and the greater Seattle area.`,
+  path: "/contact",
+});
 
 export default async function ContactPage({
   searchParams,
@@ -24,6 +27,13 @@ export default async function ContactPage({
 
   return (
     <div className="bg-background">
+      <JsonLd data={webPageSchema("ContactPage", "Contact Gary's Pipelining", "/contact", metadata.description ?? "")} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: siteConfig.url },
+          { name: "Contact", url: `${siteConfig.url}/contact` },
+        ])}
+      />
       <section className="relative overflow-hidden pb-16 pt-32 md:pb-20 md:pt-40">
         <div aria-hidden className="absolute inset-0 -z-10 grid-bg" />
         <div className="container-px mx-auto max-w-[1400px]">

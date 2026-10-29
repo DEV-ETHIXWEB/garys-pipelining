@@ -44,6 +44,7 @@ const homeLink = { label: "Home", href: "/" };
 const simpleLinks = [
   { label: "Coupons", href: "/coupons" },
   { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -102,7 +103,7 @@ function NavDropdown({
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((v) => !v)}
-        className="relative z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold text-white/75 transition-colors duration-300 hover:text-white"
+        className="relative z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-base font-semibold xl:px-3.5 xl:text-lg text-white/75 transition-colors duration-300 hover:text-white"
       >
         {label}
         <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -245,7 +246,7 @@ export function Header() {
               )}
               <Link
                 href={homeLink.href}
-                className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
+                className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-2.5 py-2 text-base font-semibold xl:px-3.5 xl:text-lg transition-colors duration-300 ${
                   isHrefActive(pathname, homeLink.href) ? "text-white" : "text-white/75 hover:text-white"
                 }`}
               >
@@ -274,7 +275,7 @@ export function Header() {
                 )}
                 <Link
                   href={n.href}
-                  className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-3.5 py-2 text-lg font-semibold transition-colors duration-300 ${
+                  className={`relative z-10 inline-flex whitespace-nowrap rounded-full px-2.5 py-2 text-base font-semibold xl:px-3.5 xl:text-lg transition-colors duration-300 ${
                     isHrefActive(pathname, n.href) ? "text-white" : "text-white/75 hover:text-white"
                   }`}
                 >

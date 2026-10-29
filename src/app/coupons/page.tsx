@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { SpecialsGrid } from "@/components/sections/specials-section";
 import { CtaBand } from "@/components/sections/cta-band";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Monthly Coupons",
+export const metadata: Metadata = pageMetadata({
+  title: "Drain Cleaning & Sewer Inspection Coupons",
   description: `Current coupons on drain cleaning, camera inspection, and service calls from ${siteConfig.shortName}. Mention it when you call or book online.`,
-  alternates: { canonical: "/coupons" },
-};
+  path: "/coupons",
+});
 
 export default function CouponsPage() {
   return (

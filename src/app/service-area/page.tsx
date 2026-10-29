@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { locations } from "@/lib/content/locations";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { ServiceAreaMap } from "@/components/sections/service-area-map";
 import { CtaBand } from "@/components/sections/cta-band";
@@ -9,11 +10,11 @@ import { Reveal } from "@/components/ui/reveal";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Service Areas",
-  description: `Cities across the greater Seattle area where ${siteConfig.shortName} provides trenchless sewer and drain service, based out of Tukwila, WA.`,
-  alternates: { canonical: "/service-area" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Sewer & Drain Service Areas Near Seattle",
+  description: `Sewer repair and drain cleaning in Seattle, Tukwila, Renton, Bellevue, Tacoma and Federal Way, from ${siteConfig.shortName}'s Tukwila shop. 24/7.`,
+  path: "/service-area",
+});
 
 export default function ServiceAreaPage() {
   return (

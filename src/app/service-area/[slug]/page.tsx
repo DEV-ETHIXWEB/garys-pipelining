@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { locations, getLocationBySlug } from "@/lib/content/locations";
+import { pageMetadata } from "@/lib/seo";
 import { LocationPageTemplate } from "@/components/sections/location-page-template";
 
 export function generateStaticParams() {
@@ -11,11 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const location = getLocationBySlug(slug);
   if (!location) return {};
-  return {
-    title: `Sewer & Drain Service in ${location.city}, WA`,
+  return pageMetadata({
+    title: `${location.city}, WA Sewer Repair & Drain Cleaning`,
     description: location.metaDescription ?? location.intro,
-    alternates: { canonical: `/service-area/${location.slug}` },
-  };
+    path: `/service-area/${location.slug}`,
+  });
 }
 
 export default async function LocationDetailPage({ params }: { params: Promise<{ slug: string }> }) {

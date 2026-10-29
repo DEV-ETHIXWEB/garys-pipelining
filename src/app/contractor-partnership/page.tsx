@@ -34,6 +34,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { services } from "@/lib/content/services";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
 import { ProcessTimeline } from "@/components/sections/process-timeline";
@@ -46,12 +47,12 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { PartnershipForm } from "@/components/forms/partnership-form-lazy";
 import { SparkleField } from "@/components/ui/sparkle-field";
 
-export const metadata: Metadata = {
-  title: "Contractor Partnership Program",
+export const metadata: Metadata = pageMetadata({
+  title: "Trenchless Subcontractor for Contractors",
   description:
     "Trade pricing, priority scheduling, and commercial trenchless sewer, drain, and excavation work for contractors, property managers, and developers.",
-  alternates: { canonical: "/contractor-partnership" },
-};
+  path: "/contractor-partnership",
+});
 
 const whyPartner = [
   { icon: Users, title: "Dedicated contractor support", body: "A single point of contact who knows your projects, not a new voice every call." },

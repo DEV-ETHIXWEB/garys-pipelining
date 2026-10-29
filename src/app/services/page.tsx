@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import { services } from "@/lib/content/services";
 import { locations } from "@/lib/content/locations";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
 import { CtaBand } from "@/components/sections/cta-band";
@@ -11,11 +12,11 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 import { SparkleField } from "@/components/ui/sparkle-field";
 
-export const metadata: Metadata = {
-  title: "Sewer & Drain Services",
+export const metadata: Metadata = pageMetadata({
+  title: "Sewer & Drain Services in Seattle, WA",
   description: `Trenchless sewer repair, pipe bursting, hydro jetting, camera inspection, and more, every service ${siteConfig.shortName} offers across the greater Seattle area.`,
-  alternates: { canonical: "/services" },
-};
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

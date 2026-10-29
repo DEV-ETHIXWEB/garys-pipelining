@@ -2,17 +2,20 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Phone, ArrowRight, ArrowUpRight, ShieldCheck, MapPin, Sparkle } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { siteConfig } from "@/lib/site-config";
 import { ReviewsSection } from "@/components/sections/reviews-section";
 import { CtaBand } from "@/components/sections/cta-band";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { PanoramaViewer } from "@/components/ui/panorama-viewer";
 
-export const metadata: Metadata = {
-  title: "About Us",
+export const metadata: Metadata = pageMetadata({
+  title: "About Us: Tukwila Sewer & Drain Contractor",
   description: `${siteConfig.shortName} is a licensed, Tukwila-based trenchless sewer and drain contractor serving the greater Seattle area, available 24/7.`,
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 const galleryPhotos = [
   { src: "/photos/real/job-01.webp", alt: "Sewer line excavation in progress" },
@@ -60,6 +63,13 @@ const valuesStars = [
 export default function AboutPage() {
   return (
     <div className="bg-background">
+      <JsonLd data={webPageSchema("AboutPage", "About Gary's Pipelining", "/about", metadata.description ?? "")} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: siteConfig.url },
+          { name: "About", url: `${siteConfig.url}/about` },
+        ])}
+      />
       <section className="relative overflow-hidden pb-16 pt-32 md:pb-20 md:pt-40">
         <div aria-hidden className="absolute inset-0 -z-10 grid-bg" />
         <div className="container-px mx-auto max-w-[1400px]">

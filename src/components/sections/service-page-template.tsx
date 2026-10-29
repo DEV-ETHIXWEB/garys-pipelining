@@ -8,6 +8,8 @@ import { ProcessSteps } from "./process-steps";
 import { ServiceCard } from "./service-card";
 import { ReviewsSection } from "./reviews-section";
 import { CtaBand } from "./cta-band";
+import { RelatedPosts } from "@/components/blog/related-posts";
+import { postsForService } from "@/lib/content/posts";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
@@ -46,7 +48,12 @@ export function ServicePageTemplate({ service }: { service: Service }) {
               <span className="chip">
                 <ServiceIcon name={service.icon} className="h-3.5 w-3.5 text-primary" /> {service.category}
               </span>
-              <h1 className="mt-6 text-balance text-[40px] leading-[1.05] tracking-tight md:text-6xl">{service.heroHeadline}</h1>
+              <h1 className="mt-6 text-balance text-[40px] leading-[1.05] tracking-tight md:text-6xl">
+                <span className="mb-4 block text-sm font-semibold uppercase tracking-[0.18em] text-primary md:text-base">
+                  {service.name} in Seattle, WA
+                </span>
+                {service.heroHeadline}
+              </h1>
               <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">{service.heroSubheadline}</p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link href={`/contact?service=${encodeURIComponent(service.name)}`} className="btn-primary">
@@ -193,6 +200,8 @@ export function ServicePageTemplate({ service }: { service: Service }) {
           </div>
         </section>
       )}
+
+      <RelatedPosts posts={postsForService(service.slug)} />
 
       <CtaBand
         title={`Ready to fix it? Let's talk ${service.name.toLowerCase()}.`}

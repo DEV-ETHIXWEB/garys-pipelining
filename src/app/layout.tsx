@@ -11,6 +11,8 @@ import { MotionPreferenceProvider } from "@/components/layout/motion-preference-
 import { ChatWidget } from "@/components/chat/chat-widget-lazy";
 import { AccessibilityWidget } from "@/components/accessibility/accessibility-widget";
 import { siteConfig, isProduction } from "@/lib/site-config";
+import { JsonLd } from "@/components/seo/json-ld";
+import { websiteSchema } from "@/lib/schema";
 
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
@@ -67,6 +69,7 @@ export default function RootLayout({
       className={`${sourceSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <JsonLd data={websiteSchema()} />
         <MotionPreferenceProvider>
           <NavigationProgress />
           <Header />

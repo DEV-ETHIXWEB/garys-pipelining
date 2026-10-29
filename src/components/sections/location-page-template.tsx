@@ -7,6 +7,8 @@ import { siteConfig } from "@/lib/site-config";
 import { ServiceCard } from "./service-card";
 import { ReviewsSection } from "./reviews-section";
 import { CtaBand } from "./cta-band";
+import { RelatedPosts } from "@/components/blog/related-posts";
+import { postsForLocation } from "@/lib/content/posts";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema, localBusinessSchema } from "@/lib/schema";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
@@ -150,6 +152,8 @@ export function LocationPageTemplate({ location }: { location: Location }) {
       </section>
 
       <ReviewsSection />
+
+      <RelatedPosts posts={postsForLocation(location.slug)} title={`For ${location.city} property owners`} />
 
       <CtaBand
         title={`${location.city} homeowners trust Gary's. You can too.`}

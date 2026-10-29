@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { services } from "@/lib/content/services";
 import { locations } from "@/lib/content/locations";
+import { pageMetadata } from "@/lib/seo";
 import { siteConfig, trustStats } from "@/lib/site-config";
 import { ServiceCard } from "@/components/sections/service-card";
 import { ProcessTimeline } from "@/components/sections/process-timeline";
@@ -29,11 +30,13 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { EstimateForm } from "@/components/forms/estimate-form-lazy";
 import { SparkleField } from "@/components/ui/sparkle-field";
 
-export const metadata: Metadata = {
-  title: "Seattle's Trenchless Sewer & Drain Experts",
-  description: siteConfig.description,
-  alternates: { canonical: "/" },
-};
+export const metadata: Metadata = pageMetadata({
+  absoluteTitle: "Trenchless Sewer Repair Seattle | Gary's Pipelining",
+  description:
+    "Trenchless sewer repair, pipe lining, hydro jetting and 24/7 emergency drain service in Seattle, Tukwila, Renton, Bellevue and Tacoma. Licensed & insured.",
+  path: "/",
+  keywords: ["trenchless sewer repair Seattle", "sewer repair Seattle", "pipe lining Seattle", "drain cleaning Seattle", "side sewer repair", "emergency plumber Seattle"],
+});
 
 const whyGarysStars = [
   { top: "10%", left: "8%", size: 10, delay: 0.2 },
@@ -98,6 +101,9 @@ export default function Home() {
               </span>
 
               <h1 className="mt-6 text-[44px] leading-[1.02] tracking-tight md:text-[68px] lg:text-[84px]">
+                <span className="mb-4 block text-sm font-semibold uppercase tracking-[0.18em] text-primary md:text-base">
+                  Trenchless sewer repair in Seattle
+                </span>
                 No dig. <span className="font-extrabold text-primary whitespace-nowrap">No&nbsp;mess.</span> Fixed fast.
               </h1>
 

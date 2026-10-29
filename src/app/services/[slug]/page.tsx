@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { services, getServiceBySlug } from "@/lib/content/services";
+import { pageMetadata } from "@/lib/seo";
 import { ServicePageTemplate } from "@/components/sections/service-page-template";
 
 export function generateStaticParams() {
@@ -11,11 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const service = getServiceBySlug(slug);
   if (!service) return {};
-  return {
-    title: service.name,
+  return pageMetadata({
+    title: `${service.name} in Seattle, WA`,
     description: service.metaDescription ?? service.heroSubheadline,
-    alternates: { canonical: `/services/${service.slug}` },
-  };
+    path: `/services/${service.slug}`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
