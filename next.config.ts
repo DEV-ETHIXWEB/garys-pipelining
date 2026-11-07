@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./legacy-redirects";
 
 // Static (no-nonce) CSP: nonce-based CSP forces every route to dynamic rendering
 // (no static generation, no CDN caching), which isn't worth trading away here.
@@ -49,6 +50,9 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
+  },
+  async redirects() {
+    return legacyRedirects;
   },
 };
 
