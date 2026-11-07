@@ -43,6 +43,7 @@ export const legacyRedirects: Redirect[] = [
   ...locationSlugs.map((slug) => to(`/${slug}`, `/service-area/${slug}`)),
   to("/pipelining", "/services/trenchless-sewer-repair"),
   to("/sump-pumps", "/services/sump-pump-installation"),
+  to("/drain-services", "/services"),
   to("/contact-us", "/contact"),
   to("/about-us", "/about"),
   to("/category/:path*", "/blog"),
