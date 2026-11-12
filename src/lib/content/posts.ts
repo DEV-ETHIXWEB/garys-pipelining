@@ -183,6 +183,123 @@ export const posts: Post[] = [
       },
     ],
   },
+  {
+    slug: "clay-cast-iron-orangeburg-pipe-seattle",
+    title: "Clay, Cast Iron and Orangeburg: What's Actually Under Older Seattle Homes",
+    metaTitle: "Orangeburg Pipe Seattle: Clay, Cast Iron and Your Sewer",
+    metaDescription:
+      "Most pre-1970 Seattle homes have clay, cast iron, or Orangeburg pipe under the yard, not PVC. Here is how each fails and how to find out which is yours.",
+    excerpt:
+      "Almost no pre-1970 Seattle sewer line is PVC. It is clay, cast iron, or a wood fiber pipe called Orangeburg, and which one you have changes how soon you need to act.",
+    category: "Homeowner guide",
+    publishedAt: "2026-11-12",
+    cover: {
+      src: "/blog/clay-cast-iron-orangeburg-pipe-seattle/whats-under-older-seattle-homes.webp",
+      alt: "Illustration of a sewer line under a pre-1970 house, patched from clay, Orangeburg and cast iron sections, with the headline under a pre-1970 house the pipe is not PVC",
+    },
+    shareImage: "/blog/clay-cast-iron-orangeburg-pipe-seattle/whats-under-older-seattle-homes-share.jpg",
+    takeaways: [
+      "Pre-1970 Seattle sewer lines are clay, cast iron or Orangeburg, and one line can be all three patched together.",
+      "Orangeburg was rated for about 50 years and starts to lose its round shape near 30, so most of what is left is past its service life.",
+      "A camera inspection is the only way to know which pipe you have and whether lining or replacement fits.",
+    ],
+    keywords: [
+      "orangeburg pipe Seattle",
+      "clay sewer pipe Seattle",
+      "cast iron sewer pipe Seattle",
+      "old sewer line Seattle",
+      "sewer camera inspection Seattle",
+      "trenchless sewer repair Seattle",
+      "pipe bursting Seattle",
+    ],
+    relatedServices: ["sewer-inspection", "trenchless-sewer-repair", "pipe-bursting", "sewer-replacement"],
+    relatedLocations: ["seattle-wa", "tukwila-wa", "renton-wa", "bellevue-wa", "tacoma-wa", "federal-way-wa"],
+    body: [
+      {
+        type: "p",
+        text: "Every Seattle home built before the 1970s has a sewer line running from the house to the street, and almost none of it is PVC. It is clay, cast iron, or a wood fiber pipe called Orangeburg, and which one you have changes how worried you should be and how soon you need to deal with it.",
+      },
+      {
+        type: "p",
+        text: "None of the three were built to last forever, and at least one of them is already well past the service life it was built for. A camera run down the line is the only way to know for certain which material is under your yard, and that one answer usually decides everything else.",
+      },
+      { type: "h2", id: "age-does-not-tell-you", text: "Why your home's age does not tell you which pipe you have" },
+      {
+        type: "p",
+        text: "A house built in 1925 does not necessarily still have its original 1925 pipe. Sewer lines get patched and partially replaced over decades, so it is common for one line to be clay near the street, cast iron near the house, and a section of Orangeburg in between from a repair done sometime in the 1950s or 60s. The build date tells you what is likely, not what is actually down there.",
+      },
+      {
+        type: "figure",
+        src: "/blog/clay-cast-iron-orangeburg-pipe-seattle/three-pipe-materials-fail.webp",
+        alt: "Diagram of how each older sewer pipe fails: clay at its rigid joints, cast iron as the wall thins from wet soil outside and sewer gas inside, and Orangeburg as soil pressure flattens the bore",
+        caption: "The build date tells you what is likely, not what is there. One line can be all three, patched together over decades.",
+      },
+      { type: "h2", id: "clay-pipe", text: "Clay pipe: the original material, and still common under pre-1960s homes" },
+      {
+        type: "p",
+        text: "Vitrified clay was the standard sewer pipe for most of the 20th century, and the clay itself is genuinely durable, often good for 50 to 100 years. The weak point is not the pipe, it is the joints. Clay was laid in short two to three foot sections, each sealed into the next with mortar or a tar based compound that does not flex. Decades of ground movement and freeze and thaw cycles work those rigid joints loose just enough for roots to find their way in and for sections to shift out of line.",
+      },
+      { type: "h2", id: "cast-iron-pipe", text: "Cast iron pipe: strong, but Seattle's soil works on it from both sides" },
+      {
+        type: "p",
+        text: "Cast iron shows up as drain stacks inside the house and often as the section of lateral closest to the foundation in homes built up through the early 1960s. It fails from the outside first. Seattle's clay heavy soil holds moisture for most of the year, and that constant dampness corrodes cast iron steadily at its joints and at any low point where water sits. It can fail from the inside too, since the gases in a sewer line combine with moisture to form a mild acid that thins the pipe wall over enough decades. Where a cast iron stack meets a clay or Orangeburg lateral is also usually the weakest joint in the whole run.",
+      },
+      { type: "h2", id: "orangeburg-pipe", text: "Orangeburg pipe: a wartime substitute that was never meant to be permanent" },
+      {
+        type: "p",
+        text: "Orangeburg is layers of wood pulp fiber pressed together and bound with tar, named for the New York town where most of it was made. It became the standard sewer pipe for new homes from roughly the mid 1940s through the late 1960s, when a wartime cast iron shortage and a postwar building boom created demand for something cheap, light, and fast to install. It was also only ever rated for about 50 years of service under ideal conditions, and it starts to lose its round shape under the weight of the surrounding soil around the 30 year mark. A pipe installed during that boom is now 56 to 81 years old, which puts most of what is still in the ground well past the point it was built to handle.",
+      },
+      {
+        type: "figure",
+        src: "/blog/clay-cast-iron-orangeburg-pipe-seattle/orangeburg-clock.webp",
+        alt: "Timeline showing Orangeburg installed in 1945 is now 81 years old and installed in 1970 is now 56 years old, both past its roughly 50 year service life",
+        caption: "Good for about 50 years. Both ends of the install window are past that today.",
+      },
+      { type: "h2", id: "failing-line-signs", text: "What a failing line actually looks like day to day" },
+      {
+        type: "p",
+        text: "A joint pulling apart or a pipe losing its shape rarely announces itself all at once. More often it shows up as slow drains in more than one fixture at the same time, gurgling from a toilet or floor drain when another fixture runs, a backup that clears on its own and returns within a few days, a sewer smell near a cleanout or a low spot in the yard, or a patch of grass that stays unusually green or soggy over where the line runs.",
+      },
+      { type: "h2", id: "find-out-which-pipe", text: "How to find out which sewer pipe you actually have" },
+      {
+        type: "p",
+        text: "Guessing from the house's age, or from what a neighbor's line turned out to be, is not a plan. A [camera inspection](/services/sewer-inspection) settles it directly. Gary's runs a self-leveling HD camera through the existing cleanout or a small access point, records the full length of the line, and uses a sonde transmitter to mark the exact depth and position of anything it finds, whether that is a root intrusion, a cracked joint, or a flattened section of pipe. You get the footage and a plain language summary before anyone talks about a repair.",
+      },
+      { type: "h2", id: "after-the-camera", text: "What happens after the camera goes down" },
+      {
+        type: "p",
+        text: "If the line is structurally sound and the problem is open joints or root intrusion, [lining it from the inside](/services/trenchless-sewer-repair) with a cured-in-place liner fixes it without digging up the yard, and a standard residential lateral is often inspected, lined, and cured in one visit. If an Orangeburg section has already flattened too far, or a cast iron or clay section has collapsed, lining will not hold, and [pipe bursting](/services/pipe-bursting) or a [full replacement](/services/sewer-replacement) is the straightforward answer. Either way, the camera decides it, not a guess from the curb.",
+      },
+      {
+        type: "figure",
+        src: "/blog/clay-cast-iron-orangeburg-pipe-seattle/line-or-pull-new-pipe.webp",
+        alt: "Two repair options: a cured-in-place liner for a pipe that still holds its shape, or a bursting head that pulls a new pipe through a flattened or collapsed one",
+        caption: "Lining needs a host pipe that still holds its shape. That is the first thing the camera has to settle.",
+      },
+      {
+        type: "p",
+        text: "Gary's Pipelining runs camera inspections across [Seattle](/service-area/seattle-wa), [Tukwila](/service-area/tukwila-wa), [Renton](/service-area/renton-wa), [Bellevue](/service-area/bellevue-wa), [Tacoma](/service-area/tacoma-wa) and [Federal Way](/service-area/federal-way-wa), and can tell you on the spot whether what is under your home is clay, cast iron, or Orangeburg, and what shape it is in. Call **(206) 535-8460** to get one scheduled.",
+      },
+    ],
+    faqs: [
+      {
+        q: "What kind of sewer pipe is under a pre-1970 Seattle home?",
+        a: "Almost always clay, cast iron or Orangeburg, not PVC. Lines are patched over decades, so one line can contain all three, and a camera inspection is the only way to know for certain.",
+      },
+      {
+        q: "What is Orangeburg pipe?",
+        a: "Layers of wood pulp fiber pressed together and bound with tar. It was the standard sewer pipe for new homes from roughly the mid 1940s through the late 1960s, was rated for about 50 years, and starts to lose its round shape around 30.",
+      },
+      {
+        q: "Why do clay sewer pipes fail?",
+        a: "The clay itself is durable, often 50 to 100 years, but the rigid joints every two to three feet work loose with ground movement, letting roots in and sections shift out of line.",
+      },
+      {
+        q: "Can an old Orangeburg or clay sewer line be lined instead of replaced?",
+        a: "If the pipe still holds its shape, a cured-in-place liner can seal the joints from the inside without digging up the yard. If a section has flattened or collapsed, pipe bursting or a full replacement is the straightforward answer. The camera footage decides which.",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string) {
