@@ -417,6 +417,134 @@ export const posts: Post[] = [
       },
     ],
   },
+  {
+    slug: "sewer-camera-inspection-seattle",
+    title: "What a Sewer Camera Inspection Actually Shows You",
+    metaTitle: "Sewer Camera Inspection Seattle: What the Camera Shows",
+    metaDescription:
+      "A sewer camera inspection in Seattle shows what is wrong under your yard: roots, cracks and bellies, before you pay to fix the wrong thing.",
+    excerpt:
+      "A camera goes down the line, records what is there, and marks each defect above ground. Here is what it shows and what usually happens next.",
+    category: "Homeowner guide",
+    publishedAt: "2026-11-18",
+    cover: {
+      src: "/blog/sewer-camera-inspection-seattle/camera-shows-the-defect.webp",
+      alt: "Illustration of a sewer camera in a pipe with a locator marker above ground, with the headline know what is wrong before you pay to fix the wrong thing",
+    },
+    shareImage: "/blog/sewer-camera-inspection-seattle/camera-shows-the-defect-share.jpg",
+    takeaways: [
+      "A camera records the whole line, and a sonde locator marks each defect above ground.",
+      "Roots, offset joints, bellies, cracks, corrosion and buildup are the six findings that show up again and again.",
+      "What fixes the line depends on the footage, so the repair matches the problem instead of a guess.",
+    ],
+    keywords: [
+      "sewer camera inspection Seattle",
+      "sewer scope Seattle",
+      "sewer line camera inspection",
+      "sewer inspection before buying a house",
+      "sewer line problems Seattle",
+    ],
+    relatedServices: ["sewer-inspection", "hydro-jetting", "trenchless-sewer-repair", "sewer-replacement"],
+    relatedLocations: ["seattle-wa", "tukwila-wa", "renton-wa", "bellevue-wa", "tacoma-wa", "federal-way-wa"],
+    body: [
+      {
+        type: "p",
+        text: "A drain that clears after a plunge and then slows again a few weeks later. A gurgle from the tub whenever the washing machine drains. A backup that seems to come out of nowhere and then clears on its own. These are the moments most homeowners call a plumber, and a snake or a round of hydro jetting is often exactly the right fix.",
+      },
+      {
+        type: "p",
+        text: "The problem is paying for that fix without knowing what is actually wrong under the yard. A line that keeps backing up for a structural reason will keep backing up no matter how many times it gets cleared. A sewer camera inspection answers the question directly: a camera goes down the line, records what is there, and shows the defect on video instead of leaving it to a theory.",
+      },
+      { type: "h2", id: "how-it-works", text: "How a sewer camera inspection works" },
+      {
+        type: "p",
+        text: "The process is simple. A technician feeds a self-leveling HD camera through an existing cleanout or access point and records the full length of the line, narrating defects as they appear. A sonde transmitter travels with the camera and locates each defect from above ground, so a problem seen on camera can be marked on the lawn. No digging happens at this stage. You get the video and a plain-language written report, and any repair recommendation follows from what the footage shows.",
+      },
+      { type: "h2", id: "what-the-camera-shows", text: "What the camera actually shows" },
+      {
+        type: "p",
+        text: "Six things show up on a sewer camera again and again, and a line can have more than one at once:",
+      },
+      {
+        type: "figure",
+        src: "/blog/sewer-camera-inspection-seattle/six-things-a-camera-finds.webp",
+        alt: "Six sewer line defects a camera finds: root intrusion, offset joints, bellies, cracks and fractures, corrosion, and blockages and buildup",
+        caption: "A line can have more than one at once. Each one is seen on video, not guessed at.",
+      },
+      {
+        type: "p",
+        text: "**Root intrusion** is a root that has worked into a joint or hairline crack and fanned out inside the pipe, often restricting flow long before a backup. **Offset or separated joints** are sections that have shifted apart, letting soil and roots in and sewage out. **Bellies** are low spots where the pipe has sagged and waste pools instead of draining. **Cracks and fractures** are damage in the pipe wall from ground movement, age or roots. **Corrosion** is old pipe material, most often cast iron or Orangeburg, breaking down rather than just blocked. **Blockages and buildup** are grease, sediment or scale narrowing the usable width of the pipe.",
+      },
+      {
+        type: "p",
+        text: "Roots deserve their own explanation, because they are the finding most often behind a repeat backup. Our guide to [tree roots in sewer lines](/blog/tree-roots-sewer-line-seattle) explains how they get in and what keeps them out.",
+      },
+      { type: "h2", id: "older-seattle-homes", text: "Why it matters in older Seattle homes" },
+      {
+        type: "p",
+        text: "Many Seattle homes were built before the 1970s, when clay and cast iron were standard sewer pipe materials, not PVC. Those are also the materials where root intrusion and corrosion show up most. Our guide to [what is under older Seattle homes](/blog/clay-cast-iron-orangeburg-pipe-seattle) covers each one.",
+      },
+      {
+        type: "p",
+        text: "A camera also helps tell two situations apart. Parts of Seattle have combined sewer systems, and heavy rain can overload them and cause a backup that has little to do with your own line. Looking inside the line shows whether the problem is yours or not, instead of assuming the worst, or the best, about a line nobody has looked at. If you are not sure where your responsibility ends, see [who owns the pipe under your yard](/blog/side-sewer-seattle-who-owns-it).",
+      },
+      { type: "h2", id: "when-to-scope", text: "When it is worth scoping the line" },
+      {
+        type: "p",
+        text: "**A drain or backup that keeps coming back,** even after clearing it. That usually means the cause is structural rather than a simple clog.",
+      },
+      {
+        type: "p",
+        text: "**Buying or selling a home with an older sewer line** and no inspection history. A pre-purchase scope can catch problems no walkthrough would, and you keep the footage for the purchase decision or an insurance claim.",
+      },
+      {
+        type: "p",
+        text: "**Major tree or landscaping work near the line,** since roots can shift or re-enter even after a tree is removed.",
+      },
+      {
+        type: "p",
+        text: "**An older home with no known inspection history,** simply to know what is down there before it becomes a weekend emergency.",
+      },
+      { type: "h2", id: "what-it-costs", text: "What a sewer camera inspection costs" },
+      {
+        type: "p",
+        text: "The price depends mostly on the length of the line, the pipe material, and how hard the access point is to reach. A short, straightforward run is the simplest case, while a long or older line, or an access point that takes work to reach, adds to it. Call for a quote for your property. Whatever the inspection finds is quoted separately, since the inspection and the repair are two different jobs.",
+      },
+      { type: "h2", id: "after-the-inspection", text: "What happens after the inspection" },
+      {
+        type: "p",
+        text: "You get the video and the written report first, and there is no obligation to book a repair with us. What fixes a line depends on what the camera found. Buildup and light root intrusion are usually a [hydro jetting](/services/hydro-jetting) job. A cracked, offset or root-damaged section in an otherwise sound line is often a candidate for [trenchless repair](/services/trenchless-sewer-repair), which relines the pipe through the existing access point instead of digging up the yard. A line with collapse or damage across a long stretch is where [full replacement](/services/sewer-replacement) is the honest answer.",
+      },
+      {
+        type: "figure",
+        src: "/blog/sewer-camera-inspection-seattle/match-the-fix.webp",
+        alt: "Each camera finding matched to its repair: buildup or light roots to hydro jetting, a cracked or offset section to trenchless lining, and collapse over a long stretch to full replacement",
+        caption: "The point is not paying for the wrong fix twice. What fits depends entirely on the footage.",
+      },
+      {
+        type: "p",
+        text: "Gary's Pipelining offers sewer camera inspections across [Seattle](/service-area/seattle-wa), [Tacoma](/service-area/tacoma-wa), [Bellevue](/service-area/bellevue-wa), [Renton](/service-area/renton-wa), [Tukwila](/service-area/tukwila-wa) and [Federal Way](/service-area/federal-way-wa). See [what a sewer inspection includes](/services/sewer-inspection), then call **(206) 535-8460** to schedule.",
+      },
+    ],
+    faqs: [
+      {
+        q: "What does a sewer camera inspection show?",
+        a: "Root intrusion, offset or separated joints, bellies, cracks and fractures, corrosion in old pipe, and blockages or buildup. A line can have more than one at once, and a sonde locator marks each defect above ground.",
+      },
+      {
+        q: "Do I need to be home for a sewer camera inspection?",
+        a: "Not necessarily. The technician needs access to a cleanout or other entry point, and the video report can be sent directly to you.",
+      },
+      {
+        q: "Should I scope the sewer line before buying a house?",
+        a: "Yes, on an older home especially. A sewer scope before closing can catch problems a visual walkthrough never would, and you keep the footage.",
+      },
+      {
+        q: "Am I obligated to book a repair after the inspection?",
+        a: "No. The inspection is the deliverable. You get the footage and a written report, and what you do with the findings is up to you.",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string) {
