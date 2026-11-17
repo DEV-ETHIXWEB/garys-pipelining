@@ -300,6 +300,123 @@ export const posts: Post[] = [
       },
     ],
   },
+  {
+    slug: "tree-roots-sewer-line-seattle",
+    title: "Tree Roots in Your Sewer Line: Why Seattle Homes Get Them and How to Stop Them for Good",
+    metaTitle: "Tree Roots in Sewer Line Seattle: Causes and Permanent Fix",
+    metaDescription:
+      "Mature trees and aging pipe joints are a bad combination. Here is how roots get into a Seattle sewer line, and what actually keeps them out.",
+    excerpt:
+      "A root cannot punch through a sound pipe. It follows moisture into a loose joint, and cutting it out does not close the way in.",
+    category: "Homeowner guide",
+    publishedAt: "2026-11-17",
+    cover: {
+      src: "/blog/tree-roots-sewer-line-seattle/roots-find-the-gap.webp",
+      alt: "Illustration of a tree root growing down into a loose joint in a sewer pipe, with the headline roots do not break your sewer pipe, they find the gap",
+    },
+    shareImage: "/blog/tree-roots-sewer-line-seattle/roots-find-the-gap-share.jpg",
+    takeaways: [
+      "Roots follow moisture into a loose joint or hairline crack. They do not punch through sound pipe.",
+      "A rooter machine clears a blocked line fast, but it does not close the joint the roots came through.",
+      "A cured-in-place liner leaves a jointless pipe inside the old one, so there is nothing left for a root to follow.",
+    ],
+    keywords: [
+      "tree roots in sewer line Seattle",
+      "tree roots sewer line",
+      "root intrusion sewer pipe",
+      "sewer line roots Seattle",
+      "trenchless sewer lining Seattle",
+      "rooter service Seattle",
+    ],
+    relatedServices: ["sewer-inspection", "rooter-service", "hydro-jetting", "trenchless-sewer-repair"],
+    relatedLocations: ["seattle-wa", "tukwila-wa", "renton-wa", "bellevue-wa", "tacoma-wa", "federal-way-wa"],
+    body: [
+      {
+        type: "p",
+        text: "Most homeowners do not think about tree roots until a plumber pulls the cable back wrapped in them. A drain that was fine last week starts gurgling, slows down, and then backs up outright, and somewhere under the yard a sewer line has roots growing straight through a joint.",
+      },
+      {
+        type: "p",
+        text: "Root intrusion is one of the common reasons a sewer line backs up, and Seattle has the ingredients: mature trees, older clay and cast iron pipe, and plenty of rain. Here is how roots get in, the warning signs, and what actually keeps them out.",
+      },
+      { type: "h2", id: "how-roots-get-in", text: "Why roots find the pipe in the first place" },
+      {
+        type: "p",
+        text: "A root does not punch through a solid pipe wall. What it follows is moisture and air leaking out through a joint, a hairline crack, or an old seal that has loosened with age. Once a fine root finds that gap it grows in, and the joint keeps widening to let a thicker root in behind it. Left alone, the root mass keeps filling the pipe.",
+      },
+      {
+        type: "figure",
+        src: "/blog/tree-roots-sewer-line-seattle/how-roots-get-in.webp",
+        alt: "Three steps: a loose joint leaks moisture, a fine root follows it in and the joint widens, and the root mass fills the pipe and restricts the flow",
+        caption: "A pipe with tight, sound joints gives roots nowhere to start. The pipe's condition and the roots are the same conversation.",
+      },
+      { type: "h2", id: "why-seattle", text: "Why older Seattle lines are exposed" },
+      {
+        type: "p",
+        text: "A lot of Seattle was built before PVC was standard, so many homes still run on clay or cast iron under yards with mature trees. Clay pipe has rigid joints every two to three feet, and ground movement can work them loose. Older cast iron corrodes and cracks. Each of those is a gap a root can follow. Our guide to [what is under older Seattle homes](/blog/clay-cast-iron-orangeburg-pipe-seattle) covers each material.",
+      },
+      {
+        type: "p",
+        text: "Wet weather matters too. Rain saturates the soil, so roots have moisture to follow, and heavy flow through a partly blocked line is when a backup tends to show itself.",
+      },
+      { type: "h2", id: "warning-signs", text: "The warning signs worth paying attention to" },
+      {
+        type: "p",
+        text: "A line with root intrusion rarely fails all at once. It usually tells you first: a drain that gurgles when another fixture runs, a toilet that is slower to clear than it used to be, or the same drain backing up every few months in roughly the same spot. None of those symptoms prove it is roots, but they are exactly the pattern a [camera inspection](/services/sewer-inspection) is built to check.",
+      },
+      { type: "h2", id: "cutting-roots", text: "Why cutting the roots out does not fix the real problem" },
+      {
+        type: "p",
+        text: "A [rooter machine](/services/rooter-service), a motorized cable with a rotating cutting head, clears a blocked line fast, often the same day. That matters when a line is backed up right now.",
+      },
+      {
+        type: "p",
+        text: "What it does not do is fix the joint the roots came in through. Unless that entry point is sealed, the roots can grow back, and the same callout happens again. A line that backs up at the same spot over and over is telling you the joint is the problem, not the roots.",
+      },
+      {
+        type: "figure",
+        src: "/blog/tree-roots-sewer-line-seattle/rooter-or-liner.webp",
+        alt: "Comparison: a rooter machine clears the line fast but leaves the joint the roots came through, while a cured-in-place liner leaves a jointless pipe with nothing for a root to follow",
+        caption: "The camera decides which one fits, not a guess from the curb.",
+      },
+      { type: "h2", id: "permanent-fix", text: "The permanent fix: a liner with no joints left to find" },
+      {
+        type: "p",
+        text: "The alternative is to stop giving roots a place to start. [Trenchless lining](/services/trenchless-sewer-repair) rebuilds the pipe from the inside: a resin-saturated liner is pulled or inverted through the existing line and cured hard against the pipe wall, leaving a smooth, jointless pipe inside the old one. With no joints, there is nothing for a root to follow in. Most residential laterals are inspected, lined and cured in a single visit, through one or two small access points rather than a trench across the yard.",
+      },
+      {
+        type: "p",
+        text: "Before any lining, the line is camera-inspected and [hydro jetted](/services/hydro-jetting) clean, so the repair is based on what is actually in the pipe, and a final camera pass confirms the result. Lining needs a pipe that still holds its shape. If a section has collapsed, the answer is [pipe bursting](/services/pipe-bursting) or a [full replacement](/services/sewer-replacement), and the camera settles which.",
+      },
+      { type: "h2", id: "if-roots-recur", text: "If roots keep coming back at your place" },
+      {
+        type: "p",
+        text: "A one-off root clear is a reasonable fix for a one-time problem. A line that backs up at the same spot every year is telling you something different.",
+      },
+      {
+        type: "p",
+        text: "Gary's Pipelining works on root-related sewer problems across [Seattle](/service-area/seattle-wa), [Tukwila](/service-area/tukwila-wa), [Renton](/service-area/renton-wa), [Bellevue](/service-area/bellevue-wa), [Tacoma](/service-area/tacoma-wa) and [Federal Way](/service-area/federal-way-wa). The camera comes first, so you know whether a rooter visit will hold or whether it is time to line the pipe. Call **(206) 535-8460** for a free estimate, or any time at all if a line is backing up now.",
+      },
+    ],
+    faqs: [
+      {
+        q: "How do tree roots get into a sewer line?",
+        a: "Roots follow moisture and air leaking out through a loose joint, a hairline crack or an old seal. They do not punch through sound pipe. Once a fine root finds a gap it grows in, and the joint widens to let a thicker root follow.",
+      },
+      {
+        q: "Does a rooter machine fix tree roots in a sewer line?",
+        a: "It clears the blockage fast, often the same day, which matters when a line is backed up. It does not seal the joint the roots came through, so the roots can come back.",
+      },
+      {
+        q: "How do you stop tree roots from coming back?",
+        a: "Close the way in. A cured-in-place liner leaves a smooth, jointless pipe inside the old one, so there are no joints left for roots to follow. A camera inspection first confirms the pipe is a good fit for lining.",
+      },
+      {
+        q: "Is lining a sewer line a one-day job?",
+        a: "On most residential laterals the line is inspected, lined and cured in a single visit, through one or two small access points. If a section has collapsed, pipe bursting or a full replacement is the straightforward answer.",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string) {
