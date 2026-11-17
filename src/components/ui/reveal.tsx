@@ -32,13 +32,17 @@ export function RevealGroup({
   children,
   className = "",
   stagger = 0.08,
+  as = "div",
 }: {
   children: React.ReactNode;
   className?: string;
   stagger?: number;
+  /** "ol" for ordered steps, so the sequence is real list markup (read by search engines and screen readers). */
+  as?: "div" | "ol";
 }) {
+  const Tag = as === "ol" ? motion.ol : motion.div;
   return (
-    <motion.div
+    <Tag
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
@@ -46,17 +50,29 @@ export function RevealGroup({
       className={className}
     >
       {children}
-    </motion.div>
+    </Tag>
   );
 }
 
-export function RevealItem({ children, className = "", y = 18 }: { children: React.ReactNode; className?: string; y?: number }) {
+export function RevealItem({
+  children,
+  className = "",
+  y = 18,
+  as = "div",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  y?: number;
+  /** "li" when the parent RevealGroup is rendered as a list. */
+  as?: "div" | "li";
+}) {
+  const Tag = as === "li" ? motion.li : motion.div;
   return (
-    <motion.div
+    <Tag
       variants={{ hidden: { opacity: 0, y }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } } }}
       className={className}
     >
       {children}
-    </motion.div>
+    </Tag>
   );
 }

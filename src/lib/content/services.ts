@@ -72,6 +72,14 @@ export const services: Service[] = [
         q: "Do you need to dig up my whole yard?",
         a: "No. Lining only requires access at the existing cleanout or a small excavation at each end of the run, not a trench along its length.",
       },
+      {
+        q: "Who owns the sewer line under the street in Seattle?",
+        a: "In Seattle, the property owner owns and maintains the entire side sewer, from the building to the City's public main, including the section under the street. The City maintains the public main itself. That is why a damaged section out by the street is still the owner's repair.",
+      },
+      {
+        q: "Does side sewer work in Seattle need a permit?",
+        a: "Side sewer work in Seattle is permitted by the Seattle Department of Construction and Inspections (SDCI). The permit covers work on private property and in the public right-of-way, and work in the right-of-way also needs a separate SDOT permit.",
+      },
     ],
     relatedSlugs: ["pipe-bursting", "sewer-inspection", "sewer-replacement"],
     featured: true,

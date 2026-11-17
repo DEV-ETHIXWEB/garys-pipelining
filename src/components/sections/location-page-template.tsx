@@ -10,7 +10,8 @@ import { CtaBand } from "./cta-band";
 import { RelatedPosts } from "@/components/blog/related-posts";
 import { postsForLocation } from "@/lib/content/posts";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema, localBusinessSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema, localBusinessSchema } from "@/lib/schema";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 
 export function LocationPageTemplate({ location }: { location: Location }) {
@@ -152,6 +153,26 @@ export function LocationPageTemplate({ location }: { location: Location }) {
       </section>
 
       <ReviewsSection />
+
+      {location.faqs && location.faqs.length > 0 && (
+        <section className="bg-surface py-16 md:py-20">
+          <JsonLd data={faqSchema(location.faqs)} />
+          <div className="container-px mx-auto max-w-[1400px]">
+            <Reveal className="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+              <div>
+                <span className="chip">FAQ</span>
+                <h2 className="mt-5 text-balance text-4xl leading-[1.05] md:text-5xl">
+                  Sewer questions from <span className="text-muted-foreground">{location.city} homeowners.</span>
+                </h2>
+                <a href={siteConfig.phoneHref} className="btn-ghost mt-8">
+                  <Phone className="h-4 w-4" /> {siteConfig.phone}
+                </a>
+              </div>
+              <FaqAccordion items={location.faqs} />
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       <RelatedPosts posts={postsForLocation(location.slug)} title={`For ${location.city} property owners`} />
 

@@ -10,6 +10,12 @@ export type Location = {
   intro: string;
   localNotes: string[];
   driveTime?: string;
+  /**
+   * City-specific questions, shown as an FAQ (with FAQPage schema) on the
+   * location page. Only use facts confirmed on official city/county/district
+   * sources, and say where the reader should confirm details for their address.
+   */
+  faqs?: { q: string; a: string }[];
 };
 
 export const locations: Location[] = [
@@ -43,8 +49,24 @@ export const locations: Location[] = [
     localNotes: [
       "Tacoma's hillier terrain and proximity to Commencement Bay mean groundwater and drainage issues are common, we install and service sump pumps throughout the area.",
       "Older North End and Hilltop homes frequently need camera inspections before a sale or refinance.",
+      "In Tacoma the side sewer, the pipe from your house to the City's main, is the property owner's to maintain and repair. The City maintains the main itself.",
+      "Side sewer work in Tacoma needs a City of Tacoma permit so City inspectors can confirm it's built to standard.",
     ],
     driveTime: "~30 min from our Tukwila base",
+    faqs: [
+      {
+        q: "Who is responsible for the sewer line between my Tacoma home and the street?",
+        a: "In Tacoma, the property owner maintains the side sewer from the building all the way to the City's sewer main. The City of Tacoma maintains the main itself. If your side sewer is cracked, root-filled, or backing up, the repair is on the owner's side.",
+      },
+      {
+        q: "Do I need a permit to repair my side sewer in Tacoma?",
+        a: "Yes. Side sewer work in Tacoma requires a City of Tacoma permit, available through Tacoma Permits, so City inspectors can check the work is built to proper standards.",
+      },
+      {
+        q: "My Tacoma home shares a side sewer with a neighbor. What happens if it needs repair?",
+        a: "Under a 2025 City of Tacoma Environmental Services directive on shared side sewers, an owner who needs to repair a shared side sewer must disconnect from it and build a new, separate connection to the public sewer. Confirm the requirements for your address with Tacoma Environmental Services before work starts; a camera inspection will show how your line is connected.",
+      },
+    ],
   },
   {
     slug: "bellevue-wa",
@@ -108,8 +130,23 @@ export const locations: Location[] = [
     localNotes: [
       "We frequently field camera inspection requests ahead of home sales in Federal Way's older neighborhoods.",
       "Sump pump installation is a common call here given the area's drainage patterns.",
+      "Most of Federal Way gets sewer service from Lakehaven Water and Sewer District, with Midway Sewer District covering parts of the north end, so connection and permit rules depend on which district your home is in.",
     ],
     driveTime: "~20 min from our Tukwila base",
+    faqs: [
+      {
+        q: "Which sewer district serves my Federal Way home?",
+        a: "Most of Federal Way is served by Lakehaven Water and Sewer District, and parts of the north end are served by Midway Sewer District. Your district sets the connection and permit requirements for side sewer work, so check your address with the district before a repair.",
+      },
+      {
+        q: "Who is responsible for the side sewer on a Federal Way property?",
+        a: "In Washington, side sewers are generally treated as privately owned, so repair and replacement usually fall to the property owner. Exactly where your responsibility ends depends on your sewer district's rules, so confirm with Lakehaven or Midway for your address.",
+      },
+      {
+        q: "Is there a rebate for side sewer repair in Federal Way?",
+        a: "King County has run a side sewer repair rebate for properties in the Lakehaven and Midway sewer districts. As of November 2026 the program was at capacity and not issuing new vouchers, so check King County's side sewer rebate page for its current status before planning around it.",
+      },
+    ],
   },
 ];
 
