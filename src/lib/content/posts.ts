@@ -26,6 +26,8 @@ export type Post = {
   relatedLocations: string[];
   body: PostBlock[];
   faqs: FaqItem[];
+  /** FAQ section heading; defaults to "Questions we hear most". */
+  faqTitle?: string;
 };
 
 export const posts: Post[] = [
@@ -144,7 +146,7 @@ export const posts: Post[] = [
         type: "callout",
         title: "Call Seattle Public Utilities first",
         text: "Before you call anyone, report an active backup, flooding or spill to Seattle Public Utilities. They can tell you whether the problem sits on the city's side of the connection, and if it does, it is not your repair and not your bill.",
-        phone: { label: "(206) 386-1800", href: "tel:+12063861800" },
+        phone: { label: "SPU (206) 386-1800", href: "tel:+12063861800" },
       },
       { type: "p", text: "If it turns out to be on your side, that is the point to bring in a crew." },
       {
@@ -156,6 +158,7 @@ export const posts: Post[] = [
         text: "Call **(206) 535-8460** for a free estimate, or any time at all if a line is backing up now.",
       },
     ],
+    faqTitle: "Side sewer questions we hear most",
     faqs: [
       {
         q: "Who is responsible for the side sewer in Seattle?",
@@ -542,6 +545,146 @@ export const posts: Post[] = [
       {
         q: "Am I obligated to book a repair after the inspection?",
         a: "No. The inspection is the deliverable. You get the footage and a written report, and what you do with the findings is up to you.",
+      },
+    ],
+  },
+  {
+    slug: "signs-failing-sewer-line-seattle",
+    title: "8 Signs of a Failing Sewer Line in Seattle (And What to Do Before It Backs Up)",
+    metaTitle: "8 Signs of a Failing Sewer Line in Seattle",
+    metaDescription:
+      "Discover 8 signs of a failing sewer line in Seattle, what causes them, and when to schedule a professional sewer inspection.",
+    excerpt:
+      "Slow drains, gurgling toilets and clogs that keep coming back can point to the main line. Here are the 8 signs to watch for and what to do next.",
+    category: "Homeowner guide",
+    publishedAt: "2026-11-23",
+    cover: {
+      src: "/blog/signs-failing-sewer-line-seattle/beneath-your-home.webp",
+      alt: "Illustration of the sewer line beneath a Seattle home showing root intrusion at a damaged joint, a separated pipe connection, a sagging belly and a cracked pipe before the public sewer main",
+    },
+    shareImage: "/blog/signs-failing-sewer-line-seattle/beneath-your-home-share.jpg",
+    takeaways: [
+      "Several slow drains at once, gurgling and clogs that keep returning point further down the line than one fixture.",
+      "Sewage backing up into a tub or floor drain is urgent: stop using water and call for help.",
+      "A camera inspection finds the cause first, so the fix matches the problem instead of a guess.",
+    ],
+    keywords: [
+      "failing sewer line Seattle",
+      "signs of a failing sewer line",
+      "sewer line problems Seattle",
+      "main sewer line symptoms",
+      "sewer line inspection Seattle",
+      "sewer backup warning signs",
+      "side sewer Seattle",
+      "trenchless sewer repair Seattle",
+    ],
+    relatedServices: ["sewer-inspection", "drain-cleaning", "trenchless-sewer-repair", "sewer-replacement"],
+    relatedLocations: ["seattle-wa", "tukwila-wa", "renton-wa", "bellevue-wa", "tacoma-wa", "federal-way-wa"],
+    body: [
+      {
+        type: "p",
+        text: "A sewer line can develop problems long before wastewater enters your home. Early clues may include a toilet that bubbles after a flush, several slow drains, or an unpleasant smell that keeps returning.",
+      },
+      {
+        type: "p",
+        text: "These symptoms have several possible causes, but when they recur together, they may point to a main sewer line problem. Recognizing them early can help Seattle homeowners limit damage.",
+      },
+      { type: "h2", id: "eight-signs", text: "8 signs of a failing sewer line" },
+      {
+        type: "p",
+        text: "**1. Multiple drains are slowing down.** One slow sink may have a local clog. If several fixtures, such as a shower, toilets, and sinks, begin draining slowly around the same time, the restriction may be farther down the drainage system. A shared drain or main sewer line could be involved.",
+      },
+      {
+        type: "figure",
+        src: "/blog/signs-failing-sewer-line-seattle/one-drain-or-the-main.webp",
+        alt: "Illustration comparing one slow drain in a single bathroom, which is usually a local or branch clog, with several slow and gurgling fixtures across the house that point to a shared drain or the main sewer line, and wastewater backing up into a basement",
+        caption: "One slow drain is usually a local clog. Several at once point further down the line.",
+      },
+      {
+        type: "p",
+        text: "**2. Toilets and drains gurgle.** Bubbling after a flush or gurgling when the washing machine drains can indicate trapped air or restricted wastewater flow. Repeated noises across fixtures deserve attention, particularly with slow drains or recurring clogs.",
+      },
+      {
+        type: "p",
+        text: "**3. Clogs keep coming back.** A drain that repeatedly clogs after being cleared may have an underlying problem. Tree roots, damaged joints, or sagging pipe sections can create places where waste and debris collect. Clearing the immediate blockage may not fix the cause. If the same problem returns, consider a professional [sewer inspection](/services/sewer-inspection).",
+      },
+      {
+        type: "p",
+        text: "**4. You notice persistent sewer odors.** A lingering sewage smell in a basement, bathroom, or yard deserves investigation. Damaged connections, dry plumbing traps, and ventilation problems can all cause odors, so smell alone cannot confirm underground pipe damage.",
+      },
+      {
+        type: "p",
+        text: "**5. Your yard has unusually wet or green patches.** A patch of grass that stays greener than the surrounding lawn, or ground that remains unusually wet, may indicate an underground leak. However, irrigation problems, poor drainage, and leaking water lines can cause similar changes. Have persistent changes along the suspected sewer route checked.",
+      },
+      {
+        type: "p",
+        text: "**6. Wastewater backs up into tubs or floor drains.** This is an urgent warning sign. Wastewater rising in a bathtub when a toilet is flushed, or sewage appearing in a basement floor drain, can indicate a serious blockage or sewer problem.",
+      },
+      {
+        type: "callout",
+        title: "Sewage coming back up? Stop using water",
+        text: "Stop using water throughout the home. Keep children and pets away, avoid contact with sewage, and contact a plumbing professional. Follow [Seattle Public Utilities' sewer backup guidance](https://www.seattle.gov/utilities/your-services/sewer-and-drainage/side-sewers/backups) and take precautions around electrical hazards.",
+      },
+      {
+        type: "p",
+        text: "**7. The ground above your sewer line starts settling.** An unexplained depression or sunken patch along the suspected sewer route deserves investigation. In some cases, damaged joints allow surrounding soil to enter a pipe. Soil movement can contribute to voids beneath the surface and ground settlement. Not every sunken area indicates sewer damage. Keep people and vehicles away until unstable ground is assessed.",
+      },
+      {
+        type: "p",
+        text: "**8. Your older home has no sewer inspection history.** This is not proof of sewer failure, but it is a reason to consider an inspection. Older Seattle properties may have clay, cast-iron, or Orangeburg pipe, and some lines contain a mix of materials from previous repairs. Age alone does not determine pipe condition. A camera inspection can help identify visible defects, root intrusion, and other concerns. Read our guide to [older sewer pipe materials in Seattle homes](/blog/clay-cast-iron-orangeburg-pipe-seattle).",
+      },
+      { type: "h2", id: "side-sewer", text: "Why Seattle homeowners should understand their side sewer" },
+      {
+        type: "p",
+        text: "A side sewer carries wastewater from a property to the public sewer main. Seattle Public Utilities says property owners are generally responsible for their side sewer up to its connection with the public main. Shared side sewers can involve additional maintenance responsibilities.",
+      },
+      {
+        type: "figure",
+        src: "/blog/side-sewer-seattle/where-your-side-sewer-ends.webp",
+        alt: "Diagram showing a side sewer running from the house, past the property line, under the sidewalk and street to the city sewer main. Everything up to the main is the owner's; only the main belongs to SPU.",
+        caption: "It does not stop at the property line. It runs all the way to the city main under the street.",
+      },
+      {
+        type: "p",
+        text: "Learn more about responsibilities from [Seattle Public Utilities' side sewer resource](https://www.seattle.gov/utilities/your-services/sewer-and-drainage/side-sewers), or read our guide to [who owns the side sewer in Seattle](/blog/side-sewer-seattle-who-owns-it).",
+      },
+      { type: "h2", id: "what-to-do", text: "What should you do if you notice these warning signs?" },
+      {
+        type: "p",
+        text: "Symptoms do not automatically mean the entire line needs replacing. First, identify the cause. A camera inspection lets a technician look for cracks, root intrusion, offset joints, blockages, and sagging sections. Gary's Pipelining & Drain Cleaning offers [sewer inspection services](/services/sewer-inspection).",
+      },
+      {
+        type: "p",
+        text: "Depending on the findings, possible solutions include [drain cleaning](/services/drain-cleaning), which removes debris and obstructions that restrict wastewater flow; [trenchless sewer repair](/services/trenchless-sewer-repair), where pipe lining or pipe bursting may repair certain pipes while reducing excavation, when conditions allow; and [sewer replacement](/services/sewer-replacement) for severely damaged or collapsed sections.",
+      },
+      {
+        type: "p",
+        text: "The right approach depends on pipe condition and site layout. Trenchless repair is not suitable for every line. For more on sewage exposure risks, see the [EPA's sanitary sewer overflow guidance](https://www.epa.gov/npdes/sanitary-sewer-overflow-sso-frequent-questions).",
+      },
+      {
+        type: "callout",
+        title: "Get your sewer line checked before it backs up",
+        text: "Investigate recurring symptoms before wastewater enters your home. Gary's Pipelining & Drain Cleaning provides sewer inspections, trenchless repairs, and sewer replacement in the Seattle area. Call or [request your free estimate](/contact).",
+        phone: { label: "(206) 535-8460", href: "tel:+12065358460" },
+      },
+    ],
+    faqTitle: "Sewer line questions we hear most",
+    faqs: [
+      {
+        q: "How do I know if my main sewer line is failing?",
+        a: "Several slow drains, recurring clogs, gurgling toilets, persistent odors, and wastewater backups can indicate a main sewer line problem. These symptoms are not conclusive; an inspection can help identify the cause.",
+      },
+      {
+        q: "Can a sewer line fail without warning?",
+        a: "Yes. A line can become blocked or collapse unexpectedly. Recurring drainage problems, unusual odors, and changes in your yard may provide earlier clues.",
+      },
+      {
+        q: "How often should a sewer line be inspected?",
+        a: "No schedule fits every home. Pipe material, age, repair history, and recurring symptoms all matter.",
+      },
+      {
+        q: "Does sewer line repair always require digging?",
+        a: "No. Trenchless methods can reduce excavation when the pipe and site conditions are suitable. Severely damaged or collapsed sections may require traditional excavation.",
       },
     ],
   },

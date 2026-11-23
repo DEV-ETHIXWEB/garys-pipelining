@@ -69,14 +69,16 @@ function Block({ block, headingIndex, figureIndex }: { block: PostBlock; heading
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-yellow">
                   <Sparkle className="h-3 w-3 fill-yellow" /> {block.title}
                 </div>
-                <p className="mt-3 text-pretty text-[1.0625rem] leading-[1.75] text-white/80">{block.text}</p>
+                <p className="mt-3 text-pretty text-[1.0625rem] leading-[1.75] text-white/80 [&_a]:text-white [&_a]:underline [&_a]:underline-offset-4">
+                  <RichText text={block.text} />
+                </p>
               </div>
               {block.phone && (
                 <a
                   href={block.phone.href}
                   className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-white px-5 py-3.5 font-semibold text-primary-deep shadow-[var(--shadow-elevated)] transition-transform duration-200 hover:-translate-y-px active:scale-[0.97]"
                 >
-                  <Phone className="h-4 w-4" /> SPU {block.phone.label}
+                  <Phone className="h-4 w-4" /> {block.phone.label}
                 </a>
               )}
             </div>
@@ -215,7 +217,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       FAQ
                       <span aria-hidden className="h-px w-8 bg-primary/40" />
                     </span>
-                    Side sewer questions we hear most
+                    {post.faqTitle ?? "Questions we hear most"}
                   </h2>
                 </Reveal>
                 <Reveal className="mt-4">
