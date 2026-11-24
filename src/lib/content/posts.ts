@@ -688,6 +688,154 @@ export const posts: Post[] = [
       },
     ],
   },
+  {
+    slug: "water-service-line-repair-seattle",
+    title: "Water Service Line Repair in Seattle: Who Pays for the Pipe From the Meter to Your House?",
+    metaTitle: "Seattle Water Service Line Repair: Who Pays?",
+    metaDescription:
+      "Learn who pays for a leaking Seattle water service line, where SPU responsibility ends, and what to do before repairs are covered.",
+    excerpt:
+      "A high bill, a wet patch of lawn, low pressure everywhere. Before anyone digs, find out whether the leak is on your side of the city's union or SPU's.",
+    category: "Homeowner guide",
+    publishedAt: "2026-11-25",
+    cover: {
+      src: "/blog/water-service-line-repair-seattle/meter-to-house-whose-pipe.webp",
+      alt: "Diagram of a Seattle water service: the water main under the street feeds the meter, SPU's side ends at the city union beside the meter, and the private line from the union to the house belongs to the homeowner",
+    },
+    shareImage: "/blog/water-service-line-repair-seattle/meter-to-house-whose-pipe-share.jpg",
+    takeaways: [
+      "SPU's water service ends at the city's union by the meter. The private line from there to the house is the owner's to maintain.",
+      "A 30-minute meter test with everything off tells you whether a leak is inside the house or underground.",
+      "SPU must inspect any repaired or replaced line before it is covered, and won't accept photos instead.",
+    ],
+    keywords: [
+      "water service line repair Seattle",
+      "Seattle water line leak repair",
+      "private water line repair Seattle",
+      "Seattle water service line replacement",
+      "SPU water service union",
+      "water meter leak detection",
+      "trenchless water line replacement",
+      "water main repair Seattle",
+    ],
+    relatedServices: ["water-main-repair", "pipe-bursting", "trenchless-sewer-repair"],
+    relatedLocations: ["seattle-wa", "tukwila-wa", "renton-wa", "bellevue-wa", "tacoma-wa", "federal-way-wa"],
+    body: [
+      {
+        type: "p",
+        text: "A water bill jumps. A patch of lawn stays wet. Pressure drops all over the house. Before anyone digs, Seattle homeowners need to know whether the leak is on their side or on Seattle Public Utilities' (SPU's) side.",
+      },
+      {
+        type: "p",
+        text: "The water service line brings drinking water in from the public main. It is a different pipe from the side sewer, which carries wastewater out. For that one, see our guide to [Seattle side sewer responsibility](/blog/side-sewer-seattle-who-owns-it).",
+      },
+      { type: "h2", id: "where-spu-ends", text: "Where does SPU's water service end?" },
+      {
+        type: "p",
+        text: "SPU's service runs from the water main, through the meter, to the **city's union**, the fitting where private pipe is allowed to connect. From that union to the building's plumbing, the line is private and the property owner maintains it.",
+      },
+      {
+        type: "p",
+        text: "So \"from the meter to the house\" is useful shorthand, but the official boundary is the union. SPU's [private water line requirements](https://www.seattle.gov/utilities/construction-resources/water/water-line-inspections) say the customer's pipe must connect to the city's union only. If you are unsure where it sits on your property, ask SPU.",
+      },
+      { type: "h2", id: "who-pays", text: "Who pays for a water service line leak?" },
+      {
+        type: "p",
+        text: "Leaks past the city union are generally the owner's to repair. If you suspect the leak is on SPU's side, contact SPU.",
+      },
+      {
+        type: "p",
+        text: "SPU offers billing adjustments for most types of leaks, but approval is not automatic. Under its [leak adjustment requirements](https://www.seattle.gov/utilities/your-services/accounts-and-payments/bills-and-payments/my-bill-seems-too-high/leak-adjustments), the repair must be completed within 60 days of the first high bill. For an underground leak between the meter and the house, an inspection is required, so contact SPU before the repair is covered. Call **(206) 684-5800** to ask about eligibility.",
+      },
+      { type: "h2", id: "four-signs", text: "Four signs your water service line may be leaking" },
+      {
+        type: "p",
+        text: "No single symptom confirms a service line leak, but these are the clues to watch for.",
+      },
+      {
+        type: "p",
+        text: "**1. An unexplained high water bill.** Compare usage with your normal pattern for the same season.",
+      },
+      {
+        type: "p",
+        text: "**2. A meter that moves with the water off.** Turn off faucets and water-using appliances, note the meter dial, and check it again after 30 minutes.",
+      },
+      {
+        type: "p",
+        text: "**3. Ground that stays wet.** Damp or soft soil along the route between the meter and the house can point to a buried leak.",
+      },
+      {
+        type: "p",
+        text: "**4. Low pressure throughout the home.** A whole-house pressure drop can point to a supply problem, though it has other possible causes.",
+      },
+      {
+        type: "figure",
+        src: "/blog/water-service-line-repair-seattle/thirty-minute-meter-test.webp",
+        alt: "Three-step meter test: turn all water off and note the 1 cubic foot dial, wait 30 minutes and read again, then close the building shut-off. If the dial stops the leak is inside; if it keeps moving the leak is underground between the meter and the shut-off valve.",
+        caption: "SPU's meter test narrows it down: inside the house, or underground between the meter and the shut-off.",
+      },
+      {
+        type: "p",
+        text: "If the dial has moved, close the building's main shut-off valve. If the dial then stops, the leak is inside. If it keeps moving, SPU says the leak is underground, between the meter and the shut-off valve. Follow [SPU's leak detection steps](https://www.seattle.gov/utilities/your-services/water/metering/detect-leaks). Treat it as a screening check, not a diagnosis.",
+      },
+      { type: "h2", id: "repair-or-replace", text: "Should you repair one section or replace the line?" },
+      {
+        type: "p",
+        text: "A spot repair can suit an isolated leak when the rest of the pipe is sound. Replacement makes more sense when corrosion, failing joints or repeat leaks affect a longer stretch.",
+      },
+      {
+        type: "p",
+        text: "We locate the failure with pressure testing and acoustic or visual methods, then repair the affected section or replace the full line based on its age, material and condition. When the site allows, a full replacement can be done trenchless, though [pipe bursting](/services/pipe-bursting) still needs an access pit at each end. See our [water main repair service](/services/water-main-repair).",
+      },
+      { type: "h2", id: "before-backfill", text: "What must happen before the trench is covered?" },
+      {
+        type: "p",
+        text: "Before any digging, request an underground utility locate through 811. Washington's [Dig Law](https://www.utc.wa.gov/public-safety/pipeline-safety/call-you-dig/dig-law) asks excavators for two to ten full business days' notice before the work-to-begin date. Since January 1, 2026, digging cannot start until every operator with underground facilities in the area has responded.",
+      },
+      {
+        type: "p",
+        text: "SPU must [inspect all water service piping outside the building](https://www.seattle.gov/utilities/construction-resources/water/water-line-inspections) before it is covered, whether it is new, repaired or replaced. If it is covered before approval, the whole line has to be uncovered again. SPU does not accept photos or videos instead.",
+      },
+      {
+        type: "figure",
+        src: "/blog/water-service-line-repair-seattle/before-the-trench-is-covered.webp",
+        alt: "Four steps: call 811 two to ten full business days before work begins, wait for every operator to respond, repair or replace the line, then have SPU inspect it before covering. SPU inspection lines are (206) 684-5803 from 8 to 9 a.m. and (206) 684-5800 after 9 a.m.",
+        caption: "Locate before you dig. Inspect before you cover.",
+      },
+      {
+        type: "callout",
+        title: "Book the SPU inspection before you backfill",
+        text: "Call **(206) 684-5803** between 8 and 9 a.m., or **(206) 684-5800** after 9 a.m., for a same-day inspection. Keep the inspection report the inspector leaves. For water coming from the street or flooding the street, call SPU's 24/7 Operations Response Center.",
+        phone: { label: "SPU (206) 386-1800", href: "tel:+12063861800" },
+      },
+      { type: "h2", id: "get-help", text: "Need help with a water line leak in Seattle?" },
+      {
+        type: "callout",
+        title: "Find the leak before anyone digs",
+        text: "Gary's Pipelining & Drain Cleaning locates, repairs and replaces water service lines across [Seattle](/service-area/seattle-wa) from our Tukwila base, with 24/7 emergency dispatch. Call or [request your free estimate](/contact).",
+        phone: { label: "(206) 535-8460", href: "tel:+12065358460" },
+      },
+    ],
+    faqTitle: "Water line questions we hear most",
+    faqs: [
+      {
+        q: "Is the water pipe from the meter to my house my responsibility?",
+        a: "Yes, from SPU's city union to the building's plumbing. The union is the fitting by the meter where private pipe connects. Confirm the boundary for your property with SPU.",
+      },
+      {
+        q: "Will SPU lower my bill after an underground leak?",
+        a: "SPU offers adjustments for most leaks, but you have to meet its requirements, including finishing the repair within 60 days of the first high bill. For an underground leak, contact SPU before the repair is covered.",
+      },
+      {
+        q: "How can I tell whether a leak is inside or outside?",
+        a: "With all water off, compare two meter readings 30 minutes apart. If the dial moved, close the building shut-off. If it keeps moving, the leak is underground between the meter and that valve.",
+      },
+      {
+        q: "Can a water service line be replaced without digging up the whole yard?",
+        a: "Often, yes. Trenchless methods can cut down excavation, but whether they fit depends on the pipe's condition, route, access and site conditions.",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string) {
