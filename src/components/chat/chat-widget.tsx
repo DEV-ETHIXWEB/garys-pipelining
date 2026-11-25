@@ -18,6 +18,7 @@ import {
 } from "@/lib/chat/engine";
 import { topicLabel } from "@/lib/chat/knowledge";
 import { submitLead, type TranscriptMessage } from "@/lib/send-lead";
+import { PoweredBy } from "@/components/layout/powered-by";
 
 // Flip to true to restore the original avatar photo (chatbotAvatar) in all three spots below.
 const SHOW_CHAT_AVATAR_IMAGE = false;
@@ -527,6 +528,9 @@ export function ChatWidget() {
             <p className="shrink-0 px-4 pb-3 text-center text-[11px] text-muted-foreground">
               {capturing ? "Your info goes straight to our team." : `Automated assistant. For anything urgent, call ${siteConfig.phone}.`}
             </p>
+            <div className="flex shrink-0 justify-center border-t border-border pb-3 pt-2.5">
+              <PoweredBy tone="dark" size="sm" />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

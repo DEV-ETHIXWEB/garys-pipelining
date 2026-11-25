@@ -4,6 +4,7 @@ import { Logo } from "./logo";
 import { services } from "@/lib/content/services";
 import { locations } from "@/lib/content/locations";
 import { siteConfig } from "@/lib/site-config";
+import { PoweredBy } from "./powered-by";
 
 const sparkles = [
   { top: "10%", left: "5%", size: "h-2 w-2", delay: "0s" },
@@ -34,7 +35,7 @@ export function Footer() {
     <footer className="relative overflow-hidden text-white" style={{ background: "var(--gradient-hero)" }}>
       <div aria-hidden className="absolute inset-0 mesh-overlay opacity-40" />
       <FooterSparkleField />
-      <div className="container-px relative mx-auto max-w-[1400px] pb-32 pt-20 lg:py-20">
+      <div className="container-px relative mx-auto max-w-[1400px] pb-10 pt-20 lg:py-20">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
           <div>
             <div className="text-center lg:text-left">
@@ -135,6 +136,13 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {siteConfig.legalName}. Licensed &amp; insured. All rights reserved.
           </p>
           <p className="text-xs text-white/50">{siteConfig.hours}</p>
+        </div>
+      </div>
+
+      {/* Studio signature */}
+      <div className="relative border-t border-white/[0.06]">
+        <div className="container-px relative mx-auto flex max-w-[1400px] justify-center pb-28 pt-5 lg:pb-5">
+          <PoweredBy tone="light" />
         </div>
       </div>
     </footer>
